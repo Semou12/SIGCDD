@@ -1,0 +1,177 @@
+{% extends "invoice/stack_releve_new.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12"> <b> Imprimé le {% now "d-m-Y" %} </b></div>
+
+<div class="col-12"><div class="table-responsive">
+					<table class="table table-borderless mb-0">
+						<thead class="bg-success">
+							<tr>
+								<th>INFORMATION DU COMPTE</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><b>Gestion : {{annee_comptable}}</b></td>
+
+							</tr>
+							<tr>
+								<td><b>Poste Comptable : {{compte.poste.type}}</b></td>
+
+							</tr>
+							<tr>
+								<td><b>N° Compte : {{compte.format_iban}}</b></td>
+
+							</tr>
+
+                        <tr>
+								<td><b>Libellé : {{compte.libelle}}</b></td>
+
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+</div>
+</div>
+                                                         {% endblock %}
+
+{% block contentinvoice %}
+
+
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-8 d-flex justify-content-center center">
+
+                         <b>RELEVE D'OPÉRATIONS DU {{start_date}} AU {{end_date}}</b>
+                     </div>
+
+
+
+</div>
+
+
+
+<br>
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+                         <div class="table-responsive-sm">
+                    <table class="table table-condensed table-hover table-sm"   id="idreleve">
+						<thead>
+							<tr  align="center">
+                                 <th >DATE OPERATION</th>
+                                <th >REFERENCE</th>
+
+                                <th >LIBELLE DE L OPERATION</th>
+                                <th > DEBIT</th>
+                                <th > CREDIT</th>
+
+
+							</tr>
+                        </tr>
+						</thead>
+                        <tbody>
+                        {% for trx in trxs %}
+                        <tr >
+                            <td align="center">{{trx.created|date:"d-m-Y"}}</td>
+                            <td align="center">{{trx.reference|slice:":12"}}</td>
+
+                            <td align="left">{{trx.libelle|slice:":30"}}</td>
+                            <td align="right"><b>{{trx.debit_amount}}</b></td>
+                            <td class="font-weight-bold" align="right">{{trx.credit_amount}}</td>
+
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+
+                            <td colspan="3">Nombre de lignes : {{lignes}} </td>
+
+                            <td class="font-weight-bold" align="right">{{debit|intcomma}}</td>
+                            <td class="font-weight-bold" align="right">{{credit|intcomma}}</td>
+
+
+                        </tr>
+                        </tbody>
+					</table>
+
+                         </div>
+                     </div>
+
+
+
+
+</div>
+
+
+<br>
+    <br>
+
+<div class="row justify-content-center">
+
+    <div class="col-6 d-flex justify-content-center">
+        <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tbody >
+                                <tr >
+                                    <td scope="row" class="font-weight-bold">REPORT</td>
+                                    <td align="center"><span><b>{{last_balance|intcomma}}</b></span></td>
+
+
+                                </tr>
+                                <tr >
+                                    <td scope="row" class="font-weight-bold">SOLDE CREDITEUR</td>
+
+                                    <td align="center"><span><b>{{solde|intcomma}}</b></span></td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+</div>
+    <div class="col-5 ml-auto d-flex justify-content-center">
+        <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tbody >
+                            <tr >
+                                    <td scope="row" class="font-weight-bold">TOTAL DEBITS</td>
+                                    <td align="center"><span><b>{{debit|intcomma}}</b></span></td>
+
+                                </tr>
+                                <tr >
+                                    <td scope="row" class="font-weight-bold">TOTAL CREDITS</td>
+                                    <td align="center"><span><b>{{credit|intcomma}}</b></span></td>
+
+
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+</div>
+</div>
+
+<div class="row justify-content-end">
+<div class="col-12 ml-auto d-flex justify-content-end"> <b> Imprimé le {% now "d-m-Y" %} </b></div>
+</div>
+
+
+{% endblock  %}

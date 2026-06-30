@@ -1,0 +1,99 @@
+{% extends "invoice/stack_bordereau.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+{% block headegestion %}
+
+
+<span class="ml-auto"><b>Coordonnées destinataires</b><br>
+                                                <b>{{compte}}</b>
+                                            </span>
+{% endblock %}
+
+{% block contentinvoice %}
+
+
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-8 d-flex justify-content-center align-items-center">
+                                    <h2 class="text-primary">{{title}}</h2>
+                     </div>
+
+
+</div>
+
+
+
+<br>
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+                         <div class="table-responsive-sm">
+                    <table class="table table-condensed table-hover table-sm"   id="idreleve">
+						<thead>
+							<tr  align="center">
+                                <th >NUMERO CHEQUIER</th>
+                                <th >NUMERO COMPTE</th>
+                                <th >SEQUENNCE DEBUT </th>
+                                <th >SEQUENCE FIN</th>
+
+							</tr>
+                        </tr>
+						</thead>
+                        <tbody>
+                        {% for trx in chequiers %}
+                        <tr >
+                            <td align="center">{{trx.reference|slice:":12"}}</td>
+                            <td align="center">{{trx.compte.compte}}</td>
+                            <td align="center">{{trx.debut}}</td>
+                            <td align="center"><b>{{trx.fin}}</b></td>
+                        </tr>
+                        {% endfor %}
+
+
+                        </tbody>
+					</table>
+
+                         </div>
+                     </div>
+
+
+
+
+</div>
+
+
+<br>
+    <br>
+
+
+
+   <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                 <span class="ml-auto"><b>Directeur de l’Administration </b><br>
+                                                <b> et du Personnel</b>
+                                            </span>
+
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2"> Fait à  _________ le {{commande.created|date:"d-m-Y "}} à {{commande.created|date:"H:i"}} </span>
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+{% endblock  %}

@@ -1,0 +1,211 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+{{ form.media }}
+
+
+
+
+<form method="post" action=""  enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+        {% include "includes/tweaks_form_fields.html" %}
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </div>
+
+</form>
+{% block javascript %}
+<script type="text/javascript">
+      $(function () {
+
+
+        if ( $( "#id_ministere" ).length>0 ){
+                let eNat =$("#id_ministere");
+                let eSoutNature = $("#id_structure");
+                eSoutNature.empty();
+                eNat.change(function (){loadstructure(eNat,eSoutNature);});
+            }
+
+
+      $('.singledate').pickadate(
+           {formatSubmit: 'mm/dd/yyyy',format: 'dd/mm/yyyy'}
+      );
+
+
+
+           $('.datetimepicker').datetimepicker({format: 'DD/MM/YYYY HH:mm:ss'});
+           $(".select2").select2({
+            dropdownAutoWidth: true,
+                width: '100%'
+            });
+
+            $('.stackdaterangepicker').daterangepicker({
+
+		locale: {
+			format: 'DD/MM/YYYY'
+		}
+	});
+
+
+	$('.linkeddate').each(function(){
+
+	let elt_id = this.id;
+	let s = elt_id.slice(-1);
+	if (s=="0"){
+
+	let lower = '#'+elt_id.slice(0, -1) + '0';
+	 let upper = '#'+elt_id.slice(0, -1) + '1';
+	// Date Range from & to
+	var from_$input = $(lower).pickadate({formatSubmit: 'dd/mm/yyyy',format: 'dd/mm/yyyy'}),
+	from_picker = from_$input.pickadate('picker');
+
+
+	var to_$input = $(upper).pickadate({formatSubmit: 'dd/mm/yyyy',format: 'dd/mm/yyyy'}),
+	to_picker = to_$input.pickadate('picker');
+
+
+
+	// Check if there’s a “from” or “to” date to start with.
+	if ( from_picker.get('value') ) {
+		to_picker.set('min', from_picker.get('select'));
+	}
+	if ( to_picker.get('value') ) {
+		from_picker.set('max', to_picker.get('select'));
+	}
+
+	// When something is selected, update the “from” and “to” limits.
+	from_picker.on('set', function(event) {
+		if ( event.select ) {
+			to_picker.set('min', from_picker.get('select'));
+		}
+		else if ( 'clear' in event ) {
+			to_picker.set('min', false);
+		}
+	});
+	to_picker.on('set', function(event) {
+		if ( event.select ) {
+			from_picker.set('max', to_picker.get('select'));
+		}
+		else if ( 'clear' in event ) {
+			from_picker.set('max', false);
+		}
+	});
+
+
+	}
+
+});
+
+      });
+  </script>
+
+
+
+<script>
+if ($('.iban-inputmask').length > 0){
+$('.iban-inputmask').inputmask("AA999 99999 999999999999 99");
+
+}
+
+if ($('.amount-inputmask').length > 0){
+
+//$('.amount-inputmask').inputmask('999 999 999', { numericInput: true });
+$('.amount-inputmask').inputmask('decimal', { rightAlign: false,groupSeparator:" " });
+
+}
+
+
+  var input = document.querySelector("#id_phone"),
+  errorMsg = document.querySelector("#error-msg"),
+  validMsg = document.querySelector("#valid-msg");
+
+ var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+// initialise plugin
+var iti = window.intlTelInput(input, {
+initialCountry:"sn",
+  onlyCountries: ["sn" ],
+  utilsScript: "{% static 'telinput/build/js/utils.js' %}"
+});
+
+var reset = function(inputVar,errorVar,validVar) {
+  inputVar.classList.remove("error");
+  errorVar.innerHTML = "";
+  errorVar.classList.add("hide");
+  validVar.classList.add("hide");
+};
+
+// on blur: validate
+input.addEventListener('blur', function() {
+
+ reset(input,errorMsg,validMsg);
+  if (input.value.trim()) {
+    if (iti.isValidNumber()) {
+      validMsg.classList.remove("hide");
+    } else {
+      input.classList.add("error");
+      var errorCode = iti.getValidationError();
+      errorMsg.innerHTML = errorMap[errorCode];
+      errorMsg.classList.remove("hide");
+    }
+  }
+});
+
+// on keyup / change flag: reset
+input.addEventListener('change', reset);
+input.addEventListener('keyup', reset);
+
+
+
+ function loadstructure( elMinistere,elSousNat) {
+        let odval = elMinistere.val();
+        console.log(odval);
+        if (!odval )
+        {return false;}
+
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'core:load_structure_by_ministere' %}",
+            data: {"id":odval},
+            success: function (response) {
+                console.log(response);
+                ascs= response['structures'];
+                elSousNat.empty();
+                for(let i = 0; i < ascs.length; i++){
+                    let zone = ascs[i];
+                   elSousNat.append($('<option>').val(zone["id"]).text(zone["name"]));
+              }
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+
+  }
+
+
+
+
+
+  </script>
+
+
+
+{% endblock javascript %}

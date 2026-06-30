@@ -1,0 +1,9 @@
+{% extends "account/simple_base.html" %}
+{% load static i18n helpers_tags %}
+
+{% block head_title %} {% trans "Account Inactive" %}{% endblock head_title %}
+{% block content %}
+   <h1>{% trans "Account Inactive" %}</h1>
+
+<p>{% trans "This account is inactive." %}</p>
+{% endblock %}

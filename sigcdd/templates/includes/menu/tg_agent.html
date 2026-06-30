@@ -1,0 +1,160 @@
+{% load helpers_tags static i18n %}
+
+
+{% if request.user.role == "AGENT_TG" %}
+
+
+ <li class=" navigation-header"><span>Menu</span><i class=" feather icon-minus" data-toggle="tooltip" data-placement="right" data-original-title="General"></i>
+                </li>
+                <li class=" nav-item "><a href="{% url 'users:home_view' %}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="administration">{% trans 'Home' %}</span></a>
+
+                </li>
+
+
+</li>
+
+
+
+<!--  EDITIONS  -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-list"></i><span class="menu-title" data-i18n="administration">{% trans 'EDITIONS  ' %}</span></a>
+   <ul class="menu-content">
+
+
+        <li class=" ">
+            <a class="menu-item" href="#" data-i18n="poste">{% trans 'Avis' %}</a>
+            <ul class="menu-content">
+                <li class="{% if request.resolver_match.url_name == 'report_aviscredit_compte_view' %}active{% endif %}"><a
+                    class="menu-item" href="{% url 'cddaccount:report_aviscredit_compte_view' %}" data-i18n="Modern Menu">
+                Avis crédit </a>
+                </li>
+
+
+                <li class=" {% if request.resolver_match.url_name == 'avisdedebit_report_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:avisdedebit_report_view' %}" data-i18n="poste">{% trans 'Avis de Débit' %}</a>
+                </li>
+            </ul>
+       </li>
+
+
+
+
+
+               <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Situation des instances' %}</a>
+
+            <ul class="menu-content" style="">
+
+
+                <li class="{% if request.resolver_match.url_name == 'op_by_nature_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:op_by_nature_view' %}" data-i18n="Modern Menu">
+                    Opérations Reçues</a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'situation_op_all_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:situation_op_all_view' %}" data-i18n="Modern Menu">Sit.
+                    des instances</a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'situation_op_s_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:situation_op_s_view' %}" data-i18n="Modern Menu">Instance
+                    Salaire</a>
+                </li>
+
+
+
+                <li class="{% if request.resolver_match.url_name == 'situation_op_hs_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:situation_op_hs_view' %}" data-i18n="Modern Menu">
+                    Instance Hors Salaire</a>
+                </li>
+
+
+
+            </ul>
+
+
+            </li>
+
+
+
+        <li class=" ">
+            <a class="menu-item" href="#" data-i18n="poste">Opérations Visées</a>
+            <ul class="menu-content" style="">
+                <li class="{% if request.resolver_match.url_name == 'repport_op_vise_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:repport_op_vise_view' %}" title ="Situation des Opérations visées" data-i18n="Modern Menu">
+                    Situation des Opérations visées </a>
+                </li>
+
+
+                <li class="{% if request.resolver_match.url_name == 'repport_op_paye_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:repport_op_paye_view' %}" title="Opérations visées par moyen de paiement" data-i18n="Modern Menu">
+                   Opérations visées par moyen de paiement </a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'rapport_cheques_partiellement_visees_view' %}active{% endif %}">
+                    <a class="menu-item" href="{% url 'cddaccount:rapport_cheques_partiellement_visees_view' %}" data-i18n="Modern Menu">
+                        Chèques partiellement visés
+                    </a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'repport_op_vise_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:repport_op_vise_view' %}?delai=1" title ="Tableau synoptique" data-i18n="Modern Menu">
+                    Tableau synoptique </a>
+                </li>
+
+            </ul>
+       </li>
+<!--
+            <li class=" ">
+            <a class="menu-item" href="#" data-i18n="poste">Situation d'exécution</a>
+            <ul class="menu-content" style="">
+                <li class="{% if request.resolver_match.url_name == 'situation_consolde_view' %}active{% endif %}"><a
+                    title="Situation d’exécution du poste"    class="menu-item" href="{% url 'cddaccount:situation_consolde_view' %}" data-i18n="Modern Menu">
+                   Situation d’exécution du poste  </a>
+                </li>
+
+                <li class=""><a
+                        class="menu-item" href="#" data-i18n="Modern Menu" title="Situation d’exécution par compte">
+                   Situation d’exécution par compte </a>
+                </li>
+
+            </ul>
+        </li>
+        -->
+
+       <li class=" {% if request.resolver_match.url_name == 'disponible_situation_view' %}active{% endif %}"><a
+              title="Situation des disponibilités"  class="menu-item" href="{% url 'cddaccount:disponible_situation_view' %}" data-i18n="poste">Situation des disponibilités</a>
+        </li>
+
+
+        <li class=" {% if request.resolver_match.url_name == 'comptedepot_releve' %}active{% endif %}"><a
+             title="Relevé des comptes de dépôt" class="menu-item" href="{% url 'cddaccount:comptedepot_releve' %}" data-i18n="poste">Relevé des CDD</a>
+       </li>
+
+
+
+           <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Balance' %}</a>
+
+            <ul class="menu-content" style="">
+                <li class="{% if request.resolver_match.url_name == 'balance_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:balance_view' %}" data-i18n="Modern Menu">{% trans 'Balance Comtpe' %}</a>
+                </li>
+
+                {% if request.user|has_group:"VIEW_CONSOLIDATION" %}
+
+                <li class="{% if request.resolver_match.url_name == 'balanceconso_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:balanceconso_view' %}" data-i18n="Modern Menu">{% trans 'Balance Consolidée' %}</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </li>
+
+
+
+    </ul>
+</li>
+
+
+
+
+{% endif %}
+

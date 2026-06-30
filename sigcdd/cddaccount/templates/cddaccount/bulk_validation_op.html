@@ -1,0 +1,264 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+{% endblock vendorcss %}
+
+
+{% block css %}
+
+<!-- BEGIN: Page CSS-->
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/card-statistics.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/vertical-timeline.css' %}">
+<!-- END: Page CSS-->
+{% endblock  %}
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+<div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+    <div class="row breadcrumbs-top">
+        <div class="breadcrumb-wrapper col-12">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item active">
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+
+
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row minimal-modern-charts">
+
+     <div class="col-md-6">
+          <div class=" col-12 ">
+        <div class="card">
+
+
+            <div class="card-header latest-update-heading d-flex justify-content-between">
+          <h4 class="latest-update-heading-title text-bold-500">Matricule N° <code>{{agent.matricule}}</code> </h4>
+
+
+        </div>
+
+
+
+            <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+                <table class="table table-sm table-striped table-borderless mb-0">
+
+                    <thead class="bg-primary bg-lighten-4">
+                            <tr>
+                                <th>Type</th>
+                                <th>{{type_agent}}</th>
+
+                            </tr>
+                        </thead>
+            <tbody>
+
+
+            <tr>
+                                                    <td>Matricule:</td>
+                                                    <td class="users-view-verified">{{agent.matricule}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Prénom et Nom:</td>
+                                                    <td class="users-view-verified">{{agent.full_name}}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Téléphone:</td>
+                                                    <td class="users-view-verified">{{agent.phone}}</td>
+                                                </tr>
+
+
+
+
+            </tbody>
+          </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+     </div>
+
+
+
+     <!-- latest update tracking chart-->
+    <div class="col-md-6">
+    <div class=" col-12 ">
+        <div class="card">
+
+
+            <div class="card-header latest-update-heading d-flex justify-content-between">
+
+        </div>
+
+
+
+            <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+              <form method="post" action=""  enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+
+    {% include "includes/tweaks_form_fields.html" %}
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </div>
+
+</form>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+
+
+
+
+
+</div>
+
+<div class="row">
+                        <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                    <h4 class="card-title">Odre de paiement  à valider</h4>
+                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                    <div class="heading-elements">
+                        <ul class="list-inline mb-0">
+                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                            <li><a data-action="reload"><i class="feather icon-rotate-cw"></i></a></li>
+                            <li><a data-action="expand"><i class="feather icon-maximize"></i></a></li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                  <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                        <!-- datatable started -->
+
+                          {% render_table table %}
+
+
+                    </div>
+                  </div>
+                </div>
+
+                             </div>
+                    </div>
+
+
+{% endblock %}
+
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+<!-- END: Page JS-->
+
+{% block javascript %}
+
+
+{% endblock javascript %}

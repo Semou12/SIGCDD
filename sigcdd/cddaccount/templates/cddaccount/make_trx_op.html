@@ -1,0 +1,93 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+
+<form method="post" action="" >
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}<br>
+
+      {% if url_fichier_vm %}
+
+      <a  href="{{url_fichier_vm.url}}"><i
+                class="fa fa-file"></i> Fichier de virement de masse</a>
+      {% endif %}
+
+    </h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid danger{% endif %} mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+
+    {% include "includes/tweaks_form_fields.html" %}
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </div>
+
+</form>
+{% block javascript %}
+<script type="text/javascript">
+      $(function () {
+           $(".select2").select2({
+            dropdownAutoWidth: true,
+                width: '100%'
+            });
+              console.log("Hello world!");
+             let eMPamean =$("#id_payment_mean");
+             showHideReglementField(eMPamean);
+             eMPamean.change(function (){showHideReglementField(eMPamean);});
+
+      });
+
+
+      function showHideReglementField(eMPamean) {
+      let isumeo={{out_umeoa}};
+
+        let pMeanVal = eMPamean.val();
+        console.log("reeerer ");
+
+        let ibanlabel = $("label[for=id_iban]");
+
+
+        if (pMeanVal!="VIREMENT" ||  isumeo==true){
+            $('#id_iban').hide();
+            $('#id_iban').prop('required', false);
+            ibanlabel.hide();
+        }
+
+        else{
+         $('#id_iban').show();
+         $('#id_iban').prop('required', true);
+         ibanlabel.show();
+
+        }
+
+
+     }
+
+
+
+  </script>
+
+<script>
+if ($('.iban-inputmask').length > 0){
+$('.iban-inputmask').inputmask("AA999 99999 999999999999 99");
+
+}
+
+
+
+
+  </script>
+
+{% endblock javascript %}

@@ -1,0 +1,108 @@
+{% extends "stack_base.html" %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks static %}
+{% load i18n %}
+
+{% block css %}
+ <link rel="stylesheet" href="{% static 'telinput/build/css/intlTelInput.css' %}" />
+ <link rel="stylesheet" href="{% static 'telinput/css/isValidNumber.css' %}" />
+<link rel="stylesheet" href="{% static 'telinput/css/prism.css' %}" />
+ <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+<style>
+
+#tuteur_error-msg {
+  color: red;
+}
+#tuteur_valid-msg {
+  color: #00C900;
+}
+
+
+#error-msg-1 {
+  color: red;
+}
+#valid-msg-1 {
+  color: #00C900;
+}
+</style>
+
+{% endblock %}
+
+{% block head_title %}{% trans "Change de journée comptable " %}{% endblock %}
+
+{% block content %}
+
+<section>
+  <div class="row justify-content-md-center">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" id="basic-layout-card-center">{{title}}</h4>
+                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                                    <div class="heading-elements">
+
+                                    </div>
+                                </div>
+                                <div class="card-content collapse show">
+                                    <div class="card-body">
+
+                                        <form class="form password_change" method="POST" action="" enctype="multipart/form-data">
+                                            <div class="form-body">
+                                              {% csrf_token %}
+         {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+
+     {% include "includes/tweaks_form_fields.html" %}
+                                            </div>
+
+                                            <div class="form-actions center">
+
+                                              <button class="btn btn-primary" type="submit" name="action">{% trans "Valider" %}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+</section>
+{% endblock %}
+
+
+
+{% block javascript %}
+
+  <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+
+<script src="{% static 'telinput/build/js/intlTelInput.js' %}"></script>
+<script src="{% static 'telinput/js/prism.js' %}"></script>
+
+
+<script type="text/javascript">
+      $(function () {
+
+      $('.singledate').pickadate(
+           {
+		    selectMonths: true,
+		    selectYears: true,
+           formatSubmit: 'mm/dd/yyyy',format: 'dd/mm/yyyy'
+           }
+      );
+
+
+
+      });
+  </script>
+
+{% endblock javascript %}

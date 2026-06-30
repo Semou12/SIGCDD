@@ -1,0 +1,286 @@
+{% extends "invoice/stack_instance_op.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+{% block vendorcss %}
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+ <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/forms/extended/form-extended.css' %}">
+
+{% endblock vendorcss %}
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+							<tr>
+                                <td class="bg-light font-weight-bold" ><h4>DATE IMPRESSION</h4></td>
+
+                                <td class="bg-light  font-weight-bold"> <h4>{{date}}</h4></td>
+
+							</tr>
+
+                      <tr>
+                          <td class="bg-light font-weight-bold"><h4>GESTION</h4></td>
+                          <td class="bg-light font-weight-bold"> <h4>{{gestion}}</h4></td>
+
+							</tr>
+                        {% if lecompte %}
+
+                            <tr>
+    
+                                <td class="bg-light font-weight-bold"><h4>COMPTE</h4></td>
+    
+                                <td class="bg-light font-weight-bold"><h4>{{lecompte}}</h4></td>
+    
+                            </tr> 
+    
+                        {% endif %} 
+
+
+                      <tr>
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"><h4>{{poste}}</h4></td>
+
+
+							</tr>
+                      <tr>
+
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"><h4>OPÉRATIONS EN INSTANCE DE PAIEMENT  DU {{date}}</h4></td>
+
+                      </tr>
+
+
+
+						</tbody>
+
+					</table>
+
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-8 d-flex justify-content-center center">
+
+                        <!-- <h2>SITUATION DES DISPONIBLES DES COMPTES DE DEPOT</h2>-->
+                     </div>
+
+
+
+</div>
+
+
+
+<br>
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+
+                    <table class="table table-condensed table-hover table-sm table-bordered"  >
+
+                         <tbody>
+
+
+ {% for situation in situations %}
+
+                        <tr  class="bg-light">
+                             <td colspan="1" align="left">{{situation.compte}}</td>
+                            <td colspan="6" align="left">{{situation.libelle_court}}</td>
+                        </tr>
+
+                        <tr  class="bg-light">
+                             <td rowspan="1" align="center">BENEFICIAIRE</td>
+                            <td rowspan="1" align="center">N° CHEQUE</td>
+                            <td colspan="1" align="center">MONTANT</td>
+                            <td colspan="1" align="center">DATE DEPOT</td>
+                            <td colspan="1" align="center"> DATE PEC</td>
+                            <td colspan="1" align="center"> NATURE DE LA DEPENSE</td>
+                        </tr>
+
+ {% for item in situation.items %}
+
+
+                           <tr >
+                                <td >{{item.beneficiaire}}</td>
+                               <td >{{item.sig_reference}}</td>
+                                <td align="right">{{item.reliquat|intcomma}}</td>
+                                <td align="center">{{item.date_depot|date:"d/m/Y"}}</td>
+                                <td align="center">{{item.date_pec|date:"d/m/Y"}}</td>
+                               <td align="center">{{item.nature}}</td>
+                        </tr>
+
+                        {% endfor %}
+
+                         <tr >
+                            <td colspan="6" align="right">{{situation.total|intcomma}}</td>
+                        </tr>
+
+
+{% endfor %}
+
+
+
+                        </tbody>
+
+					</table>
+
+                         <div class="row">
+
+
+
+
+                         <div class="col-6  ml-auto d-flex justify-content-start "> <span>Nombres d'opérations :{{lignes|intcomma}} </span></div>
+
+                             <div class="col-6  ml-auto d-flex justify-content-end "> TOTAL GÉNÉRAL : <span class="bg-light"> <b>{{total|intcomma}}</b> </span></div>
+                             </div>
+
+
+   <div class="row">
+       <br/>
+        <br>
+       <div class="col-6 d-flex justify-content-center" >
+
+           <br/>
+        <br/>
+
+                            <table class="table table-condensed table-hover table-sm table-bordered"  >
+
+                         <tbody>
+
+
+
+
+                        <tr  class="bg-light">
+                            <td colspan="4" align="center">RECAPITULATION</td>
+                        </tr>
+
+                        <tr  class="bg-light">
+                            <td rowspan="1" align="center">MODE DE PAIEMENT</td>
+                            <td rowspan="1" align="center">FONCTIONNEMENT</td>
+                            <td colspan="1" align="center">INVESTISSEMENT</td>
+                            <td colspan="1" align="center">TOTAL</td>
+                            </tr>
+                        {% for rc in recap1 %}
+
+                        <tr >
+
+                                <td align="right">{{rc.moyen}}</td>
+                                <td align="right">{{rc.fonct|intcomma}}</td>
+                                <td align="right">{{rc.invest|intcomma}}</td>
+                               <td align="right">{{rc.total|intcomma}}</td>
+                           </tr>
+
+                        {% endfor %}
+
+                        <!---
+
+                         <tr >
+                                <td align="right">COMPENSE</td>
+                                <td align="right">{{recap.COMPENSE.fonct|intcomma}}</td>
+                                <td align="right">{{recap.COMPENSE.invest|intcomma}}</td>
+                               <td align="right">{{recap.COMPENSE.total|intcomma}}</td>
+                           </tr>
+
+                         <tr >
+                                <td align="right">VIREMENT</td>
+                                <td align="right">{{recap.VIREMENT.fonct|intcomma}}</td>
+                                <td align="right">{{recap.VIREMENT.invest|intcomma}}</td>
+                               <td align="right">{{recap.VIREMENT.total|intcomma}}</td>
+                           </tr>
+
+                         <tr >
+                                <td align="right">OPERATION ORDRE</td>
+                                <td align="right">{{recap.OPERATION.fonct|intcomma}}</td>
+                                <td align="right">{{recap.OPERATION.invest|intcomma}}</td>
+                               <td align="right">{{recap.OPERATION.total|intcomma}}</td>
+                           </tr>
+
+
+
+
+                           <tr >
+                                <td align="right">NUMERAIRE</td>
+                                <td align="right">{{recap.NUMERAIRE.fonct|intcomma}}</td>
+                                <td align="right">{{recap.NUMERAIRE.invest|intcomma}}</td>
+                               <td align="right">{{recap.NUMERAIRE.total|intcomma}}</td>
+                           </tr>
+                           -->
+
+
+
+                         <tr >
+                            <td colspan="4" align="right">{{total|intcomma}}</td>
+                        </tr>
+
+
+
+
+
+
+                        </tbody>
+
+					</table>
+ </div>
+ </div>
+                     </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+{% endblock  %}
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+
+{% endblock vendorjs %}s

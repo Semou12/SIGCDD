@@ -1,0 +1,196 @@
+{% extends "invoice/stack_releve_new.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/forms/extended/form-extended.css' %}">
+
+{% endblock vendorcss %}
+
+{% block headerinvoiceAction %}
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+    <div class="form-group">
+        {% if can_read_bordereau %}
+        <button type="button" class="btn btn-secondary mb-1" id="bord-item-op">
+            Bordereaux OP
+        </button>
+        {% endif %}
+
+        <div class="btn-group">
+
+            <a href="#" class="btn btn-info btn-block mb-1 print-invoice"> <i
+                    class="feather icon-printer mr-25 common-size"></i> Imprimer</a>
+
+        </div>
+    </div>
+</div>
+
+{%  endblock %}
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+
+    <div class="col-12">
+
+        <table id="balance_header" class="table table-borderless mb-0 table-lg "
+               style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+            <tbody>
+            <tr>
+                <td class="bg-light font-weight-bold">DATE IMPRESSION</td>
+
+                <td class="bg-light  font-weight-bold"> {% now "d-m-Y" %}</td>
+            </tr>
+
+
+            <tr>
+                <td class="bg-light font-weight-bold" colspan="2" align="center">RELEVE DES OPERATIONS DU COMPTE
+                    <br/> DU {{period}}
+                </td>
+            </tr>
+
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+
+<div class="row justify-content-center">
+
+
+    <div class="col-8 d-flex justify-content-center center">
+
+        <h3><b>
+            {{ title2 }} <span class="badge badge-primary">{{ period|date:"d-m-Y" }}</span>
+        </b></h3>
+    </div>
+
+
+</div>
+
+
+<br>
+
+<div class="row justify-content-center">
+
+
+    <div class="col-12">
+        <div class="table-responsive-sm">
+            <table class="table table-condensed table-hover table-sm" id="idreleve">
+                <thead>
+                <tr align="center">
+                    <th>REFERENCE</th>
+                    <th>LIBELLÉ OPERATION</th>
+                    <th>BÉNÉFICIARE</th>
+                    <th>MONTANT</th>
+
+                </tr>
+
+                </thead>
+                <tbody>
+
+                {% for trx in list_op %}
+                <tr>
+                    <td align="center">{{trx.reference|slice:":12"}}</td>
+                    <td align="center">{{trx.object}}</td>
+                    <td align="center">{{trx.beneficiaire}}</td>
+                    <td align="center"><b>{{trx.amount}}</b></td>
+                </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<br>
+<br>
+
+
+<br>
+
+
+<div class="row justify-content-end">
+    <div class="col-12 ml-auto d-flex justify-content-end"><b> Imprimé le {% now "d-m-Y" %} </b></div>
+</div>
+
+
+{% endblock  %}
+
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+
+<!-- BEGIN: Page JS-->
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+<!-- END: Page JS-->
+
+{% endblock vendorjs %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+    $(function () {
+        // Create item synchronous
+        console.log("{{url_rb}}");
+        function createItemSyncModalForm(eltId,createUrl) {
+          eltId.modalForm({
+              formURL: createUrl,
+              modalID: "#create-modal"
+          });
+        }
+
+         createItemSyncModalForm($("#bord-item-op"),"{{url_rb}}");
+
+          $('.print-invoice').on('click', function () {
+      window.print();
+  })
+
+
+
+    });
+
+</script>
+{% endblock javascript %}
+
+
+

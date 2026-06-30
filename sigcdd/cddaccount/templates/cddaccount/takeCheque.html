@@ -1,0 +1,84 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+{{ form.media }}
+
+<form method="post" action=""  enctype="multipart/form-data" id="opForm">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid danger{% endif %}  mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+        {% include "includes/tweaks_form_fields.html" %}
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </div>
+
+</form>
+
+{% block javascript %}
+
+<script type="text/javascript">
+      $(function () {
+
+       $(".select2").select2({
+             dropdownAutoWidth: true,
+             width: '100%'
+          });
+
+          // function onchange
+
+          let eMPamean =$("#id_type");
+          let pvalue=eMPamean.val();
+
+          showHideMandataireField(eMPamean.val());
+          eMPamean.change(function (){showHideMandataireField(eMPamean.val());});
+
+
+      });
+  </script>
+
+
+<script>
+
+
+
+   function showHideMandataireField(ePmeanVal) {
+        let odval = ePmeanVal;
+        if (!odval )
+        {return false;}
+        let label = $("label[for=id_mandataire]");
+
+        if (odval=="MANDATAIRE"){
+        $('#id_cheque').show();
+        $('#id_mandataire').show();
+        $('#id_mandataire').select2().next().show();
+        $('#id_mandataire').prop('required', true);
+        label.show();
+
+        }
+
+        else{
+        $('#id_mandataire').hide();
+        $('#id_mandataire').prop('required', false);
+        $('#id_mandataire').select2().next().hide();
+        label.hide();
+
+        }
+  }
+
+</script>
+{% endblock javascript %}

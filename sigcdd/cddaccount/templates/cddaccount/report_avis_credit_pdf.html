@@ -1,0 +1,132 @@
+{% extends "invoice/stack_repport_pdf.html" %}
+{% load helpers_tags static i18n  humanize %}
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12">
+
+                <table id="aviscredit_header" class="table table-borderless mb-0 table-lg "
+                       style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                    <tbody>
+                    <tr style="background-color:#babfc7">
+                        <td class="bg-light font-weight: 400"><h4>DATE IMPRESSION</h4></td>
+
+                        <td class="bg-light  font-weight: 400"><h4> {{date}}</h4></td>
+
+                    </tr>
+
+                    <tr style="background-color:#babfc7">
+                        <td class="bg-light font-weight: 400"><h4>GESTION</h4></td>
+                        <td class="bg-light font-weight: 400"><h4> {{gestion}}</h4></td>
+
+                    </tr>
+                    {% if compte %}
+                    <tr style="background-color:#babfc7">
+                        <td class="bg-light font-weight: 400"><h4>COMPTE</h4></td>
+                        <td class="bg-light font-weight: 400"><h4> {{compte}}</h4></td>
+                    </tr>
+                    {% else %}
+                    <tr style="background-color:#babfc7">
+                        <td class="bg-light font-weight: 400" colspan="2" align="center"><h4>Tous les comptes</h4></td>
+                    </tr>
+                    {% endif %}
+
+
+                    <tr style="background-color:#babfc7">
+                        <td class="bg-light font-weight: 400" colspan="2" align="left"><h4>{{poste}}</h4></td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block contentinvoice %}
+
+<div class="row justify-content-center">
+
+    <div class="justify-content-center center" style="margin-top:30px"></div>
+    <h2 style="text-align: center;">SITUATION DES AVIS DE CREDIT PAR COMPTE DE DEPÔT </h2>
+</div>
+<div class="justify-content-center center">
+    <h2 style="text-align: center;">DU : {{start_date}} AU {{end_date}}</h2>
+</div>
+
+
+
+
+
+<div class="row justify-content-center">
+
+
+    <div class="col-12">
+
+        <table class="table table-condensed table-hover table-sm table-bordered">
+
+            <tbody>
+
+
+            <tr class="bg-light" style="background-color:#babfc7">
+
+                <th rowspan="1">N° AVIS</th>
+                <th rowspan="1">NATURE</th>
+                <th colspan="1" text-align="center">MONTANT</th>
+                <th colspan="1" text-align="center">DATE</th>
+                <th colspan="1" text-align="center">LIBELLE</th>
+            </tr>
+
+            {% for item in balances %}
+            <tr>
+                <th class="bg-primary text-left" rowspan="1" colspan="5"
+                    style="background-color:#00b5b8; text-align:left">{{item.titre}}
+                </th>
+            </tr>
+            {% for elt in item.tableau %}
+            <tr>
+                <td>{{elt.reference}}</td>
+                <td>{{elt.nature}}</td>
+                <td style="text-align:right">{{elt.amount.amount|to_int}}</td>
+                <td>{{elt.created|date:'d/m/Y'}}</td>
+                <td>{{elt.libelle}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th class="bg-white text-left" rowspan="1" colspan="2" style="text-align:left">Total compte:</th>
+                <th class="bg-white text-right" rowspan="1" colspan="1" style="text-align:right">
+                    {{item.total.amount|to_int}}
+                </th>
+            </tr>
+            {% endfor %}
+            <tr class="bg-light">
+                <th rowspan="1" colspan="2" style="background-color:#babfc7; text-align:left">TOTAL AVIS DE CREDIT</th>
+                <th class="text-right" rowspan="1" style="text-align:right">
+                    {{totalDesAvis}}
+                </th>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+    {% endblock %}
+

@@ -1,0 +1,82 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+{{ form.media }}
+
+<form method="post" action=""  enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+        {% include "includes/tweaks_form_fields.html" %}
+
+
+
+  </div> 
+
+</form>
+{% block javascript %}
+<script type="text/javascript">
+
+$(function () {
+
+  let eCompte =$("#id_compte");
+  let eGestion =$("#id_gestion");
+  eCompte.change(function (){getsolde_cdd( eCompte,eGestion) ;});
+
+  eGestion.change(function (){getsolde_cdd( eCompte,eGestion) ;});
+  
+  $(".select2").select2({
+            dropdownAutoWidth: true,
+                width: '100%'
+            }); 
+
+  });
+
+   function getsolde_cdd( eCompte,eGestion) {
+
+    let compte = eCompte.val();
+    let gestion = eGestion.val();
+           
+        if (!compte && !gestion)
+        {return false;}
+        
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'cddaccount:ajax_getsolde_cdd' %}",
+            data: {"compte":compte,"gestion":gestion},
+            success: function (response) {
+                
+                solde_global = response['solde'];
+                solde_fonct = response['solde_fonct'];
+                solde_invest = response['solde_invest'];
+                detail=response['detail'];
+
+                $('#id_amount_fonc').val(solde_fonct.toLocaleString('fr-FR'));
+                $('#id_amount_invest').val(solde_invest.toLocaleString('fr-FR'));
+                $('#id_amount_global').val(solde_global.toLocaleString('fr-FR'));
+                $('#id_soldes').val(detail.toLocaleString('fr-FR'));
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+
+  }
+
+
+</script>
+
+{% endblock javascript %}
+

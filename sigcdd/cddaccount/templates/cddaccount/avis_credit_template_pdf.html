@@ -1,0 +1,74 @@
+{% extends "invoice/stack_invoice_pdf.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block contentinvoice %}
+
+<!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                                            <h1 class="text-primary" style="text-align: center; color: #00b5b8;">{{title}}</h1>
+                                            <h4 style="text-align: center;">Date : {{ordre.date_avis|date:"d/m/Y"}}</h4>
+                                            
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <h4>Compte dépot : {{compte.short_compte}}</h4>
+                                            </div>
+                                            <div class="info-title mb-1">
+                                                <h4>Nom Etablissement : {{compte.libelle}}</h4>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-6 d-flex mt-1 to-info justify-content-end">
+                                            <div class="info-title mb-1">
+                                                <h4>Poste Comptable {{compte.poste.name}}</h4>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 20%">Nature</th>
+                                                    <th style="width: 20%">Objet</th>
+                                                    <th style="width: 20%">Provenance</th>
+                                                    <th style="width: 20%">MONTANT</th>
+                                                    <th style="width: 20%">OBSERVATIONS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width: 20%">{{ordre.nature}}</td>
+                                                    <td style="width: 20%">{{ordre.libelle}}</td>
+                                                    <td style="width: 20%">{{ordre.provenance|default_if_none:""}}</td>
+
+                                                    <td class="font-weight-bold" style="width: 20%; text-align: center;">{{ordre.amount.amount|to_int}}</td>
+                                                    <td style="width: 20%">{{ordre.libelle}}</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                
+                                            </div>
+                                            <div style="margin-top:75px">
+                                                        
+                                                        <h6 class="cost-title mr-2" style="text-align: right;margin-top:75px">Signature </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+{% endblock  %}

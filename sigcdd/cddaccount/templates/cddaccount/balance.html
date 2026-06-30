@@ -1,0 +1,178 @@
+{% extends "invoice/stack_balance.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+							<tr>
+								<td class="bg-light font-weight-bold" >DATE IMPRESSION</td>
+
+                              <td class="bg-light  font-weight-bold"> {{date}}</td>
+
+							</tr>
+
+                      <tr>
+								<td class="bg-light font-weight-bold">GESTION</td>
+                        <td class="bg-light font-weight-bold"> {{gestion}}</td>
+
+							</tr>
+
+
+
+                      <tr>
+								<td class="bg-light font-weight-bold" colspan="2" align="center">{{poste}}</td>
+
+
+							</tr>
+
+                      <tr>
+								<td class="bg-light font-weight-bold" colspan="2" align="center">    BALANCE COMPTE DE DEPOT AU {{date}}</td>
+
+
+							</tr>
+
+						</tbody>
+
+					</table>
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+
+                    <table class="table table-condensed table-hover table-sm table-bordered"  >
+
+                         <tbody>
+
+
+
+                        <tr  class="bg-light">
+                             <th rowspan="3">COMPTE</th>
+                            <th rowspan="3">LIBELLE</th>
+                            <th colspan="2" text-align="center">BALANCE D'ENTREE</th>
+
+
+                            <th colspan="4" text-align="center">OPERATION DE L'ANNEE</th>
+
+
+                            <th colspan="4" text-align="center">TOTAL</th>
+
+
+                            <th colspan="4" text-align="center">BALANCE DE SORTIE</th>
+
+
+                        </tr>
+
+                           <tr class="bg-light" >
+                            <th colspan="2">CREDIT</th>
+
+                            <th colspan="2">DEBIT</th>
+
+                            <th colspan="2">CREDIT</th>
+
+
+                            <th colspan="2">DEBIT</th>
+                            <th colspan="2">CREDIT</th>
+
+                            <th colspan="2">DEBIT </th>
+                            <th colspan="2">CREDIT </th>
+
+                        </tr>
+
+                           <tr class="bg-light" >
+                            <th >FONC</th>
+                            <th >INV</th>
+
+                            <th > FONC</th>
+                            <th > INV</th>
+                            <th > FONC</th>
+                            <th > INV</th>
+
+                            <th >FONC</th>
+                            <th > INV</th>
+                            <th > FONC</th>
+                            <th > INV</th>
+
+                            <th > FONC</th>
+                            <th > INV</th>
+                            <th > FONC</th>
+                            <th > INV</th>
+
+                        </tr>
+                        {% for balance in balances %}
+
+
+                           <tr >
+                             <td >{{balance.compte}}</td>
+                            <td >{{balance.libelle}}</td>
+                            <td >{{balance.be_credit_fonc}}</td>
+                            <td >{{balance.be_credit_inv}}</td>
+                               <td >{{balance.op_debit_fonc}}</td>
+                            <td >{{balance.op_debit_fonc}}</td>
+
+                            <td >{{balance.op_credit_fonc}}</td>
+                            <td >{{balance.op_credit_inv}}</td>
+
+
+
+                               <td >{{balance.total_debit_fonc}}</td>
+                            <td >{{balance.total_debit_fonc}}</td>
+
+                            <td >{{balance.total_credit_fonc}}</td>
+                            <td >{{balance.total_credit_inv}}</td>
+
+                               <td >{{balance.bs_debit_fonc}}</td>
+                            <td >{{balance.bs_debit_fonc}}</td>
+
+                            <td >{{balance.bs_credit_fonc}}</td>
+                            <td >{{balance.bs_credit_inv}}</td>
+
+
+
+
+                        </tr>
+
+  {% endfor %}
+
+                        </tbody>
+
+					</table>
+
+
+                     </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+{% endblock  %}

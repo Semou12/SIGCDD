@@ -1,0 +1,91 @@
+{% load helpers_tags static i18n %}
+
+
+{% if request.user.role == "AGENT_SAISIE_CD" and request.user.agent_saisie_cd.fonction == "AGENT_SAISIE_CD" %}
+
+
+ <li class=" navigation-header"><span>Menu</span><i class=" feather icon-minus" data-toggle="tooltip" data-placement="right" data-original-title="General"></i>
+                </li>
+                <li class=" nav-item "><a href="{% url 'users:home_view' %}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="administration">{% trans 'Home' %}</span></a>
+
+                </li>
+
+
+
+
+<!--  PAIEMENTS -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-award"></i><span class="menu-title" data-i18n="administration">{% trans 'OPERATIONS ' %}</span></a>
+   <ul class="menu-content">
+
+
+
+
+       <li><a class="menu-item   {% if request.resolver_match.url_name == 'nouveaux_op_list' %}active{% endif %}" href="{% url 'cddaccount:nouveaux_op_list' %}" data-i18n="Fourth level">Nouvelles
+
+
+                </a>
+                </li>
+       <li><a class="menu-item   {% if request.resolver_match.url_name == 'consulter_op_list' %}active{% endif %}" href="{% url 'cddaccount:consulter_op_list' %}" data-i18n="Fourth level">Consultations
+
+       </a></li>
+
+       <li><a class="menu-item   {% if request.resolver_match.url_name == 'details_vire_list_view' %}active{% endif %}" href="{% url 'cddaccount:details_vire_list_view' %}" data-i18n="Fourth level">Détails Virements
+
+       </a></li>
+
+
+
+
+
+
+    </ul>
+</li>
+
+
+<!--  CHEQUIERS -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-feather"></i><span class="menu-title" data-i18n="administration">{% trans 'GESTION CHEQUIERS' %}</span></a>
+   <ul class="menu-content">
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'chequiers_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:chequiers_list' %}" data-i18n="poste">{% trans 'Chéquiers' %}</a>
+                        </li>
+
+        {% if perms.bankcheck.search_cheque %}
+       <li class=" {% if request.resolver_match.url_name == 'get_infos_cheque_view' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:get_infos_cheque_view' %}" data-i18n="poste">{% trans 'Statut chèque' %}</a>
+                        </li>
+
+       {% endif %}
+
+
+
+
+
+
+    </ul>
+</li>
+
+
+<!--  Comptes Depots-->
+<li class=" nav-item open"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'COMPTES DE DEPOTS' %}</span></a>
+
+    <ul class="menu-content">
+
+        <li class=" {% if request.resolver_match.url_name == 'comptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:comptedepot_list' %}" data-i18n="poste">{% trans 'Compte de Dépôt' %}</a>
+                        </li>
+
+
+
+    </ul>
+
+</li>
+
+
+
+
+
+
+
+
+{% endif %}
+

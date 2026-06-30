@@ -1,0 +1,113 @@
+{% load helpers_tags static i18n %}
+
+{% load notifications_tags %}
+{% if request.user.role == "AGENT_DCP" and request.user.agent_dcp.fonction == "AGENT_DCP" %}
+
+ {% notifications_unread as unread_count %}
+ <li class=" navigation-header"><span>Menu</span><i class=" feather icon-minus" data-toggle="tooltip" data-placement="right" data-original-title="General"></i>
+                </li>
+                <li class=" nav-item "><a href="{% url 'users:home_view' %}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="administration">{% trans 'Home' %}</span></a>
+
+                </li>
+
+
+
+<!--  Comptes Depots-->
+<li class=" nav-item open"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'ADMINISTRATION' %}</span></a>
+
+    <ul class="menu-content">
+
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'secteur_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:secteur_list' %}" data-i18n="Agents">{% trans 'Secteurs' %}</a>
+                        </li>
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'ministere_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:ministere_list' %}" data-i18n="Agents">{% trans 'Ministères' %}</a>
+                        </li>
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'codeservice_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:codeservice_list' %}" data-i18n="Agents">{% trans 'Code Service' %}</a>
+                        </li>
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'direction_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:direction_list' %}" data-i18n="poste">{% trans 'Directions' %}</a>
+                        </li>
+
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'bank_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:bank_list' %}" data-i18n="poste">{% trans 'Banques' %}</a>
+                        </li>
+
+                        <li class=" {% if request.resolver_match.url_name == 'codeagence_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:codeagence_list' %}" data-i18n="poste">{% trans 'Code Agence' %}</a>
+                        </li>
+
+
+
+
+
+
+    </ul>
+
+</li>
+
+<!--  Comptes Depots-->
+<li class=" nav-item open"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'COMPTES DE DEPOTS' %}</span></a>
+
+    <ul class="menu-content">
+
+<li class=" {% if request.resolver_match.url_name == 'new_comptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:new_comptedepot_list' %}" data-i18n="poste">{% trans 'Nouveaux Comptes de Dépôt' %}</a>
+                        </li>
+        <li class=" {% if request.resolver_match.url_name == 'comptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:comptedepot_list' %}" data-i18n="poste">{% trans 'Compte de Dépôt Valide ' %}
+        {% if unread_count %}
+                    {% sigcdd_live_notify_badge badge_class="live_notify_badge_cdd" %}
+                    {% endif %}</a>
+                        </li>
+
+
+
+
+    </ul>
+
+</li>
+
+<!--  -	UTILISATEURS-->
+<li class=" nav-item open"><a href="#"><i class="fa icon-user"></i><span class="menu-title" data-i18n="administration">{% trans 'UTILISATEURS' %}</span></a>
+   <ul class="menu-content">
+
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'profiledcp_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:profiledcp_list' %}" data-i18n="Agents">{% trans 'Agent DCP' %}</a>
+                        </li>
+
+
+
+    </ul>
+</li>
+<!--  POSTES COMPTABLES -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'POSTES COMPTABLES ' %}</span></a>
+   <ul class="menu-content">
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'dcp_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:dcp_list' %}" data-i18n="DCP">{% trans 'DCP' %}</a>
+                        </li>
+
+
+
+
+    </ul>
+</li>
+
+
+
+
+
+
+
+{% endif %}
+

@@ -1,0 +1,430 @@
+{% load helpers_tags static i18n %}
+{% load notifications_tags %}
+
+{% if request.user.role == "AGENT_PC" and request.user.agent_postecomptable.fonction == "AGENT_PC" %}
+
+   <li class=" navigation-header"><span>Menu</span><i class=" feather icon-minus" data-toggle="tooltip" data-placement="right" data-original-title="General"></i>
+                </li>
+                <li class=" nav-item "><a href="{% url 'users:home_view' %}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="administration">{% trans 'Home' %}</span></a>
+
+                </li>
+
+
+
+<!--  PAIEMENTS -->
+<li class=" nav-item open">
+    <a href="#"><i class="feather icon-award"></i>
+
+    <span class="menu-title" data-i18n="administration">{% trans 'OPÉRATIONS' %}
+
+
+    </span>
+    {% notifications_unread as unread_count %}
+
+
+
+</a>
+   <ul class="menu-content">
+
+
+
+       <li class="{% if request.resolver_match.url_name == 'valides_op_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:valides_op_list' %}" data-i18n="Fourth level">
+
+                    <span>Réceptionner</span>
+
+
+                    {% if unread_count %}
+                    {% sigcdd_live_notify_badge badge_class="live_notify_badge_receptionne_v" %}
+                    {% endif %}
+
+                </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'accepter_op_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:accepter_op_list' %}" data-i18n="Fourth level">Prendre en charge
+
+                  {% if unread_count %}
+                    {% sigcdd_live_notify_badge badge_class="live_notify_badge_priseencharge_v" %}
+                    {% endif %}
+                </a>
+                </li>
+                <li class ="{% if request.resolver_match.url_name == 'priseencharge_op_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:priseencharge_op_list' %}" data-i18n="Fourth level">Viser
+
+                {% if unread_count %}
+                    {% sigcdd_live_notify_badge badge_class="live_notify_badge_visa_v" %}
+                    {% endif %}
+
+                </a>
+                </li>
+
+       <li class="{% if request.resolver_match.url_name == 'op_dejavises_list_view' %}active{% endif %}">
+           <a class="menu-item" href="{% url 'cddaccount:op_dejavises_list_view' %}" data-i18n="Fourth level">Annuler Visa
+            </a></li>
+
+       <li class="   {% if request.resolver_match.url_name == 'visa_opcheques_list' %}active{% endif %}">
+           <a class="menu-item" href="{% url 'cddaccount:visa_opcheques_list' %}" data-i18n="Fourth level">Retirer chèque
+            </a></li>
+
+
+
+        <li class ="{% if request.resolver_match.url_name == 'consulter_op_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:consulter_op_list' %}" data-i18n="Fourth level">Consultations
+
+       </a></li>
+
+
+       <li class="{% if request.resolver_match.url_name == 'details_vire_list_view' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:details_vire_list_view' %}" data-i18n="Fourth level">Détails Virements
+
+       </a></li>
+
+       <li class="{% if request.resolver_match.url_name == 'mobile_details_vire_list_view' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:mobile_details_vire_list_view' %}" data-i18n="Fourth level">Détails Virements mobile
+
+       </a></li>
+
+
+       <li class="{% if request.resolver_match.url_name == 'demandeop_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:demandeop_list' %}" data-i18n="Fourth level">Demande Ordre Paiement
+
+       </a></li>
+
+
+
+
+
+
+    </ul>
+</li>
+
+
+<!--  EDITIONS  -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-list"></i><span class="menu-title" data-i18n="administration">{% trans 'EDITIONS  ' %}</span></a>
+   <ul class="menu-content">
+
+
+        <li class=" ">
+            <a class="menu-item" href="#" data-i18n="poste">{% trans 'Avis' %}</a>
+            <ul class="menu-content">
+                <li class="{% if request.resolver_match.url_name == 'report_aviscredit_compte_view' %}active{% endif %}"><a
+                    class="menu-item" href="{% url 'cddaccount:report_aviscredit_compte_view' %}" data-i18n="Modern Menu">
+                Avis crédit </a>
+                </li>
+               
+
+                <li class=" {% if request.resolver_match.url_name == 'avisdedebit_report_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:avisdedebit_report_view' %}" data-i18n="poste">{% trans 'Avis de Débit' %}</a>
+                </li>
+            </ul>
+       </li>
+
+
+
+
+
+               <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Situation des instances' %}</a>
+
+            <ul class="menu-content" style="">
+
+
+                <li class="{% if request.resolver_match.url_name == 'op_by_nature_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:op_by_nature_view' %}" data-i18n="Modern Menu">
+                    Opérations Reçues</a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'situation_op_all_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:situation_op_all_view' %}" data-i18n="Modern Menu">Sit.
+                    des instances</a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'situation_op_s_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:situation_op_s_view' %}" data-i18n="Modern Menu">Instance
+                    Salaire</a>
+                </li>
+
+
+
+                <li class="{% if request.resolver_match.url_name == 'situation_op_hs_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:situation_op_hs_view' %}" data-i18n="Modern Menu">
+                    Instance Hors Salaire</a>
+                </li>
+
+
+
+            </ul>
+
+
+            </li>
+
+
+
+        <li class=" ">
+            <a class="menu-item" href="#" data-i18n="poste">Opérations Visées</a>
+            <ul class="menu-content" style="">
+                <li class="{% if request.resolver_match.url_name == 'repport_op_vise_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:repport_op_vise_view' %}" title ="Situation des Opérations visées" data-i18n="Modern Menu">
+                    Situation des Opérations visées </a>
+                </li>
+
+              
+                <li class="{% if request.resolver_match.url_name == 'repport_op_paye_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:repport_op_paye_view' %}" title="Opérations visées par moyen de paiement" data-i18n="Modern Menu">
+                   Opérations visées par moyen de paiement </a>
+                </li>
+
+                <li class="{% if request.resolver_match.url_name == 'rapport_cheques_partiellement_visees_view' %}active{% endif %}">
+                    <a class="menu-item" href="{% url 'cddaccount:rapport_cheques_partiellement_visees_view' %}" data-i18n="Modern Menu">
+                        Chèques partiellement visés
+                    </a>
+                </li>
+
+
+                <li class="{% if request.resolver_match.url_name == 'repport_op_vise_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:repport_op_vise_view' %}?delai=1" title ="Tableau synoptique" data-i18n="Modern Menu">
+                    Tableau synoptique </a>
+                </li>
+
+            </ul>
+       </li>
+
+       <!--
+
+            <li class=" ">
+            <a class="menu-item" href="#" data-i18n="poste">Situation d'exécution</a>
+            <ul class="menu-content" style="">
+                <li class="{% if request.resolver_match.url_name == 'situation_consolde_view' %}active{% endif %}"><a
+                    title="Situation d’exécution du poste"    class="menu-item" href="{% url 'cddaccount:situation_consolde_view' %}" data-i18n="Modern Menu">
+                   Situation d’exécution du poste  </a>
+                </li>
+
+                <li class=""><a
+                        class="menu-item" href="#" data-i18n="Modern Menu" title="Situation d’exécution par compte">
+                   Situation d’exécution par compte </a>
+                </li>
+
+            </ul>
+        </li>
+       -->
+
+       <li class=" {% if request.resolver_match.url_name == 'disponible_situation_view' %}active{% endif %}"><a
+              title="Situation des disponibilités"  class="menu-item" href="{% url 'cddaccount:disponible_situation_view' %}" data-i18n="poste">Situation des disponibilités</a>
+        </li>
+
+
+        <li class=" {% if request.resolver_match.url_name == 'comptedepot_releve' %}active{% endif %}"><a
+             title="Relevé des comptes de dépôt" class="menu-item" href="{% url 'cddaccount:comptedepot_releve' %}" data-i18n="poste">Relevé des CDD</a>
+       </li>
+
+
+
+           <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Balance' %}</a>
+
+            <ul class="menu-content" style="">
+                <li class="{% if request.resolver_match.url_name == 'balance_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:balance_view' %}" data-i18n="Modern Menu">{% trans 'Balance Comtpe' %}</a>
+                </li>
+
+                {% if request.user|has_group:"VIEW_CONSOLIDATION" %}
+
+                <li class="{% if request.resolver_match.url_name == 'balanceconso_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'cddaccount:balanceconso_view' %}" data-i18n="Modern Menu">{% trans 'Balance Consolidée' %}</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </li>
+
+
+
+    </ul>
+</li>
+
+<!--  AVIS -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-grid"></i><span class="menu-title" data-i18n="administration">{% trans 'AVIS ' %}</span></a>
+   <ul class="menu-content">
+
+
+        <li class=" {% if request.resolver_match.url_name == 'avisdecredit_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:avisdecredit_list' %}" data-i18n="poste">{% trans 'Avis de Crédit' %}</a>
+                        </li>
+
+                        <li class=" {% if request.resolver_match.url_name == 'avisdedebit_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:avisdedebit_list' %}" data-i18n="poste">{% trans 'Avis de Débit' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'reportgestion_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:reportgestion_list' %}" data-i18n="poste">{% trans 'Report' %}</a>
+                        </li>
+
+
+
+    </ul>
+</li>
+
+
+<!--  -	UTILISATEURS-->
+<li class=" nav-item open"><a href="#"><i class="fa icon-user"></i><span class="menu-title" data-i18n="administration">{% trans 'UTILISATEURS' %}</span></a>
+   <ul class="menu-content">
+
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'profilepc_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:profilepc_list' %}" data-i18n="Agents" title="Agents des postes comptables">{% trans 'Agents des postes comptables' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'gerantcd_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:gerantcd_list' %}" data-i18n="poste" title="Gestionnaires des comptes de dépôt">Gestionnaires CDD</a>
+                        </li>
+
+
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'gestioncomptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:gestioncomptedepot_list' %}" data-i18n="poste" title="Affectations gestionnaires aux CDD">{% trans 'Affectations gestionnaires aux CDD' %}</a>
+                        </li>
+
+        <li class=" {% if request.resolver_match.url_name == 'depositaire_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:depositaire_list' %}" data-i18n="poste" title="Mandataires">{% trans 'Mandataires' %}</a>
+                        </li>
+
+
+       <li class=" {% if request.resolver_match.url_name == 'comptablematiere_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:comptablematiere_list' %}" data-i18n="poste" title="Comptable matière">{% trans 'Comptable matière' %}</a>
+                        </li>
+
+
+
+    </ul>
+</li>
+
+
+<!--  -	BLOCAGE DE FOND -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-box"></i><span class="menu-title" data-i18n="administration">{% trans 'BLOCAGE DE FOND' %}</span></a>
+   <ul class="menu-content">
+
+
+          <li class=" {% if request.resolver_match.url_name == 'projet_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:projet_list' %}" data-i18n="poste">{% trans 'Projets' %}</a>
+                        </li>
+
+
+                        <li class=" {% if request.resolver_match.url_name == 'blocagefond_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:blocagefond_list' %}" data-i18n="poste">{% trans 'Blocages Fonds' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'annulationblocagefond_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:annulationblocagefond_list' %}" data-i18n="poste">{% trans 'Annulation Blocages Fonds' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'repport_bf_vise_view' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:repport_bf_vise_view' %}" data-i18n="poste">{% trans 'Reppport Blocages Fonds' %}</a>
+                        </li>
+
+
+
+
+    </ul>
+</li>
+
+
+
+<!--  CHEQUIERS -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-feather"></i><span class="menu-title" data-i18n="administration">{% trans 'GESTION CHEQUIERS' %}</span></a>
+   <ul class="menu-content">
+
+
+         <li class=" {% if request.resolver_match.url_name == 'commandes_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:commandes_list' %}" data-i18n="poste">{% trans 'Commandes' %}</a>
+                        </li>
+
+        <li class=" {% if request.resolver_match.url_name == 'delivred_chequier_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:delivred_chequier_list' %}" data-i18n="poste">{% trans 'AFFECTATION' %}</a>
+                        </li>
+
+                        <li class=" {% if request.resolver_match.url_name == 'chequiers_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:chequiers_list' %}" data-i18n="poste">{% trans 'Chéquiers' %}</a>
+                        </li>
+
+
+
+       <!-- li class=" {% if request.resolver_match.url_name == 'annulationcheque_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:annulationcheque_list' %}" data-i18n="poste" title="Annulation de chèques">{% trans 'Annulation de chèques' %}</a>
+                        </li-->
+       <!-- li class=" {% if request.resolver_match.url_name == 'rejetcheque_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:rejetcheque_list' %}" data-i18n="poste">{% trans 'Rejet Chèques' %}</a>
+                        </li-->
+
+       <li class=" {% if request.resolver_match.url_name == 'miseenopposition_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:miseenopposition_list' %}" data-i18n="poste">{% trans 'Mise en Opposition' %}</a>
+                        </li>
+
+       <!-- li class=" {% if request.resolver_match.url_name == 'compensecheque_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:compensecheque_list' %}" data-i18n="poste">{% trans 'Compenses' %}</a>
+                        </li-->
+
+        <!-- li class=" {% if request.resolver_match.url_name == 'cheques_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:cheques_list' %}" data-i18n="poste">{% trans 'Chèques récupérés' %}</a>
+                        </li-->
+
+
+       <li class=" {% if request.resolver_match.url_name == 'chequescannes_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:chequescannes_list' %}" data-i18n="poste">{% trans 'Chèques suspects' %}</a>
+                        </li>
+        {% if perms.bankcheck.search_cheque %}
+       <li class=" {% if request.resolver_match.url_name == 'get_infos_cheque_view' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:get_infos_cheque_view' %}" data-i18n="poste">{% trans 'Statut chèque' %}</a>
+                        </li>
+
+       {% endif %}
+
+
+
+
+
+
+    </ul>
+</li>
+
+
+
+
+
+<!--  DESACTIVER TEMPORAIREMENT PAR LA DI -->
+<!--  RECHERCHE -->
+<!--li class=" nav-item open"><a href="#"><i class="feather icon-search"></i><span class="menu-title" data-i18n="administration">{% trans ' RECHERCHE ' %}</span></a>
+
+   <ul class="menu-content">
+
+       <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Compte' %}</a>
+                        </li>
+       <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Bénéficiaire' %}</a>
+                        </li>
+       <li class=" "><a class="menu-item" href="#" data-i18n="poste">{% trans 'Chèques' %}</a>
+                        </li>
+
+
+
+    </ul>
+</li-->
+
+<!--  Comptes Depots-->
+<li class=" nav-item"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'COMPTES DE DÉPÔT' %}</span></a>
+
+    <ul class="menu-content">
+
+
+        <li class=" {% if request.resolver_match.url_name == 'new_comptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:new_comptedepot_list' %}" data-i18n="poste">{% trans 'Nouveaux Comptes de Dépôt' %}</a>
+                        </li>
+
+        <li class=" {% if request.resolver_match.url_name == 'comptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:comptedepot_list' %}" data-i18n="poste">{% trans 'Compte de Dépôt Valide' %}</a>
+                        </li>
+
+
+        {% if perms.cddaccount.use_secretecompte %}
+         <li class=" {% if request.resolver_match.url_name == 'secrete_comptedepot_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:secrete_comptedepot_list' %}" data-i18n="poste">{% trans 'Compte Secret' %}</a>
+                        </li>
+        {% endif %}
+
+
+
+         {% if perms.cddaccount.view_comptetrx %}
+         <li class=" {% if request.resolver_match.url_name == 'comptetrx_list' %}active{% endif %}"><a class="menu-item" href="{% url 'cddaccount:comptetrx_list' %}" data-i18n="poste">{% trans 'Compte reportable' %}</a>
+                        </li>
+        {% endif %}
+
+
+
+
+
+    </ul>
+
+</li>
+
+<!--  POSTES COMPTABLES -->
+<li class=" nav-item"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'POSTES COMPTABLES ' %}</span></a>
+   <ul class="menu-content">
+
+
+        <li class=" {% if request.resolver_match.url_name == 'postecomptable_list' %}active{% endif %}"><a class="menu-item" href="{% url 'core:postecomptable_list' %}" data-i18n="poste">{% trans 'Poste comptable' %}</a>
+                        </li>
+
+    </ul>
+</li>
+
+
+
+{% endif %}
+

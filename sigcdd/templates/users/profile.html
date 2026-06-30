@@ -1,0 +1,266 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail %}
+{% load widget_tweaks %}
+
+   {% block vendorcss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+   {% endblock vendorcss %}
+
+
+ {% block css %}
+
+
+{% endblock  %}
+
+
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+ <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title mb-0 active">Profile </h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+
+                                <li class="breadcrumb-item active">
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+ <!-- account setting page start -->
+                <section id="page-account-settings">
+                    <div class="row">
+                        <!-- left menu section -->
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <ul class="nav nav-pills flex-column mt-md-0 mt-1">
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex active" id="account-pill-general" data-toggle="pill" href="#account-vertical-general" aria-expanded="true">
+                                        <i class="feather icon-globe"></i>
+                                        Général
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex" href="{% url 'account_change_password' %}" aria-expanded="false">
+                                        <i class="feather icon-lock"></i>
+                                        Changer mon mot de passe
+                                    </a>
+
+
+                                </li>
+
+
+                            </ul>
+                        </div>
+                        <!-- right content section -->
+                        <div class="col-md-9">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane active" id="account-vertical-general" aria-labelledby="account-pill-general" aria-expanded="true">
+                                                <div class="media">
+                                                    <a href="javascript: void(0);">
+                                                        {{request.user.username}}
+                                                   </a>
+
+                                                </div>
+                                                <hr>
+
+                                                <form  class="form form-horizontal striped-rows" method="post" action="">
+                                                    {% csrf_token %}
+
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-username">Prénom</label>
+                                                                    <input type="text" class="form-control" name="{{form.first_name.html_name}}" id="id_{{form.first_name.html_name}}" placeholder="Prénom" value="{{form.first_name.value}}" required data-validation-required-message="Champ obligatoire">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-name">Nom</label>
+                                                                         <input type="text" class="form-control" name="{{form.last_name.html_name}}" id="id_{{form.last_name.html_name}}" placeholder="Nom" value="{{form.last_name.value}}" required data-validation-required-message="Champ obligatoire">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                       <!-- <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-name">Téléphone</label>
+                                                                    <input type="text" class="form-control" id="account-name" placeholder="Name" value="{{form.phone.value}}" >
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-e-mail">E-mail</label>
+                                                                    <input type="email" class="form-control" name="{{form.email.html_name}}" id="id_{{form.email.html_name}}" placeholder="Email" value="{{form.email.value}}"  >
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-12 d-flex flex-sm-row flex-column justify-content-end">
+                                                            <button type="submit" class="btn btn-primary mr-sm-1 mb-1 mb-sm-0">Valider</button>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- account setting page end -->
+{% endblock %}
+
+
+
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+        <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+
+
+
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+
+    <script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+    <!-- END: Page JS-->
+
+ {% block javascript %}
+
+
+
+
+<script type="text/javascript">
+      $(function () {
+          // Create item synchronous
+          function createItemSyncModalForm(eltId,createUrl) {
+          console.log("testetd");
+
+            eltId.modalForm({
+                formURL: createUrl,
+                modalID: "#create-modal"
+            });
+          }
+           createItemSyncModalForm($("#create-item"),"{{create_url}}");
+
+
+            function deleteItemModalForm() {
+
+            $(".delete-item").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+            });
+          }
+          deleteItemModalForm();
+
+
+
+
+
+           // modal form
+          function updateItemModalForm() {
+            $(".update-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: false
+
+              });
+            });
+          }
+
+
+             // modal form
+          function validateItemModalForm() {
+            $(".validate-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url")
+
+              });
+            });
+          }
+          validateItemModalForm();
+          updateItemModalForm();
+
+
+            function reinstantiateModalForms() {
+
+            createItemSyncModalForm();
+            deleteItemModalForm();
+            updateItemModalForm();
+            validateItemModalForm();
+          }
+
+
+           $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+      });
+  </script>
+
+
+
+ {% endblock javascript %}

@@ -1,0 +1,164 @@
+{% extends "invoice/stack_repport_pdf.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+							<tr>
+                                <td class="bg-light font-weight-bold" ><h4>DATE IMPRESSION</h4></td>
+
+                                <td class="bg-light  font-weight-bold"> <h4>{{date}}</h4></td>
+
+							</tr>
+
+                      <tr>
+                          <td class="bg-light font-weight-bold"><h4>GESTION</h4></td>
+                          <td class="bg-light font-weight-bold"> <h4>{{gestion}}</h4></td>
+
+							</tr>
+
+
+
+                      <tr>
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"><h4>{{poste}}</h4></td>
+
+
+							</tr>
+
+
+
+						</tbody>
+
+					</table>
+
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-8 d-flex justify-content-center center">
+
+                         <h2>SITUATION DES DISPONIBLES DES COMPTES DE DEPOT</h2>
+                     </div>
+
+
+
+</div>
+
+
+
+<br>
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+
+                    <table class="table table-condensed table-hover table-sm table-bordered"  >
+
+                         <tbody>
+
+
+
+                         <tr  class="bg-light">
+                             <th rowspan="2">N°Compte</th>
+                            <th rowspan="2">Libellé</th>
+                            <th colspan="2" text-align="center">TRANSFET</th>
+                            <th colspan="2" text-align="center"> FOND PROPRE</th>
+                            <th rowspan="2" text-align="center"> DISPONIBLE</th>
+                        </tr>
+
+
+                         <tr  class="bg-light">
+                            <th colspan="1" text-align="center">FONCTIONNEMNT</th>
+                            <th colspan="1" text-align="center">INVESTISSEMENT</th>
+                             <th colspan="1" text-align="center">FONCTIONNEMNT</th>
+                             <th colspan="1" text-align="center">INVESTISSEMENT</th>
+
+                        </tr>
+
+
+
+
+
+
+
+                        {% for balance in balances %}
+
+
+                           <tr >
+                             <td >{{balance.short_compte}}</td>
+                              <td >{{ balance.libelle|wordwrap:35|linebreaks }}</td>
+                                <td align="right">{{balance.amount_fonc_bg|to_int}}</td>
+                                <td align="right">{{balance.amount_invest_bg|to_int}}</td>
+
+                               <td align="right">{{balance.amount_fonc_fp|to_int}}</td>
+                                <td align="right">{{balance.amount_invest_fp|to_int}}</td>
+                                <td align="right">{{balance.total|to_int}}</td>
+
+
+
+
+
+
+
+                        </tr>
+
+  {% endfor %}
+
+                           <tr class="bg-light">
+                             <td colspan="2" ></td>
+                              <td align="right">{{totaux.amount_fonc_bg|to_int}}</td>
+                                <td align="right">{{totaux.amount_invest_bg|to_int}}</td>
+
+                               <td align="right">{{totaux.amount_fonc_fp|to_int}}</td>
+                                <td align="right">{{totaux.amount_invest_fp|to_int}}</td>
+                                <td align="right">{{totaux.total|to_int}}</td>
+
+                        </tr>
+
+                        </tbody>
+
+					</table>
+
+
+                     </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+{% endblock  %}
+
+

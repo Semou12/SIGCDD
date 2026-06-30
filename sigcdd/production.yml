@@ -1,0 +1,65 @@
+version: '3'
+
+volumes:
+  sigcdd_postgres_data:
+  sigcdd_postgres_data_backups:
+  static_volume:
+
+services:
+  web: &web
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    image: sigcdd_web
+    container_name: sigcdd_web
+    platform: linux/x86_64
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - 8000:8000
+    volumes:
+      #- .:/app
+      - static_volume:/home/app/assets
+    env_file:
+      - ./.envs/.django
+      - ./.envs/.postgres
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/postgres/Dockerfile
+    image: sigcdd_postgres
+    volumes:
+      - sigcdd_postgres_data:/var/lib/postgresql/data
+      - sigcdd_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.postgres
+
+  redis:
+    image: redis:6
+
+
+  celeryworker:
+    <<: *web
+    image: sigcdd_celeryworker
+    container_name: sigcdd_celeryworker
+    depends_on:
+      - redis
+      - postgres
+    ports: [ ]
+    command: /start-celeryworker
+
+  nginx:
+    build:
+      context : .
+      dockerfile: ./compose/nginx/Dockerfile
+    image: sigcdd_nginx
+    volumes:
+      - static_volume:/home/app/assets
+    ports:
+      - 80:8080
+    depends_on:
+      - web
+

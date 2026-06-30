@@ -1,0 +1,141 @@
+{% extends "stack_base.html" %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks static %}
+{% load i18n %}
+
+{% block css %}
+ <link rel="stylesheet" href="{% static 'telinput/build/css/intlTelInput.css' %}" />
+ <link rel="stylesheet" href="{% static 'telinput/css/isValidNumber.css' %}" />
+<link rel="stylesheet" href="{% static 'telinput/css/prism.css' %}" />
+<style>
+
+#tuteur_error-msg {
+  color: red;
+}
+#tuteur_valid-msg {
+  color: #00C900;
+}
+
+
+#error-msg-1 {
+  color: red;
+}
+#valid-msg-1 {
+  color: #00C900;
+}
+</style>
+
+{% endblock %}
+
+{% block head_title %}{% trans "Chargement donnee " %}{% endblock %}
+
+{% block content %}
+
+<section>
+  <div class="row justify-content-md-center">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" id="basic-layout-card-center">{{title}}</h4>
+                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                                    <div class="heading-elements">
+
+                                    </div>
+                                </div>
+                                <div class="card-content collapse show">
+                                    <div class="card-body">
+
+                                        <form class="form password_change" method="POST" action="" enctype="multipart/form-data">
+                                            <div class="form-body">
+                                              {% csrf_token %}
+         {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+
+    {% for field in form.visible_fields %}
+
+      <div class="form-group">
+
+
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field|add_class:'form-control' }}
+        {% for error in field.errors %}
+          <span class="help-block">{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+                                            </div>
+
+                                            <div class="form-actions center">
+
+                                              <button class="btn btn-primary" type="submit" name="action">{% trans "Valider" %}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+</section>
+{% endblock %}
+
+
+
+{% block javascript %}
+
+<script src="{% static 'telinput/build/js/intlTelInput.js' %}"></script>
+<script src="{% static 'telinput/js/prism.js' %}"></script>
+
+
+<script>
+  var input = document.querySelector("#id_phone"),
+  errorMsg = document.querySelector("#error-msg"),
+  validMsg = document.querySelector("#valid-msg");
+
+ var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+
+// initialise plugin
+var iti = window.intlTelInput(input, {
+initialCountry:"sn",
+  onlyCountries: ["sn" ],
+  utilsScript: "{% static 'telinput/build/js/utils.js' %}"
+});
+
+var reset = function(inputVar,errorVar,validVar) {
+  inputVar.classList.remove("error");
+  errorVar.innerHTML = "";
+  errorVar.classList.add("hide");
+  validVar.classList.add("hide");
+};
+
+// on blur: validate
+input.addEventListener('blur', function() {
+
+ reset(input,errorMsg,validMsg);
+  if (input.value.trim()) {
+    if (iti.isValidNumber()) {
+      validMsg.classList.remove("hide");
+    } else {
+      input.classList.add("error");
+      var errorCode = iti.getValidationError();
+      errorMsg.innerHTML = errorMap[errorCode];
+      errorMsg.classList.remove("hide");
+    }
+  }
+});
+
+// on keyup / change flag: reset
+input.addEventListener('change', reset);
+input.addEventListener('keyup', reset);
+
+
+
+
+
+
+
+  </script>
+
+
+
+{% endblock javascript %}

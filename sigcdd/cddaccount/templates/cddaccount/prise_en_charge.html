@@ -1,0 +1,588 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+{% endblock vendorcss %}
+
+
+{% block css %}
+
+<!-- BEGIN: Page CSS-->
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/card-statistics.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/vertical-timeline.css' %}">
+<!-- END: Page CSS-->
+{% endblock  %}
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+<div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+    <div class="row breadcrumbs-top">
+        <div class="breadcrumb-wrapper col-12">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item active">
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row minimal-modern-charts">
+
+     <!-- latest update tracking chart-->
+    <div class="col-md-6">
+    <div class=" col-12 ">
+        <div class="card">
+
+
+            <div class="card-header latest-update-heading d-flex justify-content-between">
+          <h4 class="latest-update-heading-title text-bold-500">N° Compte {{compte.short_compte}}</h4>
+          <div class="dropdown update-year-menu pb-1">
+            <a class="bg-transparent"  href="#" >
+               {%  if agent.status %} <span class="badge bagde-success users-view-status">{{agent.status}}</span>{% else %}
+                <span class="badge badge-danger users-view-status">{{agent.status}}</span>
+                {% endif %}
+            </a>
+
+          </div>
+        </div>
+
+
+
+            <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+                <table class="table table-sm table-striped table-borderless mb-0">
+
+                    <thead class="bg-yellow bg-lighten-4">
+                            <tr>
+                                <th>Solde</th>
+                                <th>{{compte.balance}}</th>
+
+                            </tr>
+                    <tr>
+                                <th class="bg-success bg-lighten-4">Solde Investissement</th>
+                                <th class="bg-success bg-lighten-4">{{compte.balance_insvest}}</th>
+
+                            </tr>
+
+                            <tr>
+                                <th class="bg-danger bg-lighten-4">Solde Fonctionnement</th>
+                                <th class="bg-danger bg-lighten-4">{{compte.balance_fonct}}</th>
+
+                            </tr>
+
+                        </thead>
+            <tbody>
+
+            <tr>
+                <td>IBAN</td>
+                <td>{{compte.format_iban}}</td>
+              </tr>
+              <tr>
+                <td>Libélle court</td>
+                <td>{{compte.libelle_court}}</td>
+              </tr>
+              <tr>
+                  <td>Type de fond</td>
+                <td>{{compte.typefond}}</td>
+
+              </tr>
+
+            <tr>
+                <td>Nature</td>
+                <td>{{compte.nature}}</td>
+
+              </tr>
+
+
+            <tr>
+                <td>Secteur/Service</td>
+                <td>{{compte.secteur}}/{{compte.code_service}}</td>
+
+              </tr>
+
+              <tr>
+                <td>Ministère:</td>
+                <td>{{compte.ministere}}</td>
+              </tr>
+
+            </tbody>
+          </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-12 pt-2 pb-2 border-bottom-blue-grey border-bottom-lighten-5">
+                        <div class="info-time-tracking-title d-flex justify-content-between align-items-center">
+                            <h4 class="pl-2 mb-0 title-info-time-heading text-bold-500">Informations Gérant</h4>
+                            <span class="pr-2">
+                                                <i class="icon icon-settings"></i>
+                                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="info-time-tracking-content">
+                            <div class="row">
+                                {% if agent %}
+                                <div class="col-md-8 col-sm-12 border-right-blue-grey border-right-lighten-5">
+                                    <div class="general-task-loading pr-2 pl-4 px-sm-4 px-md-2 py-md-2 d-flex justify-content-start">
+                                        <div id="general_task_radial_bar_chart"></div>
+                                        <div class="task-content d-flex flex-column align-items-start justify-content-center">
+                                            <table class="table table-borderless">
+                                                <tbody>
+                                                <tr>
+                                                    <td>Matricule:</td>
+                                                    <td class="users-view-verified">{{agent.matricule}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Prénom et Nom:</td>
+                                                    <td class="users-view-verified">{{agent.full_name}}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Téléphone:</td>
+                                                    <td class="users-view-verified">{{agent.phone}}</td>
+                                                </tr>
+
+
+                                                <tr>
+                                                    <td>Statut:</td>
+                                                    <td><span class="badge badge-success users-view-status">{{agent.status}}</span>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="pr-2 total-stats pl-4 px-sm-4 px-md-2 py-md-2 d-flex justify-content-start">
+                                        <div id="info_tracking_total_stats">
+                                            {% if agent.teaser_signature %}
+
+                                            {% thumbnail agent.teaser_signature 120x200 upscale as thumb %}
+                                            <img src="{{ thumb.url }}"
+                                                 width="{{ thumb.width }}"
+                                                 height="{{ thumb.height }}"/>
+
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                {% else%}
+                                <div class="col-12"><p>Ce compte de dispose pas de gérant pour le moment</p></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+
+
+     <div class="col-md-6">
+          <div class=" col-12 ">
+        <div class="card">
+
+
+            <div class="card-header latest-update-heading d-flex justify-content-between">
+          <h4 class="latest-update-heading-title text-bold-500">ORDRE DE PAIEMENT N° <code>{{object.sig_reference}}</code> </h4>
+
+
+
+                 <div class="heading-elements">
+                                        <ul class="list-inline mb-0">
+                                            <li> <span class="badge bagde-info users-view-status">{{object.etape}}</span></li>
+                                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                                        </ul>
+                                    </div>
+
+        </div>
+
+
+
+            <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+                <table class="table table-sm table-striped table-borderless mb-0">
+
+                    <thead class="bg-purple bg-lighten-4">
+                            <tr>
+                                <th>Montant</th>
+                                <th>{{object.amount}}</th>
+
+                            </tr>
+                        </thead>
+            <tbody>
+
+            <tr>
+                <td>Objet</td>
+                <td>{{object.object}}</td>
+              </tr>
+{% if url_fichier_vm %}
+            <tr>
+                <td>Fichier VR</td>
+                <td><a  href="{{url_fichier_vm.url}}"><i class="fa fa-file"></i></a></td>
+              </tr>
+
+{% endif %}
+
+
+             <tr>
+                <td>Réglement</td>
+                <td>{{object.reglement}}</td>
+              </tr>
+             <tr>
+                <td>Mode paiement</td>
+                <td>{{object.payment_mean}}</td>
+              </tr>
+
+
+               <tr>
+                <td>Bénéficiaire</td>
+                <td>{{object.beneficiaire}}</td>
+              </tr>
+               {% if object.ninea%}
+               <tr>
+                <td>Ninéa</td>
+                <td>{{object.ninea}}</td>
+              </tr>
+               {% endif %}
+              {% if object.cheque%}
+              <tr>
+                <td>Numéro Cheque:</td>
+                <td>{{object.cheque}}</td>
+              </tr>
+            {% endif %}
+              <tr>
+                  <td>Compte Bancaire</td>
+                <td>{{object.iban}}</td>
+
+              </tr>
+
+
+            <tr>
+                <td>Mandataire</td>
+                <td>{{object.depositaire.full_name}}</td>
+
+              </tr>
+
+            <tr>
+                <td>Date</td>
+                <td>{{object.open_date}}</td>
+
+              </tr>
+
+
+
+            </tbody>
+          </table>
+            </div>
+        </div>
+    </div>
+
+         <div col-12>
+
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" id="striped-row-layout-card-center">Prise en Charge</h4>
+                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                                    <div class="heading-elements">
+                                        <ul class="list-inline mb-0">
+                                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                                            <li><a data-action="reload"><i class="feather icon-rotate-cw"></i></a></li>
+                                            <li><a data-action="expand"><i class="feather icon-maximize"></i></a></li>
+                                            <li><a data-action="close"><i class="feather icon-x"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-content collpase show">
+                                    <div class="card-body">
+
+
+
+                                        <form class="form form-horizontal striped-rows" method="post" action=""  enctype="multipart/form-data">
+                                              {% csrf_token %}
+                                            <div class="form-body">
+                                                 <div class="{% if form.non_field_errors %}invalid danger{% endif %}  mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+
+                                                {% for field in form %}
+
+                                                <div class="form-group row">
+
+
+                                                    <label class="col-md-5 label-control" for="{{ field.id_for_label }}">{{ field.label }} {% if field.field.required %}<span class="danger">*</span>{% endif %}</label>
+
+                                                    <div class="col-md-7">
+
+                                                        {% if field|widget_type == "select" %}
+
+        {% render_field field   type="select" class="select2 form-control" %}
+
+
+
+        {% elif field|widget_type == "dateinput" %}
+
+
+        {% render_field field   type="date" class="form-control singledate" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+
+
+        {% elif field|widget_type == "datetimeinput" %}
+
+        {% render_field field   type="text" class="form-control datetimepicker" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+          {% elif field|widget_type == "daterangewidget" %}
+
+
+
+        {% render_field field   type="date" class="form-control stackdaterangepicker" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+          {% elif field|widget_type == "linkeddatewidget" %}
+
+
+
+
+        {% render_field field   type="date" class="form-control linkeddate" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+
+        {% elif field|widget_type == "regionalphonenumberwidget" %}
+
+        {% render_field field   type="tel" class="form-control" placeholder=field.label %}
+
+
+          <span id="valid-msg" class="hide">✓ Valid</span>
+                  <span id="error-msg" class="hide"></span>
+
+          {% elif field|widget_type == "moneywidget" %}
+
+          {% render_field field class="form-control" placeholder=field.label %}
+
+
+        {% else %}
+        {% render_field field class="form-control" placeholder=field.label %}
+        {% endif %}
+                                                    </div>
+                                                </div>
+
+                                                {% endfor %}
+
+
+                                            </div>
+
+                                            <div class="form-actions center">
+
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check-square-o"></i> Valider
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+             </div>
+     </div>
+
+
+
+</div>
+{% endblock %}
+
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+<!-- END: Page JS-->
+
+{% block javascript %}
+
+
+<script type="text/javascript">
+      $(function () {
+          // Create item synchronous
+          function createItemSyncModalForm(eltId,createUrl) {
+          console.log("testetd");
+
+            eltId.modalForm({
+                formURL: createUrl,
+                modalID: "#create-modal"
+            });
+          }
+           createItemSyncModalForm($("#create-item"),"{{create_url}}");
+
+           createItemSyncModalForm($("#create-ordre-payment"),"{{make_saisie_url}}");
+
+
+
+
+            function deleteItemModalForm() {
+
+            $(".delete-item").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+            });
+          }
+          deleteItemModalForm();
+
+
+
+
+
+           // modal form
+          function updateItemModalForm() {
+            $(".update-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: false
+
+              });
+            });
+          }
+
+
+             // modal form
+          function validateItemModalForm() {
+            $(".validate-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url")
+
+              });
+            });
+          }
+          validateItemModalForm();
+          updateItemModalForm();
+
+
+            function reinstantiateModalForms() {
+
+            createItemSyncModalForm();
+            deleteItemModalForm();
+            updateItemModalForm();
+            validateItemModalForm();
+          }
+
+
+           $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+      });
+
+</script>
+
+
+{% endblock javascript %}

@@ -1,0 +1,153 @@
+#----------installation dependances python postgres ----------
+    sudo apt update
+    sudo apt install python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl git tmux redis
+    pip install pipenv
+
+#--------------Configuration postgres---------------
+    sudo -i -u postgres
+    psql
+    create user @user;
+    alter user dev_user WITH ENCRYPTED PASSWORD '@pwd';
+    create database sigcdd_db owner @ser;
+
+#-------------creation repetoire pour le projet------
+     mkdir -p .virtualenvs/sigcdd_project
+     cd .virtualenvs/sigcdd_project
+
+#------------- Cloner le tag a déloyer  du projet  R.1.0-------------
+
+     git clone -b R.1.0 --single-branch  https://github.com/equipedevdi/sigcdd-sources.git
+
+#----------------- Renseigner les variable d'environnement (env.django.sample et env.postgres.sample)----------
+      mkdir .envs
+      cd .envs
+      ## mettre les variiables de env.django.sample
+      nano .django
+      ## mettre les variiables de env.postgres.sample
+      nano.postgres
+
+#--------------- creation de l'environnement virtual  avec pipenv---------
+    export PIPENV_VENV_IN_PROJECT=1
+    pipenv install
+    pipenv shell
+    cd sigcdd
+    pip install -r requirement.txt
+
+# ------------ Test de l'application--------
+
+    python manage.py check
+
+#----------migrations------
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py collectstatic
+    python manage.py runserver
+
+    ### --------creation superuser----
+    python manage.py createsuperuser
+    #Check the app access logs by typing: tail -f /var/log/sigcdd/server.log (envariable )
+
+#----------- configuration gunicorn -------------
+    #create systemd and socket file
+    sudo nano /etc/systemd/system/gunicorn.socket
+    sudo nano /etc/systemd/system/gunicorn.service
+    #start and enable guniccorn
+    sudo systemctl start gunicorn.socket
+    sudo systemctl enable gunicorn.socket
+
+
+    sudo systemctl status gunicorn
+
+    # start the gunicor servicie
+    curl --unix-socket /run/gunicorn.sock localhost
+
+    # changement
+    sudo systemctl daemon-reload
+    sudo systemctl restart gunicorn
+
+
+    #Further Troubleshooting
+    #Check the Gunicorn application logs by typing: sudo journalctl -u gunicorn
+    #Check the Gunicorn socket logs by typing: sudo journalctl -u gunicorn.socket
+    #As you update your configuration or application, you will likely need to restart the processes to adjust to your changes.
+
+    #If you update your Django application, you can restart the Gunicorn process to pick up the changes by typing:
+    sudo systemctl restart gunicorn
+
+    #If you change Gunicorn socket or service files, reload the daemon and restart the process by typing:
+    sudo systemctl daemon-reload
+    sudo systemctl restart gunicorn.socket gunicorn.service
+
+
+#-------------configuration nginx---------
+ sudo mkdir -p /var/www/html/sigcdd/media
+    sudo mkdir -p /var/www/html/sigcdd/static
+    sudo  chmod 777 -R /var/www/html/sigcdd/
+    sudo nano /etc/nginx/sites-available/sigcdd
+    sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
+
+    #If you change the Nginx server block configuration, test the configuration and then Nginx by typing:
+    sudo nginx -t && sudo systemctl restart nginx
+
+    #These commands are helpful for picking up changes as you adjust your configuration.
+    #Check the Nginx process logs by typing: sudo journalctl -u nginx
+    #Check the Nginx access logs by typing: sudo less /var/log/nginx/access.log
+    #Check the Nginx error logs by typing: sudo less /var/log/nginx/error.log
+
+
+#----------------celery ----------------
+    celery -A sigcdd worker -B -l INFO
+    celery -A sigcdd  beat --scheduler  django_celery_beat.schedulers:DatabaseScheduler -l INFO
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable celery.service
+    sudo systemctl enable celerybeat.service
+    sudo systemctl start celery.service
+    sudo systemctl start celerybeat.service
+
+
+
+
+
+    #intallation de python 10 via microsoft store
+#installation de git
+
+#Verification de Pip
+pip3 -V ou pip -V
+#Installation de virtual env
+pip3 install virtualenv/pip install virtualenv
+
+
+mkdir .virtualenvs
+cd .virtualenvs
+python -m venv sigcdd_env
+
+cd sigcdd_env
+
+#git clone du projet depuis le repos github
+ #Activation de virtualen
+Scripts\Activate.ps1
+
+
+
+
+Etape de réploiement:
+1- Activer l environement virtuel
+   cd .virtualenvs/sigcdd_project
+   pipenv shell
+   cd sigcdd
+2- clone le tags a déloyyer ex: R.1.0
+ git clone -b R.1.0 --single-branch  https://github.com/equipedevdi/sigcdd-sources.git
+3- Faire la migration pour les changemennts sur la BD
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py collectstatic
+    pyython manage.py check
+4- Redémarrage gunicorn et celery
+    sudo systemctl daemon-reload
+    sudo systemctl restart gunicorn
+    sudo systemctl restart celery.service
+    sudo systemctl restart celerybeat.service
+
+5- desactive l'environnement virtuel
+   exit

@@ -1,0 +1,359 @@
+{% extends "datatables/table.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+
+{% load widget_tweaks %}
+
+{% block headerButtons %}
+
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+
+    <div class="form-group">
+        {%if gen_template_vrm %}
+
+          <a type="button" class="btn btn-danger" href="{% url 'cddaccount:verify_iban' %}">Vérifier Compte bancaire</a>
+
+        <a type="button" class="btn btn-secondary" href="{% url 'cddaccount:generate_template_vrm' %}"><i
+                class="fa fa-file"></i> Fichier de virement de masse</a>
+
+
+        {%endif%}
+
+
+        {% if can_create_op%}
+
+        <button type="button" class="btn btn-primary " id="create-item-op">
+            <i class="feather icon-plus-square mr-50"></i>{% if action_title %} {{action_title}} {% else %} Saisir un
+            virement {% endif %}
+        </button>
+
+        {% endif %}
+
+
+    </div>
+</div>
+
+{% endblock headerButtons %}
+
+
+{% block stackTableContent %}
+
+
+
+
+
+{% if request.user.gerant_cd  %}
+
+
+                        <form action="{% url 'cddaccount:bulk_action' %}" method="POST">
+                                                {% csrf_token %}
+                                                {% if perms.cddaccount.valider_ordrepayment %}
+
+                                                {% if request.resolver_match.url_name == 'nouveaux_op_list' %}
+
+                                                <div class="input-group"> 
+                                                  <div class="input-group-append">
+                                                      <button  class="btn btn-primary" type="submit">Envoi multiple</button>
+                                                  </div>
+                                                </div>
+                                                <br/>
+                                                {% endif %}
+                                                {% endif %}
+
+
+
+                             {% if perms.bankcheck.receptionner_cheque and request.resolver_match.url_name == 'visa_opcheques_list' %}
+                                                <div class="input-group">
+                                                  <div class="input-group-append">
+                                                      <button  class="btn btn-primary" type="submit">Retrait multiple</button>
+                                                  </div>
+                                                </div>
+                                                <br/>
+
+                            {% endif %}
+
+
+
+
+
+
+    {% render_table table %}
+
+    <div class="input-group">
+        <!--select class="custom-select" id="idAction" name="bulk_action"-->
+        <!--
+                                                                {% if perms.cddaccount.delete_ordrepayment %}
+
+                                                                <option value="supprimer">Supprimer les ordres selectionnés </option>
+                                                                {% endif %}
+                                                                -->
+        {% if perms.cddaccount.valider_ordrepayment %}
+
+
+                                                        {% if request.resolver_match.url_name == 'nouveaux_op_list' %}
+
+                                                        <!--option value="valider">Envoyer les ordres sélectionnés </option-->
+                                                        
+
+                                                    <!--/select-->
+                                                    <div class="input-group-append">
+                                                        <button  class="btn btn-primary" type="submit">Envoi multiple</button>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endif %}
+                                                </div>
+
+
+</form>
+
+
+{% else %}
+
+{% render_table table %}
+
+{% endif %}
+{% endblock %}
+
+
+{% block actionTableJS %}
+
+<script type="text/javascript">
+    $(function () {
+
+     var  allCheckbox =$('#selectAll');
+     $('#selectAll').click(function(e){
+        var table= $(e.target).closest('table');
+        $('td input:checkbox',table).prop('checked',this.checked);
+        submitButton = $("button[type='submit']");
+        submitButton.attr("disabled", !allCheckbox.is(":checked"));
+
+     });
+
+
+        // Create item synchronous
+        function createItemSyncModalForm(eltId,createUrl) {
+          $("#create-item-op").modalForm({
+              formURL: createUrl,
+              modalID: "#create-modal"
+          });
+        }
+
+
+        // Create item synchronous
+        function BordeItemSyncModalForm(eltId,createUrl) {
+          $("#bord-item-op").modalForm({
+              formURL: createUrl,
+              modalID: "#create-modal"
+          });
+        }
+
+        createItemSyncModalForm($("#create-item-op"),"{{create_url}}");
+
+
+        BordeItemSyncModalForm($("#bord-item-op"),"{{read_bordereau_url}}");
+
+          function deleteItemModalForm() {
+
+          $(".delete-item").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+          });
+        }
+
+
+
+        deleteItemModalForm();
+
+
+
+
+
+         // modal form
+        function updateItemModalForm() {
+          $(".update-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+              asyncUpdate: false
+
+            });
+          });
+        }
+
+
+           // modal form
+        function priseEnChargeModalForm() {
+          $(".priseencharge-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+        function accepterOPModalForm() {
+          $(".accepter-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+
+
+             // modal form
+        function validateItemModalForm() {
+          $(".valider-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+         function deletePriseenchargeItemForm() {
+          $(".delete_priseencharge-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+         function changePriseenchargeItemForm() {
+          $(".change_priseencharge-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+        function retraiitCheckItemForm() {
+          $(".retrait-cheque-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+         function payerOrdreItemForm() {
+          $(".payer-ordre-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+         function annulerVisaItemForm() {
+          $(".annuler-visa-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+        function mijPaymentOPItemForm() {
+          $(".mij-paymentmean-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+        function deleteOPPCItemForm() {
+          $(".op_pc_delete-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+
+
+        <!--          for take cheque choice  -->
+        var asyncSuccessMessage ="dd";
+         function takechequeItemModalForm() {
+          console.log("test reussi");
+          $(".take-cheque-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+
+
+            });
+          });
+        }
+        takechequeItemModalForm();
+
+
+
+
+
+
+
+        payerOrdreItemForm();
+        validateItemModalForm();
+        updateItemModalForm();
+        priseEnChargeModalForm();
+        accepterOPModalForm();
+        changePriseenchargeItemForm();
+        deletePriseenchargeItemForm();
+        retraiitCheckItemForm();
+        annulerVisaItemForm();
+        mijPaymentOPItemForm();
+        deleteOPPCItemForm();
+
+
+          function reinstantiateModalForms() {
+
+          createItemSyncModalForm();
+          BordeItemSyncModalForm();
+          deleteItemModalForm();
+          updateItemModalForm();
+          validateItemModalForm();
+          priseEnChargeModalForm();
+          accepterOPModalForm();
+            changePriseenchargeItemForm();
+        deletePriseenchargeItemForm();
+        retraiitCheckItemForm();
+        payerOrdreItemForm();
+        annulerVisaItemForm();
+        mijPaymentOPItemForm();
+        takechequeItemModalForm();
+        deleteOPPCItemForm();
+        }
+
+
+         $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+
+         $("#verify-form").removeAttr("action");
+
+
+    });
+</script>
+
+
+{% endblock actionTableJS %}

@@ -1,0 +1,228 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+
+
+ {% block css %}
+<!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/core/menu/menu-types/vertical-overlay-menu.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/core/colors/palette-gradient.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/app-invoice.css' %}">
+    <!-- END: Page CSS-->
+
+{% endblock  %}
+
+
+
+
+{% block contentheader %}
+
+
+
+
+
+{% endblock %}
+
+{% block content %}
+ <div class="content-body">
+                <!-- App invoice wrapper -->
+                <section class="app-invoice-wrapper">
+                    <div class="row">
+                        <div class="col-xl-10 col-md-9 col-12 printable-content">
+                            <!-- using a bootstrap card -->
+                            <div class="card">
+                                <!-- card body -->
+                                <div class="card-body p-2">
+                                    <!-- card-header -->
+                                  <div class="card-header px-0">
+                                        <div class="row">
+
+                                            <div class="col-3 d-flex flex-column justify-content-around">
+                                                {% block headerinvoice %}
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         REPUBLIQUE DU SENEGAL
+                                                </span>
+                                                <small class="text-center">Un Peuple - Un But - Une Foi</small>
+                                                <small class="text-center">*********************</small>
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         MINISTERE DES FINANCES <br> ET DU BUDGET
+
+                                                </span>
+                                                <div class="text-center">
+  <img src="{% static 'stack/app-assets/images/sigcdd_img.png' %}" alt="company-logo" height="80" width="80">
+
+</div>
+
+
+
+
+                                                <small class="invoice-id font-weight-bold text-center">
+                                                         DIRECTION GENERALE DE LA COMPTABILITE PUBLIQUE ET DU TRESOR
+                                                </small>
+                                                {% endblock %}
+
+                                            </div>
+
+
+
+
+                                            <div class="col-4 d-flex  justify-content-center">
+
+                                                {% block headertitle %} {% endblock %}
+                                            </div>
+
+
+
+
+                                                    <div class="col-3  ml-auto d-flex justify-content-end invoice-logo">
+                                                        {% block headercompte %}
+                                                        {% if gestion %}
+                                            <span class="ml-auto"><b>GESTION : {{gestion|default_if_none:"--"}}</b><br>
+                                                {% endif %}
+                                                {% if journee_comptable %}
+                                                <b>Journée Comptable: {{journee_comptable|default_if_none:"--"}}</b>
+                                                {% endif %}
+                                            </span>
+                                                        {% endblock %}
+                                        </div>
+
+
+
+                                        </div>
+                                    </div>
+                                    {% block contentinvoice %}
+
+                                    <!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                                            <h2 class="text-primary">AVIS DE CREDIT N° 123AZZA</h2>
+                                            <span><b>Date : 20/12/2022</b>
+                                            </span>
+                                        </div>
+                                        <div class="col-6 ml-auto d-flex justify-content-end invoice-logo">
+                                            <span class="ml-auto"><b>GESTION : 2022</b><br>
+                                                <b>Journée Comptable: 20/12/2022</b>
+                                            </span>
+
+
+
+                                        </div>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <span>Compte dépot : 443443334</span>
+                                            </div>
+                                            <div class="info-title mb-1">
+                                                <span>Nom Etablissement : Direction de la recherche Scientifique</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-6 d-flex mt-1 to-info justify-content-end">
+                                            <div class="info-title mb-1">
+                                                <span>Poste Comptable <br>Tresorie de Diourbel Matam</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">LIOD N°</th>
+                                                    <th scope="col">PAGE</th>
+                                                    <th scope="col">LIGNE</th>
+                                                    <th scope="col">MONTANT</th>
+                                                    <th scope="col">OBSERVATIONS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>123</td>
+                                                    <td>2</td>
+                                                    <td>28</td>
+
+                                                    <td class="font-weight-bold">2 800 440</td>
+                                                    <td>SDFSDFSSD/SFSDFSDSSDFSDSFSSSDGFGS</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                <p></p>
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2">Signature </span>
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- buttons section -->
+                        <div class="col-xl-2 col-md-3 col-12 action-btns">
+                            <div class="card">
+                                <div class="card-body p-2">
+                                    <a href="#" class="btn btn-info btn-block mb-1 print-invoice"> <i class="feather icon-printer mr-25 common-size"></i> Imprimer</a>
+                                </div>
+                                {% if previous_url %}
+
+                                <div class="card-body p-2"><a href="{{previous_url}}"> RETOUR </a></div>
+                                {% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+ </div>
+
+
+{% endblock %}
+
+
+
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+
+ <!-- BEGIN: Page JS-->
+    <script src="{% static 'stack/app-assets/js/scripts/pages/app-invoice.js' %}"></script>
+
+    <!-- END: Page JS-->
+
+{% endblock vendorjs %}
+
+    <!-- END: Page JS-->
+
+ {% block javascript %}
+
+
+
+
+
+ {% endblock javascript %}

@@ -1,0 +1,324 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+{% endblock vendorcss %}
+
+
+{% block css %}
+
+<!-- BEGIN: Page CSS-->
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/card-statistics.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/vertical-timeline.css' %}">
+<!-- END: Page CSS-->
+{% endblock  %}
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+<div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+    <div class="row breadcrumbs-top">
+        <div class="breadcrumb-wrapper col-12">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item active">
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row minimal-modern-charts">
+
+     <!-- latest update tracking chart-->
+    <div class="col-md-6">
+    <div class=" col-12 ">
+        <div class="card">
+
+
+            <div class="card-header latest-update-heading d-flex justify-content-between">
+          <h4 class="latest-update-heading-title text-bold-500">N° Compte {{compte.short_compte}}</h4>
+          <div class="dropdown update-year-menu pb-1">
+            <a class="bg-transparent"  href="#" >
+               {%  if agent.status %} <span class="badge bagde-success users-view-status">{{agent.status}}</span>{% else %}
+                <span class="badge badge-danger users-view-status">{{agent.status}}</span>
+                {% endif %}
+            </a>
+
+          </div>
+        </div>
+
+
+
+            <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+                <table class="table table-sm table-striped table-borderless mb-0">
+
+                    <thead class="bg-yellow bg-lighten-4">
+                            <tr>
+                                <th>Solde</th>
+                                <th>{{compte.balance}}</th>
+
+                            </tr>
+                        </thead>
+            <tbody>
+
+            <tr>
+                <td>IBAN</td>
+                <td>{{compte.format_iban}}</td>
+              </tr>
+              <tr>
+                <td>Libelle Court</td>
+                <td>{{compte.libelle_court}}</td>
+              </tr>
+              <tr>
+                  <td>Type de fond</td>
+                <td>{{compte.typefond}}</td>
+
+              </tr>
+
+            <tr>
+                <td>Nature</td>
+                <td>{{compte.nature}}</td>
+
+              </tr>
+
+
+            <tr>
+                <td>Secteur/Service</td>
+                <td>{{compte.secteur}}/{{compte.code_service}}</td>
+
+              </tr>
+
+              <tr>
+                <td>Ministère:</td>
+                <td>{{compte.ministere}}</td>
+              </tr>
+
+            </tbody>
+          </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    </div>
+
+
+
+     <div class="col-md-6">
+          <div class=" col-12 ">
+        <div class="card">
+
+
+            <div class="card-header latest-update-heading d-flex justify-content-between">
+          <h4 class="latest-update-heading-title text-bold-500">BLOCAGE FOND PROJET N° <code>{{object.ref_marche}}</code> </h4>
+
+
+
+
+
+        </div>
+
+
+
+            <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+                <table class="table table-sm table-striped table-borderless mb-0">
+
+                    <thead class="bg-primary bg-lighten-4">
+                            <tr>
+                                <th>Montant</th>
+                                <th>{{object.amount}}</th>
+
+                            </tr>
+
+                    <tr class="bg-success bg-lighten-4">
+                                <th>Solde</th>
+                                <th>{{object.balance}}</th>
+
+                            </tr>
+                        </thead>
+            <tbody>
+
+
+            <tr>
+                <td>Objet</td>
+                <td>{{object.name}}</td>
+              </tr>
+
+
+               <tr>
+                <td>Prestataire</td>
+                <td>{{object.prestataire}}</td>
+              </tr>
+               {% if object.ninea%}
+               <tr>
+                <td>Ninéa</td>
+                <td>{{object.ninea}}</td>
+              </tr>
+               {% endif %}
+
+              <tr>
+                  <td>Compte Bancaire</td>
+                <td>{{object.compte_iban}}</td>
+
+              </tr>
+
+
+            <tr>
+                <td>Période</td>
+                <td>{{object.format_period}}</td>
+
+              </tr>
+
+
+
+
+            </tbody>
+          </table>
+            </div>
+        </div>
+    </div>
+
+           <div class="col-12">
+             <div class="card">
+                  <div class="card-header latest-update-heading d-flex justify-content-between">
+          <h4 class="latest-update-heading-title text-bold-500">Ordres Paiement</h4>
+                  </div>
+
+
+                 <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+
+                     <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>reference</th>
+                                    <th>date</th>
+                                    <th>montant</th>
+                                    <th>type</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for ob in ordre_obs %}
+
+                             <tr>
+                                    <th scope="row">{{ob.reference}}</th>
+                                    
+                                    <td>{{ob.created}}</td>
+                                    <td>{{ob.amount}}</td>
+                                    <td>{{ob.payment_mean}}</td>
+                                </tr>
+             {% endfor %}
+
+
+                            </tbody>
+                        </table>
+
+             </div>
+
+
+
+             </div>
+
+         </div>
+
+
+
+
+     </div>
+
+
+
+</div>
+{% endblock %}
+
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+<!-- END: Page JS-->
+
+{% block javascript %}
+
+
+{% endblock javascript %}

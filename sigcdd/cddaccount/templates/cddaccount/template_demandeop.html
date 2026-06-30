@@ -1,0 +1,227 @@
+{% extends "invoice/stack_invoice.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+  {% block headerinvoice %}
+   <span class="invoice-id font-weight-bold text-center">
+                                                         REPUBLIQUE DU SENEGAL
+                                                </span>
+                                                <small class="text-center">Un Peuple - Un But - Une Foi</small>
+                                                <small class="text-center">*********************</small>
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         MINISTÈRE DES<br> FINANCES ET BUDGET
+                                                </span>
+                                                <div class="text-center">
+                                                    {% if compte.structure %}
+                            <b>{{compte.structure}}</b>
+
+                                        <div class="text-center">
+                                                    {% if compte.structure %}
+
+                                                      <img src="{{compte.structure.get_thumbnail_url}}"  height="80" width="80">
+                                                   {% endif %}
+
+                                        </div>
+
+
+                            {% endif %}
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block headertitle %}
+
+
+
+
+<div class="row justify-content-center">
+
+
+    <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+
+                                        </div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+
+
+<div class="col-12"><div class="table-responsive">
+					<table class="table table-bordered mb-0">
+
+                        <thead><th scope="col"  style="display: none;"></th></thead>
+
+						<tbody>
+							<tr>
+								<td><b>Gestion : {{gestion}} </b></td>
+
+							</tr>
+
+                            <tr>
+								<td><b>N° DEMANDE ORDRE DE PAIEMENT : {{ordre.sig_reference}} </b></td>
+
+							</tr>
+
+
+
+
+
+
+						</tbody>
+					</table>
+				</div>
+
+</div>
+</div>
+                                                         {% endblock %}
+
+
+{% block contentinvoice %}
+
+
+       <!-- App invoice wrapper -->
+                <section class="app-invoice-wrapper">
+
+
+
+
+<div class="row justify-content-start">
+
+
+
+                     <div class="col-8 d-flex justify-content-start">
+                           <div class="card">
+                               <div class="card-body p-2">
+
+                         <b>{{object_depense}}</b>
+                               </div></div>
+                     </div>
+
+
+
+</div>
+
+
+
+                    <div class="row">
+                        <div class="col-xl-12 printable-content">
+                            <!-- using a bootstrap card -->
+                            <div class="card">
+                                <!-- card body -->
+                                <div class="card-body p-2">
+                                    <!-- card-header -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                                            <h3 class="text-primary">Demande de Paiement par Ordre de Paiement</h3>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-12" style="text-align:left; font-size: 16px;">
+
+                                          Je soussigné(e), <b> {{ordre.gerant.full_name}}</b>, gestionnaire du compte de la structure {% if compte.structure %}<b>{{compte.structure.name}}</b>{% endif %},
+                                    demande {% if ordre.compte.poste.type == "ACGP" %} à l' {% else%} au {%endif%}
+                                    {{ordre.compte.poste.get_type_name}} d’effectuer le paiement, par ordre de paiement,
+                                    depuis le compte de dépôt <b>N° {{ordre.compte.format_iban}}</b>, <b>{{ordre.amount_in_words}} ({{ordre.amount.amount|to_int}}) F CFA </b>.
+
+
+</div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+
+                                         <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                <span></span>
+
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                         Fait à  _________ le {{ordre.created|date:"d-m-Y "}} à {{ordre.created|date:"H:i"}}
+
+                                                    </li>
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                         Le gestionnaire du compte
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                {% qr_from_text ordre.reference size="S" %}
+
+
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+
+
+
+
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- buttons section -->
+
+                    </div>
+</section>
+
+{% endblock %}
+
+
+ {% block javascript %}
+
+
+ <!-- BEGIN: Page Vendor JS-->
+
+
+ <script src="{% static 'stack_admin/app-assets/js/scripts/pages/app-invoice.js' %}"></script>
+
+
+    <!-- END: Page JS-->
+{% endblock javascript %}

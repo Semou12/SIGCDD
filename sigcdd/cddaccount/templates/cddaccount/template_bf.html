@@ -1,0 +1,62 @@
+{% extends "invoice/stack_invoice.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+
+{% block contentinvoice %}
+
+<!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                                            <h2 class="text-primary">ATTESTATION D’EXISTENCE DE FONDS</h2>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+
+                                        <div class="col-12">
+
+                                         <p>
+                                        En réponse à votre demande suivant la lettre <b> N°{{ordre.ref_marche}}</b> du {{ordre.projet.created|date:"d-m-Y "}}, le {{ordre.compte.poste.get_type_name}}, soussigné atteste qu’à la date du {{ordre.created|date:"d-m-Y "}}, le montant de <b> {{ordre.amount_in_words}} FCFA ({{ordre.amount.amount|intcomma}})</b>  est bien disponible dans le compte  de dépôt N°<b> {{ordre.compte.short_compte}}</b> ouvert au nom du « <b> {{ordre.compte.libelle}} </b>».
+                                    </p><p>
+La présente attestation est délivrée pour la couverture financière du marché relatif <b> {{ordre.projet.name}}</b>  conclu  avec la société <b> {{ordre.prestataire}}</b> .
+                                </p><p>
+En conséquence, le gestionnaire du compte de dépôt <b> {{ordre.compte.libelle}} </b> ouvert dans les livres de la {{ordre.compte.poste.name}} devra, sous sa responsabilité, veiller au blocage systématique des fonds prévus que pour le paiement du marche cité plus haut.
+
+
+                                    </p>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                Fait à  _________ le {{ordre.created|date:"d-m-Y "}} à {{ordre.created|date:"H:i"}}
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2">L'Agent Comptable <br>Signature </span>
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+{% endblock  %}
+

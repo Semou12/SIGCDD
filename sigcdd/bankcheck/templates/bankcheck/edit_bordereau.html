@@ -1,0 +1,486 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+{% endblock vendorcss %}
+
+
+{% block css %}
+
+<!-- BEGIN: Page CSS-->
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/card-statistics.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/vertical-timeline.css' %}">
+<!-- END: Page CSS-->
+{% endblock  %}
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+<div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+    <div class="row breadcrumbs-top">
+        <div class="breadcrumb-wrapper col-12">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item active">
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row minimal-modern-charts">
+
+     <!-- latest update tracking chart-->
+
+
+
+
+     <div class="col-md-6">
+
+         <div col-12>
+
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" id="striped-row-layout-card-center">Formulaire Edition  bordereau</h4>
+                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                                    <div class="heading-elements">
+                                        <ul class="list-inline mb-0">
+                                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                                            <li><a data-action="reload"><i class="feather icon-rotate-cw"></i></a></li>
+                                            <li><a data-action="expand"><i class="feather icon-maximize"></i></a></li>
+                                            <li><a data-action="close"><i class="feather icon-x"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-content collpase show">
+                                    <div class="card-body">
+
+
+
+                                        <form class="form form-horizontal striped-rows" method="post" action=""  enctype="multipart/form-data">
+                                              {% csrf_token %}
+                                            <div class="form-body">
+
+                                                {% for field in form %}
+
+                                                <div class="form-group row">
+
+
+                                                    <label class="col-md-5 label-control" for="{{ field.id_for_label }}">{{ field.label }} {% if field.field.required %}<span class="danger">*</span>{% endif %}</label>
+
+                                                    <div class="col-md-7">
+
+                                                        {% if field|widget_type == "select" %}
+
+        {% render_field field   type="select" class="select2 form-control" %}
+
+                                                         {% elif field|widget_type == "moneywidget" %}
+
+      <div class="input-group">
+          <input  type="number" step="5" min="0" name="{{ field.html_name }}_0" id="id_{{ field.html_name }}_0" placeholder="{{ field.label}}" class="form-control">
+
+								<div class="input-group-append">
+
+
+                                    <select name="{{ field.html_name }}_1" id="id_{{ field.html_name }}_1" class="select2 form-control">
+
+                  <option value="XOF">FCFA</option>
+
+                </select>
+
+								</div>
+							</div>
+
+
+
+        {% elif field|widget_type == "dateinput" %}
+
+
+        {% render_field field   type="date" class="form-control singledate" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+
+
+        {% elif field|widget_type == "datetimeinput" %}
+
+        {% render_field field   type="text" class="form-control datetimepicker" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+          {% elif field|widget_type == "daterangewidget" %}
+
+
+
+        {% render_field field   type="date" class="form-control stackdaterangepicker" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+          {% elif field|widget_type == "linkeddatewidget" %}
+
+
+
+
+        {% render_field field   type="date" class="form-control linkeddate" placeholder=field.label %}
+          <div class="input-group-append"><span class="input-group-text"><i
+                                                          class="feather icon-calendar"></i></span>
+        </div>
+
+
+
+
+        {% elif field|widget_type == "regionalphonenumberwidget" %}
+
+        {% render_field field   type="tel" class="form-control" placeholder=field.label %}
+
+
+          <span id="valid-msg" class="hide">✓ Valid</span>
+                  <span id="error-msg" class="hide"></span>
+
+          {% elif field|widget_type == "moneywidget" %}
+
+          {% render_field field class="form-control" placeholder=field.label %}
+
+
+        {% else %}
+        {% render_field field class="form-control" placeholder=field.label %}
+        {% endif %}
+                                                    </div>
+                                                </div>
+
+                                                {% endfor %}
+
+
+                                            </div>
+
+
+                                            <br>
+                                              <div class="row">
+
+                                                <div class="col-12">
+
+                                                <div class="form-group">
+
+                                                   {{ formset.management_form }}
+
+
+
+                                                <div data-repeater-list="repeater-group" >
+                                                  {% for form in formset %}
+
+                                                    <div class="col-12 input-group mb-1 row form-row" data-repeater-item="">
+                                                        <div class="form-group mb-1 col-5">
+                                                      {{form.type}}
+
+                                                            </div>
+
+
+
+
+                                                        <div class="form-group mb-1 col-3">
+                                                        <input class="form-control" value="{{ form.debut.value }}" type="number" min="1"  name="{{form.debut.html_name}}" id="id_{{ form.debut.html_name }}" placeholder="Debut" required  readonly>
+                                                      </div>
+
+
+                                                        <div class="form-group mb-1 col-3">
+                                                        <input class="form-control" value="{{ form.fin.value }}" type="number" min="1" name="{{form.fin.html_name}}" id="id_{{ form.fin.html_name }}" placeholder="Fin" required  readonly>
+                                                      </div>
+
+
+
+                                                    </div>
+
+                                                  {% endfor %}
+                                                </div>
+                                                    <hr>
+
+
+                                            </div>
+                                              </div></div>
+
+
+
+                                            <div class="form-actions center">
+
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check-square-o"></i> Editer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+             </div>
+     </div>
+
+
+
+</div>
+{% endblock %}
+
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+<!-- END: Page JS-->
+
+{% block javascript %}
+
+
+<script type="text/javascript">
+      $(function () {
+          // Create item synchronous
+          function createItemSyncModalForm(eltId,createUrl) {
+          console.log("testetd");
+
+            eltId.modalForm({
+                formURL: createUrl,
+                modalID: "#create-modal"
+            });
+          }
+           createItemSyncModalForm($("#create-item"),"{{create_url}}");
+
+           createItemSyncModalForm($("#create-ordre-payment"),"{{make_saisie_url}}");
+
+
+
+
+            function deleteItemModalForm() {
+
+            $(".delete-item").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+            });
+          }
+          deleteItemModalForm();
+
+
+
+
+
+           // modal form
+          function updateItemModalForm() {
+            $(".update-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: false
+
+              });
+            });
+          }
+
+
+             // modal form
+          function validateItemModalForm() {
+            $(".validate-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url")
+
+              });
+            });
+          }
+          validateItemModalForm();
+          updateItemModalForm();
+
+
+            function reinstantiateModalForms() {
+
+            createItemSyncModalForm();
+            deleteItemModalForm();
+            updateItemModalForm();
+            validateItemModalForm();
+          }
+
+
+           $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+      });
+
+</script>
+
+
+
+<script>
+
+
+
+  function updateElementIndex(el, prefix, ndx) {
+    let id_regex = new RegExp('(' + prefix + '-\\d+)');
+    let replacement = prefix + '-' + ndx;
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.name) el.name = el.name.replace(id_regex, replacement);
+}
+function cloneMore(selector, prefix) {
+    let newElement = $(selector).clone(true);
+    let total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+    newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+        let name = $(this).attr('name')
+        if(name) {
+            name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+            let id = 'id_' + name;
+            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+        }
+    });
+    newElement.find('label').each(function() {
+        let forValue = $(this).attr('for');
+        if (forValue) {
+          forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+          $(this).attr({'for': forValue});
+        }
+    });
+    total++;
+    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+    let conditionRow = $('.form-row:not(:last)');
+    conditionRow.find('.btn.add-form-row')
+    .removeClass('btn-success').addClass('btn-danger')
+    .removeClass('add-form-row').addClass('remove-form-row')
+    .html('-');
+    return false;
+}
+function deleteForm(prefix, btn) {
+    let total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (total > 1){
+        btn.closest('.form-row').remove();
+        let forms = $('.form-row');
+        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+        for (let i=0, formCount=forms.length; i<formCount; i++) {
+            $(forms.get(i)).find(':input').each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    }
+    return false;
+}
+$(document).on('click', '.add-form-row', function(e){
+    e.preventDefault();
+    cloneMore('.form-row:last', 'form');
+     getPriceWhenProductChange();
+
+
+    return false;
+});
+$(document).on('click', '.remove-form-row', function(e){
+    e.preventDefault();
+    deleteForm('form', $(this));
+     getPriceWhenProductChange();
+
+    return false;
+
+});
+
+// Single Date Range Picker
+	$('.singledate').daterangepicker({
+		singleDatePicker: true,
+		formatSubmit: 'dd-mm-yy',
+		locale: {
+			format:"DD-MM-YYYY"
+		},
+		minDate: new Date(),
+		showDropdowns: true
+	});
+
+		$('.dobsingledate').daterangepicker({
+		singleDatePicker: true,
+		formatSubmit: 'dd-mm-yy',
+		  locale: {
+			format:"DD-MM-YYYY"
+		},
+		maxDate: new Date(),
+		showDropdowns: true
+	});
+
+
+
+</script>
+
+
+{% endblock javascript %}

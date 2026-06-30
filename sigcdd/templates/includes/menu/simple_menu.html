@@ -1,0 +1,28 @@
+{% load helpers_tags static i18n %}
+{% load notifications_tags %}
+
+{% if request.user.role == "SIMPLE"  %}
+
+
+ <li class=" navigation-header"><span>Menu</span><i class=" feather icon-minus" data-toggle="tooltip" data-placement="right" data-original-title="General"></i>
+                </li>
+                <li class=" nav-item "><a href="{% url 'users:home_view' %}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="administration">{% trans 'Home' %}</span></a>
+
+                </li>
+
+
+ {% if perms.bankcheck.search_cheque %}
+<li class=" nav-item open"><a href="#"><i class="feather icon-feather"></i><span class="menu-title" data-i18n="administration">{% trans 'GESTION CHÉQUE' %}</span></a>
+   <ul class="menu-content">
+
+       <li class=" {% if request.resolver_match.url_name == 'get_infos_cheque_view' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:get_infos_cheque_view' %}" data-i18n="poste">{% trans 'Statut chèque' %}</a>
+       </li>
+
+    </ul>
+</li>
+ {% endif %}
+
+
+
+{% endif %}
+

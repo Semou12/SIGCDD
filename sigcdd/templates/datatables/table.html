@@ -1,0 +1,194 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+
+{% load widget_tweaks %}
+
+   {% block vendorcss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+ <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/forms/extended/form-extended.css' %}">
+
+
+   {% endblock vendorcss %}
+
+
+ {% block css %}
+ <link rel="stylesheet" href="{% static 'telinput/build/css/intlTelInput.css' %}" />
+ <link rel="stylesheet" href="{% static 'telinput/css/isValidNumber.css' %}" />
+<link rel="stylesheet" href="{% static 'telinput/css/prism.css' %}" />
+<style>
+
+#tuteur_error-msg {
+  color: red;
+}
+#tuteur_valid-msg {
+  color: #00C900;
+}
+
+
+#error-msg-1 {
+  color: red;
+}
+#valid-msg-1 {
+  color: #00C900;
+}
+</style>
+
+{% endblock  %}
+
+
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+ <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+
+                                <li class="breadcrumb-item active">
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+{% block headerButtons %}
+
+
+{% endblock headerButtons %}
+
+{% endblock %}
+
+{% block content %}
+
+
+{% include "includes/filter.html" %}
+
+<section >
+                    <div class="row">
+                        <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                    <h4 class="card-title">{{data_title}}</h4>
+                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                    <div class="heading-elements">
+                        <ul class="list-inline mb-0">
+                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                            <li><a data-action="reload"><i class="feather icon-rotate-cw"></i></a></li>
+                            <li><a data-action="expand"><i class="feather icon-maximize"></i></a></li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                  <div class="card-content collapse show">
+                    <div class="card-body card-dashboard" >
+                        <!-- datatable started -->
+
+                      {% block stackTableContent %}
+                      {% endblock %}
+
+
+                    </div>
+                  </div>
+                </div>
+
+                             </div>
+                    </div>
+
+
+
+                </section>
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+<script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+    <!--<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>-->
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js' %}"></script>
+
+<script src="https://unpkg.com/htmx.org@1.8.4" integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV" crossorigin="anonymous"></script>
+<script src="{% static 'telinput/build/js/intlTelInput.js' %}"></script>
+<script src="{% static 'telinput/js/prism.js' %}"></script>
+{% endblock vendorjs %}
+
+    <!-- END: Page JS-->
+
+{% block javascript %}
+{{ filter_form.media }}
+<script type="text/javascript">
+   $(function () {
+        document.body.addEventListener('htmx:afterSwap', function (evt) {
+               console.log("fsfsfs");
+               $.ajax({
+                  url: "{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}",
+                  dataType: 'script'
+               });
+        });
+   });
+
+  </script>
+
+
+{% block actionTableJS %}
+
+
+{% endblock actionTableJS %}
+
+
+{% endblock javascript %}
+
+
+
+

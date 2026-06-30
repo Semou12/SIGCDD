@@ -1,0 +1,308 @@
+{% extends "invoice/stack_invoice.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block contentinvoice %}
+
+<style>
+     .noborder
+      {
+        border:none;
+      }
+    </style>
+
+
+<div class="row">
+  <div class="col-auto mr-auto"><span><b>GESTION : 2022</b></span></div>
+  <div class="col-auto"><span><b>DATE IMPRESSION : 14/24/2022</b></span></div>
+</div>
+<br>
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-12 d-flex justify-content-center">
+                    <table class="table mb-0 table-bordered">
+						<thead>
+							<tr class="border-double" align="center">
+								<th >TRESORERIE GENERALE</th>
+
+							</tr>
+
+                        <tr class="border-double" align="center">
+								<th  >RELEVE DES OPERATIONS DU COMPTE 3683097: Cabinet du ministre du pétrole et de l'énergie<br>
+DU 01/01/22 AU 13/12/22</th>
+
+                             <tr class="border-double" align="center">
+								<th  >SOLDE DU COMPTE AU 31 DÉCEMBRE 2021 :
+57 795</th>
+
+
+                        </tr>
+						</thead>
+					</table>
+                     </div>
+</div>
+
+
+
+<br>
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-12">
+                         <div class="table-responsive-sm">
+                    <table class="table mb-0 table table-bordered ">
+						<thead>
+							<tr  align="center">
+                                <th >REFERENCE</th>
+                                <th >OB</th>
+                                <th >LIBELLE </th>
+                                <th >M DEBIT</th>
+                                <th >M CREDIT</th>
+                                <th >DATE VISA</th>
+                                <th >NATURE DE LA DEPENSE</th>
+
+							</tr>
+                        </tr>
+						</thead>
+                        <tbody>
+                        <tr>
+                            <td>0540415</td>
+                            <td>CH</td>
+                            <td>BODJEL</td>
+                            <td class="font-weight-bold">2 800 440</td>
+                            <td></td>
+                            <td>02/08/22</td>
+                            <td>REGLEMENT FACTURE</td>
+                        </tr>
+
+                        <tr>
+
+                            <td colspan="3">Nombre de chéques : 47 </td>
+
+                            <td class="font-weight-bold">2 800 440</td>
+                            <td class="font-weight-bold">2 800 440</td>
+
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+					</table>
+
+                         </div>
+                     </div>
+
+
+
+
+</div>
+
+
+<br>
+    <br>
+
+<div class="row justify-content-center">
+
+    <div class="col-6 d-flex justify-content-center">
+
+
+      <table class="table mb-0 table-bordered">
+						<thead>
+							<tr class="border-double" align="center">
+								<th >TRESORERIE GENERALE</th>
+
+							</tr>
+
+                        <tr class="border-double" align="center">
+								<th  >RELEVE DES OPERATIONS DU COMPTE 3683097: Cabinet du ministre du pétrole et de l'énergie<br>
+DU 01/01/22 AU 13/12/22</th>
+
+                             <tr class="border-double" align="center">
+								<th  >SOLDE DU COMPTE AU 31 DÉCEMBRE 2021 :
+57 795</th>
+
+
+                        </tr>
+						</thead>
+					</table>
+</div>
+</div>
+
+ <!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-8 d-flex flex-column justify-content-center align-items-start">
+                                            <h3 class="text-primary">ORDRE DE PAIEMENT N° OS234222123A</h3>
+                                            <span><b>Date : 20/12/2022</b>
+                                            </span>
+                                        </div>
+                                        <div class="col-4 ml-auto d-flex justify-content-end invoice-logo">
+                                            <span class="ml-auto"><b>GESTION : 2022</b><br>
+                                                <b>Journée Comptable: 20/12/2022</b>
+                                            </span>
+
+
+
+                                        </div>
+
+                                      <div class="col-12"><span><b>Objet de la dépense : Paiement salaire Février</b></span></div>
+                                    </div>
+<hr>
+
+
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <span>Compte dépot : 443443334</span>
+                                            </div>
+                                            <div class="info-title mb-1">
+                                                <span>Nom : Direction de la recherche Scientifique</span>
+                                            </div>
+
+                                             <div class="info-title mb-1">
+                                                <span>Tresorie de Diourbel Matam</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-6 d-flex mt-1 to-info justify-content-end">
+
+                                            <div class="info-title mb-1">
+                                                <span>Chemin de fer du Senegal<br>
+                                                    Code Banque : SN089 <br>
+                                                       Code Guichet : 01020<br>
+                                                        Compte : 980987654543<br>
+                                                       Clé Rib : 20</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+
+                                        <table class="table table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">REF</th>
+                                                    <th scope="col">LIBELLE </th>
+                                                    <th scope="col">DATE  </th>
+                                                    <th scope="col">LIBELLE</th>
+                                                    <th scope="col">MONTANT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td rowspan="4">123</td>
+                                                    <td>2</td>
+                                                    <td>28-11-2022</td>
+
+                                                    <td>Acompte 1 sdfsdf </td>
+                                                    <td class="font-weight-bold">2 800 440</td>
+                                                </tr>
+
+                                            <tr>
+                                                    <td>123</td>
+                                                    <td>2</td>
+                                                    <td>28-11-2022</td>
+
+
+                                                    <td>Acompte 1 sdfsdf </td>
+                                                    <td class="font-weight-bold">2 800 440</td>
+                                                </tr>
+
+
+                                            <tr>
+                                                    <td>123</td>
+                                                    <td>2</td>
+                                                   <td>28-11-2022</td>
+
+
+                                                    <td>Acompte 1 sdfsdf </td>
+                                                    <td class="font-weight-bold">2 800 440</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+  <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                <p>Thanks for your business.</p>
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+
+                                                        <span class="cost-title mr-2">MONTANT CHEQUE </span>
+                                                        <span class="cost-value">234 667 34 000 F CFA</span>
+                                                    </li>
+
+
+                                                    <li class="dropdown-divider"></li>
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2">RESTE PAYER (F CFA) </span>
+                                                        <span class="cost-value">345 123 345 000</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+ <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+
+                                        <table class="table table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">LIOD N°</th>
+                                                    <th scope="col">PAGE</th>
+                                                    <th scope="col">LIGNE</th>
+                                                    <th scope="col">MONTANT</th>
+                                                    <th scope="col">OBSERVATIONS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>123</td>
+                                                    <td>2</td>
+                                                    <td>28</td>
+
+                                                    <td class="font-weight-bold">2 800 440</td>
+                                                    <td>SDFSDFSSD/SFSDFSDSSDFSDSFSSSDGFGS</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                <p></p>
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2">Signature </span>
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+{% endblock  %}

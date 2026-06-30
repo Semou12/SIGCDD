@@ -1,0 +1,124 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+{% load render_table from django_tables2  %}
+
+ {% block css %}
+ <link rel="stylesheet" type="text/css" href="{% static 'stack_admin/app-assets/css/pages/app-invoice.css' %}">
+
+
+{% endblock  %}
+
+{% block content %}
+
+
+       <!-- App invoice wrapper -->
+                <section class="app-invoice-wrapper">
+                    <div class="row">
+                        <div class="col-xl-9 col-md-8 col-12 printable-content">
+                            <!-- using a bootstrap card -->
+                            <div class="card">
+                                <!-- card body -->
+                                <div class="card-body p-2">
+                                    <!-- card-header -->
+                                    <div class="card-header px-0">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center justify-content-center justify-content-xs-center">
+                                                    <span class="invoice-id font-weight-bold text-center">REPUBLIQUE DU SENEGAL<br>
+                                                        <small class="text-center">Un Peuple Un But Une Foi</small>
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                         MINISTERE DES FINANCES ET DU BUDGET
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                        DIRECTIONDE LA COMPTABILITE PUBLIIQUE ET DU TRESOR
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center justify-content-center justify-content-xs-center">
+                                                    <span class="invoice-id font-weight-bold text-center">REPUBLIQUE DU SENEGAL<br>
+                                                        <small class="text-center">Un Peuple Un But Une Foi</small>
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                         {{compte.ministere}}
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                        {{compte.direction.name}}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
+
+                                            </div>
+                                            <div class="col-md-12 col-lg-5 col-xl-8">
+                                                <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-9 d-flex flex-column justify-content-center align-items-start">
+                                            <h2 class="text-primary">ATTESTATION D’EXISTENCE DE FONDS</h2>
+                                            <span>N° marché : {{ordre.ref_marche}}</span>
+                                            <span>Montant : {{ordre.amount}}</span>
+                                        </div>
+                                        <div class="col-3 d-flex justify-content-end invoice-logo">
+                                            <img src="{% static 'stack/app-assets/images/sigcdd_img.png' %}" alt="company-logo" height="100" width="100">
+                                        </div>
+                                    </div>
+                                    <p>
+                                        En réponse à votre demande suivant la lettre <b> N°{{ordre.ref_marche}}</b> du 23 septembre 2022, le trésorier général, soussigné atteste qu’à la date du 26 septembre 2022, le montant de <b> {{ordre.amount_in_words}} FCFA ({{ordre.amount.amount|intcomma}})</b>  est bien disponible dans le compte  de dépôt N°<b> {{ordre.compte.short_compte}}</b> ouvert au nom du « <b> {{ordre.compte.libelle}} </b>».
+                                    </p><p>
+La présente attestation est délivrée pour la couverture financière du marché relatif <b> {{ordre.projet.name}}</b>  conclu  avec la société <b> {{ordre.prestataire}}</b> .
+                                </p><p>
+En conséquence, le gestionnaire du compte de dépôt <b> {{ordre.compte.libelle}} </b> ouvert dans les livres de la Trésorerie générale devra, sous sa responsabilité, veiller au blocage systématique des fonds prévus que pour le paiement du marche cité plus haut.
+
+
+                                    </p>
+
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- buttons section -->
+
+                    </div>
+</section>
+
+{% endblock %}
+
+
+ {% block javascript %}
+
+
+ <!-- BEGIN: Page Vendor JS-->
+
+
+ <script src="{% static 'stack_admin/app-assets/js/scripts/pages/app-invoice.js' %}"></script>
+
+
+    <!-- END: Page JS-->
+{% endblock javascript %}

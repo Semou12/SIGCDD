@@ -1,0 +1,166 @@
+{% extends "invoice/stack_repport_pdf.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+                        <tr  class="bg-light" style="background-color:#babfc7">
+                                <td class="bg-light font-weight-bold" ><h4>DATE IMPRESSION</h4></td>
+
+                                <td class="bg-light  font-weight-bold"><h4> {{date}}</h4></td>
+
+							</tr>
+
+                            <tr  class="bg-light" style="background-color:#babfc7">
+                          <td class="bg-light font-weight-bold"><h4>GESTION</h4></td>
+                          <td class="bg-light font-weight-bold"><h4> {{gestion}}</h4></td>
+
+							</tr>
+
+
+
+                            <tr  class="bg-light" style="background-color:#babfc7">
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"><h4>{{poste}}</h4></td>
+
+
+							</tr>
+
+                            <tr  class="bg-light" style="background-color:#babfc7">
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"> <h4>Tableau synoptique des délais de traitement des opérations</h4></td>
+
+
+							</tr>
+
+						</tbody>
+
+					</table>
+
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+<div class="row justify-content-center">
+
+
+
+    <div class="justify-content-center center">      
+
+                         <h2 style="text-align: center;">Date Visa : {{visa_date}}</h2>
+                     </div>
+
+
+
+</div>
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+
+                    <table class="table  table-hover table-sm table-bordered"  >
+
+                         <tbody>
+
+
+
+                            <tr  class="bg-light" style="background-color:#babfc7">
+                                 <th rowspan="1">N°Compte</th>
+                                 <th >N° OPÉRATION </th>
+                                 <th colspan="1" text-align="center">BÉNÉFICIAIRE</th>
+                                 <th colspan="1" text-align="center">MONTANT</th>
+                                <th colspan="1" text-align="center">DATE RECEP</th>
+                                 <th colspan="1" text-align="center">DATE PEC</th>
+                                 <th colspan="1" text-align="center">DATE VISA</th>
+                                 <th colspan="1" text-align="center">DUREE(J)</th>
+                             </tr> 
+
+
+                        {% for balance in balances %}
+
+
+                             <tr>
+                                 <td>{{balance.account_depot}}</td>
+                                 <td style="font-size: 90%;" >{{balance.reference}}</td>
+                                 <td align="center">{{balance.reservation__ordre__beneficiaire}}</td>
+                                 <td align="right">{{balance.amount|intcomma}}</td>
+                                 <td>{{balance.daterecep|date:"d-m-Y"}}</td>
+                                 <td>{{balance.datepec|date:"d-m-Y"}}</td>
+                                 <td>{{balance.datevisa|date:"d-m-Y"}}</td>
+                                 <td>{{balance.duree}}</td>
+
+                             </tr>
+
+  {% endfor %}
+
+                        </tbody>
+
+					</table>
+
+
+                     </div>
+
+
+
+
+</div>
+
+<br>
+<div class="row justify-content-center">
+
+    <div class="col-6 d-flex justify-content-center">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+
+
+                <tbody>
+                    <tr  class="bg-light" style="background-color:#babfc7">
+                        <th colspan="2" text-align="center"><h4>RECAPITULATION</h4></th>
+                    </tr>
+
+                    <tr>
+                        <th rowspan="1">NATURE</th>
+                        <th colspan="1" align="center">MONTANT</th>
+                    </tr>
+                    {% for item in Datas %}
+
+                    <tr>
+                        <th rowspan="1">{{item.nature}}</th>
+                        <th colspan="1" align="center">{{item.total.amount|to_int}}</th>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock  %}
+
+<!-- BEGIN: Page Vendor JS-->
+

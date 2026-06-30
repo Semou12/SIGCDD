@@ -1,0 +1,141 @@
+{% extends "invoice/stack_releve.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block contentinvoice %}
+
+
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-8 d-flex justify-content-center align-items-start">
+                    <table class="table mb-0 table-bordered table-sm">
+						<thead>
+							<tr  align="center" class="bg-light">
+								<th >{{compte.poste.name.upper}}</th>
+
+							</tr>
+
+                        <tr  align="center" class="bg-light">
+								<th  >RELEVE DES OPERATIONS DU COMPTE {{compte.short_compte}}: {{compte.libelle}}<br>
+DU {{start_date}} AU {{end_date}}</th>
+
+                             <tr  align="center" class="bg-light">
+								<th  >SOLDE DU COMPTE AU 31 DÉCEMBRE 2021 : {{last_balance|intcomma}}</th>
+
+
+                        </tr>
+						</thead>
+					</table>
+                     </div>
+
+
+    <div class="col-4  justify-content-end align-items-end">
+        <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+
+                                    <!--<div class=" due-date">
+                                        <span class="font-weight-bold no-wrap">GESTION : {{annee_comptable}} </span>
+                                        <br><br>
+
+                                        <span class="font-weight-bold no-wrap">DATE IMPRESSION : {{print_date|date:"d/m/Y"}} </span>
+
+                                    </div>-->
+
+                                </div>
+
+        </div>
+</div>
+
+
+
+<br>
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+                         <div class="table-responsive-sm">
+                    <table class="table table-condensed table-hover table-sm"   id="idreleve">
+						<thead>
+							<tr  align="center">
+                                <th >REFERENCE</th>
+                                <th >OB</th>
+                                <th >LIBELLE </th>
+                                <th >MONTANT DEBIT</th>
+                                <th >MONTANT CREDIT</th>
+                                <th >DATE VISA</th>
+                                <th >NATURE DE LA DEPENSE</th>
+
+							</tr>
+                        </tr>
+						</thead>
+                        <tbody>
+                        {% for trx in trxs %}
+                        <tr >
+                            <td align="center">{{trx.reference|slice:":12"}}</td>
+                            <td align="center">{{trx.get_mean_code}}</td>
+                            <td align="left">{{trx.libelle|slice:":30"}}</td>
+                            <td align="right"><b>{{trx.debit_amount}}</b></td>
+                            <td class="font-weight-bold" align="right">{{trx.credit_amount}}</td>
+
+                            <td align="center">{{trx.created|date:"d/m/y"}}</td>
+                            <td align="left">{{trx.nature_depense|slice:":30"}}</td>
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+
+                            <td colspan="3">Nombre de chéques : {{cheques}} </td>
+
+                            <td class="font-weight-bold" align="right">{{debit|intcomma}}</td>
+                            <td class="font-weight-bold" align="right">{{credit|intcomma}}</td>
+
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+					</table>
+
+                         </div>
+                     </div>
+
+
+
+
+</div>
+
+
+<br>
+    <br>
+
+<div class="row justify-content-center">
+
+    <div class="col-8 d-flex justify-content-center">
+        <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tbody >
+                                <tr class="bg-light">
+                                    <td scope="row" class="font-weight-bold">TOTAL GÉNÉRAL</td>
+                                    <td align="center"><span><b>{{debit|intcomma}}</b></span></td>
+                                    <td align="center"><span><b>{{credit|intcomma}}</b></span></td>
+
+                                </tr>
+                                <tr class="bg-yellow bg-lighten-5">
+                                    <td scope="row" class="font-weight-bold">SOLDE CREDITEUR</td>
+                                    <td colspan="2" align="center"><span><b>{{solde|intcomma}}</b></span></td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+</div>
+</div>
+
+
+
+{% endblock  %}

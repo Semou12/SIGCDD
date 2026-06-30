@@ -1,0 +1,495 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load thumbnail humanize%}
+
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+{% endblock vendorcss %}
+
+
+{% block css %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .cheque {
+        width: 600px;
+        padding: 20px;
+        border: 2px solid black;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+    }
+    .bank-info {
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .cheque-details {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    .signature {
+        margin-top: 50px;
+        text-align: right;
+    }
+</style>
+
+{% endblock  %}
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+<div class="content-header-left col-md-6 col-12 mb-2">
+    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+
+    <div class="row breadcrumbs-top">
+        <div class="breadcrumb-wrapper col-12">
+            <ol class="breadcrumb">
+
+                <li class="breadcrumb-item active">
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+{% if can_create_dcp%}
+<div class="content-header-right text-md-right col-md-6 col-12">
+    <div class="form-group">
+
+        <a type="button" class="btn btn-primary mb-1" href="{{create_url}}">
+            <i class="feather icon-plus-square mr-50"></i> Nouvelle Commande
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+
+<section class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="bug-list-search">
+                    <div class="bug-list-search-content">
+                        <div class="sidebar-toggle d-block d-lg-none"><i class="feather icon-menu font-large-1"></i>
+                        </div>
+
+
+                        <form action="." method="get">
+                            {% csrf_token %}
+
+
+                            <fieldset>
+                                <div class="input-group">
+                                    <input type="text" name="q_search" required class="form-control" value="{{q_search}}"
+                                           placeholder="Recherche chèque..." aria-describedby="button-addon2">
+                                    <div class="input-group-append" id="button-addon2">
+                                        <button class="btn btn-primary" type="submit">Rechercher</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if has_visa == 1 %}
+
+<section class="row all-contacts">
+    {% if cheque %}
+    <div class="col-12">
+        <div class="card">
+
+            <div class="card-content">
+                <div class="card-body">
+<h4 class="card-title {% if has_visa %} success{% else %} danger{% endif %} ">
+                    {{msg}}
+                    </h4>
+                    {% if has_visa == 0 %}  <small class="sub-heading danger" >Ne pas enregistrer le chèque pour l'instant car non visé</small>{% endif %}
+
+                <div class="row">
+                    <div class="col-6">
+                         <div class="cheque">
+                    <div class="bank-info">
+                        Compte dépot: <span>{{compte.libelle}}</span><br>
+                        Numero court: <span>{{compte.short_compte}}</span><br>
+                        Compte bancaire: <span>{{compte.format_iban}}</span>
+                    </div>
+
+                    <div class="cheque-details">
+                        {% if ordre %}
+                        {% if has_visa %} <p>Date: <span>{{ordre.date_visa}}</span></p>
+                        {% else %} <p>Date: <span>______________________</span></p>{% endif %}
+
+                        <p>Payez contre ce chèque: <strong>{{ordre.beneficiaire}}</strong></p>
+                        <p>Montant en chiffres: <strong> {{cheque.amount|intcomma}} {{currency}}</strong></p>
+                        <p>Montant en lettres: <strong>{{ordre.amount_in_words}} {{currency}}</strong></p>
+                        <p>Numéro de chèque: <strong>{{cheque.reference}}</strong></p>
+                        {% else %}
+
+                        <p>Date: <span>______________________</span></p>
+                        <p>Payez contre ce chèque: <strong>______________________</strong></p>
+                        <p>Montant en chiffres: <strong> ______________________</strong></p>
+                        <p>Montant en lettres: <strong>______________________</strong></p>
+                        <p>Numéro de chèque: <strong>{{cheque.reference}}</strong></p>
+
+                        {% endif%}
+                    </div>
+
+                    <div class="signature">
+                        {% if agent %}
+                        Signature du gerant compte: {% if agent.teaser_signature %}
+
+                                            {% thumbnail agent.teaser_signature 120x200 upscale as thumb %}
+                                            <img src="{{ thumb.url }}"
+                                                 width="{{ thumb.width }}"
+                                                 height="{{ thumb.height }}"/>
+
+                                            {% endif %}
+                        {% else %}
+                        Signature du gerant compte: ______________________
+                        {% endif %}
+                    </div>
+                </div>
+
+                    </div>
+                    <div class="col-6">
+
+                        {%if ordre %}
+
+                           <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+<div class="card-body">
+                <table class="table table-sm table-striped table-borderless mb-0">
+
+                    <thead class="{% if has_visa %}bg-success{% else %}bg-danger{% endif %} bg-lighten-4">
+
+                            <tr>
+                                <th>Montant</th>
+                                <th>{{ordre.amount}}</th>
+
+                            </tr>
+
+                    {% if ordre.reservationfond  and ordre.reservationfond.reglement != "GLOBAL" %}
+
+                            <tr>
+                                <th class="bg-warning bg-lighten-4">Déjà payé</th>
+                                <th class="bg-warning bg-lighten-4">{{ordre.reservationfond.get_trx_amount|intcomma}} CFA</th>
+
+                            </tr>
+
+
+
+
+                             <tr>
+                                <th class="bg-yellow bg-lighten-4">Reste à payer</th>
+                                <th class="bg-yellow bg-lighten-4">{{ordre.reservationfond.get_reliquat|intcomma}} CFA</th>
+
+                            </tr>
+
+                            {% endif %}
+
+
+
+                        </thead>
+            <tbody>
+
+            <tr>
+                <td>Numéro </td>
+                <td>{{ordre.sig_reference}}</td>
+              </tr>
+             <tr>
+
+             {% if ordre.annulation_op %}
+               <tr>
+                <td class="bg-danger bg-lighten-4">Rejeté le </td>
+                <td class="bg-danger bg-lighten-4">{{ordre.annulation_op.created}}</td>
+              </tr>
+
+             <tr>
+                <td class="bg-danger bg-lighten-4">Motif rejet</td>
+                <td class="bg-danger bg-lighten-4">{{ordre.annulation_op.observations}}</td>
+              </tr>
+               {% endif %}
+
+
+            <tr>
+                <td>Poste Comptable</td>
+                <td>{{compte.poste.name}}</td>
+              </tr>
+            <tr>
+                <td>Réglement</td>
+                <td>{{ordre.get_reglement}}</td>
+              </tr>
+             <tr>
+                <td>Mode paiement</td>
+                <td>{{ordre.get_payment_mean}}</td>
+              </tr>
+
+              <tr>
+                <td>Type solde utiliié</td>
+                <td>{{ordre.typecompte}}</td>
+              </tr>
+
+            <tr>
+                <td>Objet</td>
+                <td>{{ordre.object}}</td>
+              </tr>
+
+
+
+
+            {% if ordre.jour_comptable and ordre.etape == "VISA" %}
+               <tr>
+                <td>Journée comptable</td>
+                <td>{{ordre.jour_comptable.jour}}</td>
+              </tr>
+               {% endif %}
+
+
+
+
+
+
+               <tr>
+                <td>Bénéficiaire</td>
+                <td>{{ordre.beneficiaire}}</td>
+              </tr>
+               {% if ordre.ninea%}
+               <tr>
+                <td>Ninéa</td>
+                <td>{{ordre.ninea}}</td>
+              </tr>
+               {% endif %}
+              {% if ordre.cheque%}
+              <tr>
+                <td>Numéro Cheque:</td>
+                <td>{{ordre.cheque}}</td>
+              </tr>
+              {% endif %}
+              {% if ordre.cheque%}
+              <tr>
+                  <td>Compte Bancaire</td>
+                <td>{{ordre.iban}}</td>
+
+              </tr>
+             {% endif %}
+
+
+             {% if ordre.transfer_out_umeoa %}
+            <tr>
+                <td>Virement étrangé</td>
+                <td>Oui</td>
+
+              </tr>
+
+             {% endif %}
+
+
+             <tr>
+                <td>Crée le {{ordre.open_date}} </td>
+                <td>Par {{ordre.creator.full_name}}</td>
+
+              </tr>
+
+             {% if ordre.reservationfond %}
+
+             <tr>
+                <td>Validé le {{ordre.reservationfond.created}} </td>
+                <td>Par {{ordre.reservationfond.creator.full_name}}</td>
+
+              </tr>
+
+             {% endif %}
+
+
+
+             {% if ordre.date_reception %}
+
+             <tr>
+                <td>Réceptionné le {{ordre.date_reception}} </td>
+                <td>Par {{ordre.recepteur.full_name}}</td>
+
+              </tr>
+
+             {% endif %}
+
+
+
+
+
+
+            {% if ordre.prise_en_charge %}
+            <tr>
+                <td>PEC le {{ordre.date_prise_en_charge}} </td>
+                <td> par {{ordre.prise_en_charge.creator.full_name}}</td>
+
+              </tr>
+
+
+
+            {% if ordre.prise_en_charge.visa %}
+
+            <tr>
+                <td>Visé le {{ordre.date_visa}} </td>
+                <td>par {{ordre.prise_en_charge.visa.creator.full_name}}</td>
+
+              </tr>
+
+
+            {% endif %}
+            {% endif %}
+
+
+
+
+             <tr>
+                <td>Observations</td>
+                <td>{{ordre.observations}}</td>
+
+              </tr>
+
+
+
+
+
+            </tbody>
+          </table>
+            </div></div>
+                        {% endif %}
+
+                    </div>
+                </div>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+{% endif %}
+{% endblock %}
+
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+<script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+<!-- END: Page JS-->
+
+{% block javascript %}
+
+
+<script type="text/javascript">
+    $(function () {
+        // Create item synchronous
+        function createItemSyncModalForm() {
+          $("#create-item").modalForm({
+              formURL: "{{create_url}}",
+              modalID: "#create-modal"
+          });
+        }
+         createItemSyncModalForm();
+
+
+          function deleteItemModalForm() {
+
+          $(".delete-item").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+          });
+        }
+        deleteItemModalForm();
+
+
+
+
+
+         // modal form
+        function updateItemModalForm() {
+          $(".update-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+              asyncUpdate: false
+
+            });
+          });
+        }
+        updateItemModalForm();
+
+
+          function reinstantiateModalForms() {
+
+          createItemSyncModalForm();
+          deleteItemModalForm();
+          updateItemModalForm();
+        }
+
+
+         $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+    });
+</script>
+
+
+{% endblock javascript %}

@@ -1,0 +1,214 @@
+{% extends "invoice/stack_report.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+{% block vendorcss %}
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+ <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/forms/extended/form-extended.css' %}">
+
+{% endblock vendorcss %}
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+							<tr>
+                                <td class="bg-light font-weight-bold" ><h4>DATE IMPRESSION</h4></td>
+
+                                <td class="bg-light  font-weight-bold"><h4> {{date}}</h4></td>
+
+							</tr>
+
+                      <tr>
+                          <td class="bg-light font-weight-bold"><h4>GESTION</h4></td>
+                          <td class="bg-light font-weight-bold"><h4> {{gestion}}</h4></td>
+
+							</tr>
+
+
+
+                      <tr>
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"><h4>{{poste}}</h4></td>
+
+
+							</tr>
+
+
+
+						</tbody>
+
+					</table>
+
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-12 d-flex justify-content-center center">
+
+                         <h2> SITUATION DES OPERATIONS RECUES DU: {{start_date}} AU {{end_date}}</h2>
+                     </div>
+    <br>
+
+
+
+</div>
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+
+                    <table class="table table-condensed table-hover table-sm table-bordered"  >
+
+                         <tbody> 
+
+                        {% for ligne in lignes %}
+
+                        <tr >
+                            <th colspan="7" text-align="center"><h4>{{ligne.nature}}</h4></th>
+                        </tr>
+                        <tr  class="bg-light">
+                            <th rowspan="1">STRUCTURE</th>
+                            <th rowspan="1">N°COMPTE</th>
+                            <th rowspan="1">N° REFERENCE</th>
+                            <th colspan="1" text-align="center">BENEFICIAIRE</th>
+                            <th colspan="1" text-align="center"> NATURE DEPENSE</th>
+                            <th colspan="1" text-align="center">MONTANT</th>
+                            <th colspan="1" text-align="center">DATE RECEPCTION </th>
+                        </tr>
+
+                        {% for item in ligne.items %}
+
+                           <tr >
+                               <td >{{item.compte__libelle_court}}</td>
+                             <td align="center">{{item.compte__short_compte}}</td>
+                             <td >{{item.sig_reference}}</td>
+                              <td >{{item.beneficiaire}}</td>
+
+                               <td align="center">{{item.nature__name}}</td>
+                               <td align="right">{{item.amount|to_int}}</td>
+                               
+                               <td  align="center">{{item.date_reception|date:"d-m-Y"}}</td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr >
+                             <td colspan="4" text-align="center">NOMBRE DE LIGNES TOTAL : {{ligne.ligne}} </td>
+                            <td colspan="2" align="right">TOTAL : {{ligne.total.amount|to_int}}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+
+  {% endfor %}
+
+                        </tbody>
+
+					</table>
+
+
+                     </div>
+
+
+
+
+</div>
+
+
+
+
+
+<div class="row justify-content-center">
+
+    <div class="col-6 d-flex justify-content-left">
+        <h4><b>Total Lignes  {{ligne_general|to_int}}</b></h4>
+</div>
+    <div class="col-5 ml-auto d-flex justify-content-end">
+       <h4><b>Total général  {{total_general|to_int}}</b></h4>
+</div>
+</div>
+
+<br>
+
+<div class="row justify-content-center">
+
+    <div class="col-6 d-flex justify-content-center">
+         <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tbody >
+                            <tr class="bg-light">
+                            <th colspan="2" text-align="center"><h4>RECAPITULATION</h4></th>
+                            </tr>
+
+                            <tr  >
+                            <th rowspan="1">NATURE</th>
+                            <th colspan="1" align="center">MONTANT</th>
+                            </tr>
+                            {% for tr in trxs %}
+
+                            <tr >
+                            <th rowspan="1">{{tr.nature__name}}</th>
+                            <th colspan="1" align="center">{{tr.amount|to_int}}</th>
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+</div>
+
+</div>
+
+
+
+
+{% endblock  %}
+
+<!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+
+{% endblock vendorjs %}s

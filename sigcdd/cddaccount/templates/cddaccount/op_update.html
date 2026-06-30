@@ -1,0 +1,239 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+{{ form.media }}
+
+
+
+
+<form method="post" action=""  enctype="multipart/form-data" id="opForm">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid danger{% endif %}  mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+        {% include "includes/tweaks_form_fields.html" %}
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </div>
+
+</form>
+{% block javascript %}
+<script type="text/javascript">
+      $(function () {
+          // function onchange
+           let pvalue = $("input[type=radio][name='payment_mean']:checked").val();
+           console.log(pvalue);
+           showHideChequeField(pvalue);
+
+          $('#opForm input[type="radio"][name="payment_mean"]').on('change', function() {
+              let value = $("input[type=radio][name='payment_mean']:checked").val();
+               console.log(value);
+               showHideChequeField(value);
+          });
+
+
+          if( $("#id_receptionnaire").length) {
+              let elshow =$("#id_receptionnaire");
+              elshow.change(function() {
+	                showHideReceptionnaireFields(elshow,pvalue);
+                });
+              showHideReceptionnaireFields(elshow,pvalue);
+          }
+          $(".select2").select2({
+             dropdownAutoWidth: true,
+             width: '100%'
+          });
+
+      });
+  </script>
+
+
+
+<script>
+if ($('.iban-inputmask').length > 0){
+$('.iban-inputmask').inputmask("AA999 99999 999999999999 99");
+
+}
+
+if ($('.amount-inputmask').length > 0){
+
+//$('.amount-inputmask').inputmask('999 999 999', { numericInput: true });
+$('.amount-inputmask').inputmask('decimal', { rightAlign: false,groupSeparator:" " });
+
+}
+
+
+
+  </script>
+
+<script>
+
+
+   function showHideChequeField(ePmeanVal) {
+        let odval = ePmeanVal;
+        console.log(odval);
+        if (!odval )
+        {return false;}
+        let label = $("label[for=id_cheque]");
+        let receplabel = $("label[for=id_receptionnaire]");
+
+        let ibanlabel = $("label[for=id_iban]");
+
+        let cinlabel = $("label[for=id_cin_receptionnaire]");
+        let phonelabel = $("label[for=id_phone_receptionnaire]");
+        let depositairelabel = $("label[for=id_depositaire]");
+        let details_filelabel = $("label[for=id_details_file]");
+
+
+
+        if (odval=="CHEQUE"){
+        $('#id_cheque').show();
+        $('#id_receptionnaire').show();
+        $('#id_receptionnaire').select2().next().show();
+        $('#id_cheque').prop('required', true);
+        label.show();
+        receplabel.show()
+        //showHideReceptionnaireFields($('#id_receptionnaire'),ePmeanVal)
+
+         $('#id_iban').show();
+         //$('#id_iban').val('');
+         //$('#id_iban').prop('required', false);
+         ibanlabel.show();
+
+
+         $('#id_details_file').hide();
+         $('#id_details_file').val('');
+         $('#id_details_file').prop('required', false);
+         details_filelabel.hide();
+
+
+
+
+        }
+
+        else if (odval=="VIREMENT"){
+         $('#id_iban').show();
+         //$('#id_iban').val('');
+         $('#id_iban').prop('required', true);
+         ibanlabel.show();
+
+         $('#id_details_file').show();
+         $('#id_details_file').val('');
+         $('#id_details_file').prop('required', false);
+         details_filelabel.show();
+
+
+         $('#id_cheque').hide();
+         $('#id_cheque').val('');
+         $('#id_cheque').prop('required', false);
+
+         $('#id_receptionnaire').hide();
+         $('#id_receptionnaire').select2().next().hide();
+
+
+          $('#id_phone_receptionnaire').hide();
+          phonelabel.hide();
+          $('#id_phone_receptionnaire').prop('required', false);
+
+          cinlabel.hide();
+          $('#id_cin_receptionnaire').prop('required', false);
+          $('#id_cin_receptionnaire').hide();
+
+          depositairelabel.hide();
+          $('#id_depositaire').hide();
+
+
+         label.hide();
+         receplabel.hide()
+         $('#id_receptionnaire').prop('checked', true);
+
+
+        }
+
+
+        else{
+
+        $('#id_cheque').hide();
+         $('#id_cheque').val('');
+          $('#id_cheque').prop('required', false);
+        $('#id_receptionnaire').hide();
+        label.hide();
+        receplabel.hide()
+        $('#id_receptionnaire').prop('checked', true);
+        showHideReceptionnaireFields($('#id_receptionnaire'),ePmeanVal)
+
+         $('#id_iban').hide();
+         $('#id_iban').val('');
+         //$('#id_iban').prop('required', false);
+         ibanlabel.hide();
+        }
+  }
+
+
+
+    function showHideReceptionnaireFields(elshow,ePmeanVal) {
+
+        let cinlabel = $("label[for=id_cin_receptionnaire]");
+        let phonelabel = $("label[for=id_phone_receptionnaire]");
+        let depositairelabel = $("label[for=id_depositaire]");
+
+        let odval = elshow.val();
+        console.log(odval);
+        if (odval=="GERANT" ){
+
+          $('#id_cin_receptionnaire').hide();
+          $('#id_phone_receptionnaire').hide();
+          phonelabel.hide();
+          cinlabel.hide();
+          $('#id_cin_receptionnaire').prop('required', false);
+          $('#id_phone_receptionnaire').prop('required', false);
+
+          depositairelabel.hide();
+          $('#id_depositaire').hide();
+
+        }
+        else if  (odval=="BENEFICIAIRE" ){
+         cinlabel.show();
+          phonelabel.show();
+          $('#id_cin_receptionnaire').show();
+          $('#id_phone_receptionnaire').show();
+          $('#id_cin_receptionnaire').prop('required', true);
+          $('#id_phone_receptionnaire').prop('required', true);
+           depositairelabel.hide();
+           $('#id_depositaire').hide();
+        }
+
+        else{
+
+        $('#id_cin_receptionnaire').hide();
+        $('#id_phone_receptionnaire').hide();
+        phonelabel.hide();
+        cinlabel.hide();
+        $('#id_cin_receptionnaire').prop('required', false);
+        $('#id_phone_receptionnaire').prop('required', false);
+         depositairelabel.show();
+          $('#id_depositaire').show();
+        }
+
+
+
+  }
+</script>
+
+
+
+{% endblock javascript %}

@@ -1,0 +1,5 @@
+{% for widget in widget.subwidgets %}
+{% include widget.template_name %}
+<p>tetet</p>
+{% if forloop.first %}-{% endif %}
+{% endfor %}

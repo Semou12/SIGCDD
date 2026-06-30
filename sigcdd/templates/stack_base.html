@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+{% load static i18n helpers_tags %}
+
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="SIGCDD.">
+    <meta name="keywords" content="SIGCDD, web app">
+    <meta name="author" content="SUDPAY">
+    <title>{% block title %}{{ "APP_NAME" |application_local_tag }}{% endblock title %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'stack/app-assets/images/ico/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i%7COpen+Sans:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- BEGIN: Vendor CSS-->
+
+   <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/vendors.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/forms/selects/select2.min.css' %}">
+
+   {% block vendorcss %}
+
+   {% endblock vendorcss %}
+
+    <!-- END: Vendor CSS-->
+
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/bootstrap-extended.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/colors.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/components.min.css' %}">
+
+
+
+    <!-- END: Theme CSS-->
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/core/menu/menu-types/vertical-menu.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/core/colors/palette-gradient.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/fonts/simple-line-icons/style.min.css' %}">
+
+
+
+
+
+    <!-- END: Page CSS-->
+ {% block css %} {% endblock  %}
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/assets/css/style.css' %}">
+    <!-- END: Custom CSS-->
+
+
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+
+<body class="vertical-layout vertical-menu 2-columns   fixed-navbar" data-open="click" data-menu="vertical-menu" data-col="2-columns">
+    <!-- BEGIN: Header-->
+    <nav class="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-dark  navbar-shadow">
+
+
+        <div class="navbar-wrapper">
+            <div class="navbar-header">
+
+
+
+
+                <ul class="nav navbar-nav flex-row">
+                   <li class="nav-item">
+                        <a class="navbar-brand" href="#">
+                            <!--<img class="brand-logo" alt="admin logo" src="{% static 'stack/app-assets/images/logo/app-logo-light.png' %}">-->
+                            <img class="brand-logo" src="{% static 'stack/app-assets/images/sigcdd_img.png' %}"  height="70" width="70">
+                            <h2 class="brand-text">{{ "APP_NAME" |application_local_tag }}</h2>
+                        </a>
+                    </li>
+                    <li class="nav-item d-md-none"><a class="nav-link open-navbar-container" data-toggle="collapse" data-target="#navbar-mobile"><i class="fa fa-ellipsis-v"></i></a></li>
+                </ul>
+            </div>
+            <div class="navbar-container content">
+                <div class="collapse navbar-collapse" id="navbar-mobile">
+                        <ul class="nav navbar-nav mr-auto float-left">
+              <li class="nav-item d-none d-md-block"><a class="nav-link nav-menu-main menu-toggle hidden-xs is-active" href="#"><i class="feather icon-menu"></i></a></li>
+ 
+<li class="dropdown nav-item">
+    <a class="dropdown-toggle nav-link" href="#" data-toggle="dropdown">
+        <img src="{% static 'stack/app-assets/images/question.png' %}" alt="guide">Aide
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">      
+      {% if request.user.role == "GERANT" or request.user.role == "ADMIN" %}
+          <a class="dropdown-item" href="{% static 'stack/app-assets/aide/GuideSIGCDD_Gestionnaire.pdf' %}" target="_blank">
+            <img src="{% static 'stack/app-assets/images/pdf.png' %}" alt="gestionnaire"> Guide du gestionnaire
+          </a>
+	  <a class="dropdown-item"
+                href="https://agregateur-paiement.tresorpublic.sn/partner/#/auth"
+                target="_blank">
+                <img src="{% static 'stack/app-assets/images/logo/app-logo-light.png' %}" alt="Enrolement">
+                Portail enrolement
+            </a>
+      {% endif %}
+      {% if request.user.role == "AGENT_PC" or request.user.role == "ADMIN" %}	
+          <a class="dropdown-item" href="{% static 'stack/app-assets/aide/GuideSIGCDD_Comptable.pdf' %}" target="_blank">
+            <img src="{% static 'stack/app-assets/images/pdf.png' %}" alt="comptable"> Guide du comptable
+          </a>
+          
+          <a class="dropdown-item" href="{% static 'stack/app-assets/aide/SchemaComptabilisation.pdf' %}" target="_blank">
+            <img src="{% static 'stack/app-assets/images/pdf.png' %}" alt="schema comptable">Schéma de comptabilisation
+          </a>
+      {% endif %}
+    </div>
+
+</li>
+
+
+
+
+            </ul>
+                    <div class="nav navbar-nav mr-auto align-self-center">
+
+                        <a class="navbar-brand" href="#"><h2 class="brand-text">{{request.user.get_structure_name|truncatechars:45}}</h2></a>
+                       
+                        
+                        <!--
+                        <li class="nav-item d-none d-md-block"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="feather icon-menu"></i></a></li>
+
+                        <li class="nav-item d-none d-md-block"><a class="nav-link nav-link-expand" href="#"><i class="ficon feather icon-maximize"></i></a></li>
+
+
+
+                         <li class="nav-item d-none d-md-block"><a class="nav-link nav-link-expand" href="#"><i class="ficon feather icon-clock"></i> {% now "SHORT_DATETIME_FORMAT" %}</a></li>
+
+
+                        <li class="nav-item d-none d-md-block"> <a class="nav-link nav-link-expand" href="#"><i class="ficon feather icon-calenddar"></i><h2 class="brand-text">{{request.user.get_structure_name}}</h2> </a></li>
+
+-->
+
+
+
+
+                    </div>
+                    <ul class="nav navbar-nav float-right">
+                      <li class="dropdown dropdown-language nav-item">
+                          <a class="nav-link" id="dropdown-flag" href="#"  aria-haspopup="true" aria-expanded="false"><span class="selected-language">{{request.user.get_open_accountting_day}}</span>
+                          </a>
+             </li>
+
+
+                        <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                                <div class="avatar avatar-online"><img src="{% static 'stack/app-assets/images/portrait/small/avatar-s-24.png' %}" alt="avatar"><i></i></div><span class="user-name">{{request.user.get_agent_name}}</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                              <a class="dropdown-item" href="{% url 'users:profile_view' %}"><i class="feather icon-user"></i> Editer mon profil </a>
+
+                              <a class="dropdown-item" href="{% url 'account_change_password' %}"><i class="feather icon-user"></i>Changer mon mot de passe</a>
+                                {% if perms.cddaccount.use_anneecomptable %}
+
+                                <a class="dropdown-item" href="{% url 'cddaccount:switch_contexte' %}"><i class="fa fa-plug"></i>Changer de contexte</a>
+                               {% endif %}
+
+
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'account_logout' %}"><i class="feather icon-power"></i>{% blocktranslate %}Se déconnecter{% endblocktranslate %}</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- END: Header-->
+
+
+
+
+
+
+
+
+
+      <!-- BEGIN: Main Menu-->
+    <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
+        <div class="main-menu-content">
+            <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+                {% if request.user.role == "ADMIN"  %}
+
+                        {% include "includes/menu/admindi.html" %}
+
+                {% elif request.user.role == "AGENT_TG"  %}
+
+                        {% include "includes/menu/tg_agent.html" %}
+
+
+                {% elif request.user.role == "AGENT_DS"  %}
+
+                        {% include "includes/menu/ds_menu.html" %}
+
+                {% elif request.user.role == "AGENT_DCP" and request.user.agent_dcp.fonction == "AGENT_DCP" %}
+
+                    {% include "includes/menu/agentdcp.html" %}
+
+                {% elif request.user.role == "AGENT_DAP" and request.user.agent_dap.fonction == "AGENT_DAP" %}
+
+                    {% include "includes/menu/agent_dap.html" %}
+
+                {% elif request.user.role == "AGENT_PC" and request.user.agent_postecomptable.fonction == "AGENT_PC" %}
+
+                    {% include "includes/menu/agent_pc.html" %}
+
+                {% elif request.user.role == "GERANT" and request.user.gerant_cd.fonction == "GERANT" %}
+                {% include "includes/menu/gerant.html" %}
+
+
+                {% elif request.user.role == "AGENT_SAISIE_CD" and request.user.agent_saisie_cd.fonction == "AGENT_SAISIE_CD" %}
+                {% include "includes/menu/agent_saisie_cd.html" %}
+
+
+                {% elif request.user.role == "SIMPLE" %}
+                {% include "includes/menu/simple_menu.html" %}
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+    <!-- END: Main Menu-->
+
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+
+
+
+
+
+
+
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+
+
+              {% block contentheader %}
+
+
+              {% endblock %}
+            </div>
+            <div class="content-body">
+
+              {% if messages %}
+          {% for message in messages %}
+
+
+              <div class="alert {% if message.tags %}bg-{{ message.tags }}{% endif %} alert-dismissible mb-2"  role="alert">
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+
+                {{ message }}
+              </div>
+
+
+
+
+          {% endfor %}
+         {% endif %}
+
+
+
+
+
+              {% block content %}
+
+              {% endblock %}
+
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <footer class="footer footer-static footer-light navbar-border">
+        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+          <span class="float-md-left d-block d-md-inline-block"> {% now "Y" as current_year %}
+{% blocktranslate %}Copyright &copy; {{ current_year }}{% endblocktranslate %}
+          <a class="text-bold-800 grey darken-2" href="https://sud-pay.com" target="_blank">SUDPAY </a></span>
+          <span class="float-md-right d-none d-lg-block"> {% blocktranslate %} Trésor solutions{% endblocktranslate %} <i class="feather icon-radio blue"></i></span>
+        </p>
+    </footer>
+    <!-- END: Footer-->
+
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="{% static 'stack/app-assets/vendors/js/vendors.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/forms/select/select2.min.js' %}"></script>
+
+
+
+
+    <!-- BEGIN Vendor JS-->
+
+ {% block vendorjs %}
+
+   {% endblock vendorjs %}
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Theme JS-->
+    <script src="{% static 'stack/app-assets/js/core/app-menu.js' %}"></script>
+    <script src="{% static 'stack/app-assets/js/core/app.js' %}"></script>
+    <!-- END: Theme JS-->
+
+
+
+    <!-- BEGIN: Page JS-->
+    <!-- END: Page JS-->
+<script src="{% static 'stack/app-assets/js/core/signotify.js' %}" type="text/javascript"></script>
+    <noscript>
+         Your browser does not support JavaScript!
+      </noscript>
+{% sigregister_notify_callbacks callbacks='fill_notification_badge' refresh_period=300 badge_class=request.user.badge_class %}
+    {% block javascript %} {% endblock javascript %}
+
+</body>
+<!-- END: Body-->
+
+</html>

@@ -1,0 +1,43 @@
+{% if  filter_form %}
+
+                <section class="horizontal-grid">
+
+                  <div class="row">
+                        <div class="col-12">
+
+                            <div id="accordionWrap1" role="tablist" aria-multiselectable="true">
+                                <div class="card accordion collapse-icon accordion-icon-rotate">
+                                    <div id="heading11" class="card-header primary" data-toggle="collapse" href="#accordion11" aria-expanded="true" aria-controls="accordion11">
+                                        <a class="card-title lead" href="#">Filtrer les données </a>
+                                    </div>
+                                    <div id="accordion11" role="tabpanel" data-parent="#accordionWrap1" aria-labelledby="heading11" class="collapse show" aria-expanded="false">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <form action="" method="get" hx-target="#tableContainer" hx-swap="outerHTML" >
+                                            <div class="form-body">
+                                                <div class="row">
+                                                                       {% with filter_form as form %}
+
+
+
+                  {% include "includes/form_fields.html" %}
+
+                  {% endwith%}
+                                                </div>
+                                            </div>
+                                            <div class="form-actions">
+                                                <div class="text-right">
+                                                    <button type="submit" class="btn btn-primary">Filtrer <i class="feather icon-search position-right"></i></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+     {% endif %}

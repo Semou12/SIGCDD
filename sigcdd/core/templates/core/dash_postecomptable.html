@@ -1,0 +1,523 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+   {% block vendorcss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+ <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/forms/extended/form-extended.css' %}">
+
+   {% endblock vendorcss %}
+
+
+{% block css %}
+
+
+ <link rel="stylesheet" href="{% static 'telinput/build/css/intlTelInput.css' %}" />
+ <link rel="stylesheet" href="{% static 'telinput/css/isValidNumber.css' %}" />
+<link rel="stylesheet" href="{% static 'telinput/css/prism.css' %}" />
+<style>
+
+#tuteur_error-msg {
+  color: red;
+}
+#tuteur_valid-msg {
+  color: #00C900;
+}
+
+
+#error-msg-1 {
+  color: red;
+}
+#valid-msg-1 {
+  color: #00C900;
+}
+</style>
+
+
+{% endblock %}s
+
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+ <div class="content-header-left col-md-4 col-12 mb-2">
+                    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+
+                                <li class="breadcrumb-item active">
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+
+<div class="content-header-right text-md-right col-md-8 col-12">
+    <div class="form-group">
+
+
+         <div class="btn-group mr-1 mb-1">
+          <button type="button" class="btn btn-primary" id="seesolde-op">Consulter solde</button>&nbsp;
+          <button type="button" class="btn btn-primary" id="create-op"><i class="fa fa-plus"></i> Saisir une opération</button>
+        </div>
+
+
+
+<!--
+        <div class="btn-group mr-1 mb-1">
+                                        <button type="button" class="btn btn-purple"><i class="fa fa-plus"></i> Avis</button>
+                                        <button type="button" class="btn btn-purple dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="sr-only">Avis</span>
+                                        </button>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(113px, 41px, 0px);">
+
+                                            <a class="dropdown-item" href="#" id="create-avis-credit">Avis Credit</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" id="create-avis-debit">Avis Débit</a>
+                                        </div>
+                                    </div>
+        -->
+
+
+
+
+<!--
+        <div class="btn-group mr-1 mb-1">
+
+
+
+
+                                        <button type="button" class="btn btn-light"><i class="fa fa-user-o"></i> Gestionnaire</button>
+                                        <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="sr-only">Gestionnaire</span>
+                                        </button>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(113px, 41px, 0px);">
+
+                                            <a class="dropdown-item" href="#" id="create-affectation-gerant">Affectation Gérant</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" id="create-gerant">Nouveau Gérant</a>
+                                        </div>
+                                    </div>
+
+
+
+        <div class="btn-group mr-1 mb-1">
+                                        <button type="button" class="btn btn-secondary"><i class="fa fa-user-o"></i> Agents</button>
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="sr-only">Agent</span>
+                                        </button>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(113px, 41px, 0px);">
+
+                                            <a class="dropdown-item" href="#" >Affectation</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" id="create-agent">Nouveau agent</a>
+                                        </div>
+                                    </div>
+                                    -->
+    </div>
+
+
+</div>
+
+
+
+
+{% endblock %}
+
+{% block content %}
+ <!-- Stats -->
+                <div class="row">
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="media align-items-stretch">
+                                    <div class="p-2 text-center bg-primary bg-darken-2">
+                                        <i class="feather icon-package font-large-2 white"></i>
+                                    </div>
+                                    <div class="p-2 bg-gradient-x-primary white media-body">
+                                        <h5>Comptes de dépôt</h5>
+                                        <h5 class="text-bold-400 mb-0"><i class="feather icon-plus"></i> {{compte_depots| intcomma}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="media align-items-stretch">
+
+                                    <div class="p-2 bg-gradient-x-danger white media-body">
+                                        <h5>A réceptionner : {{valides| intcomma}}</h5>
+                                        <h5 >A prendre en charge : {{reception| intcomma}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="media align-items-stretch">
+
+                                    <div class="p-2 bg-gradient-x-warning white media-body">
+                                        <h5>A viser : {{priseencharge| intcomma}}</h5>
+                                        <h5>Visa OK : {{visa| intcomma}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="media align-items-stretch">
+                                    <div class="p-2 text-center bg-success bg-darken-2">
+                                        <i class="icon-wallet font-large-2 white"></i>
+                                    </div>
+                                    <div class="p-2 bg-gradient-x-success white media-body">
+                                        <h5>Total solde {{currency}}</h5>
+                                        <h5 class="text-bold-400 mb-0"><i class="feather icon-arrow-up"></i> {{solde_total| intcomma}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/ Stats -->
+
+
+
+<section >
+                   <div class="row">
+                        <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                    <h4 class="card-title">Liste des opérations </h4>
+                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                    <div class="heading-elements">
+                        <ul class="list-inline mb-0">
+                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                            <li><a data-action="reload"><i class="feather icon-rotate-cw"></i></a></li>
+                            <li><a data-action="expand"><i class="feather icon-maximize"></i></a></li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                  <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                        <!-- datatable started -->
+
+                        <p>Dernières opérations
+                            <!--<span class="float-right"><a href="{% url 'cddaccount:ordrepayment_list' %}" target="_blank">Voir tous <i class="feather icon-arrow-right"></i></a></span>-->
+                            </p>
+{% render_table optable %}
+
+{% if credittable%}
+                        <p>5 derniers avis de crédit <span class="float-right"><a href="{% url 'cddaccount:ordrepayment_list' %}" target="_blank">Voir tous <i class="feather icon-arrow-right"></i></a></span></p>
+
+                        {% render_table credittable %}{% endif %}
+{% if debittable %}
+                        <p>5 derniers avis de débit <span class="float-right"><a href="{% url 'cddaccount:ordrepayment_list' %}" target="_blank">Voir tous <i class="feather icon-arrow-right"></i></a></span></p>
+{% render_table debittable %}{% endif %}
+
+{% if blocagefondtable%}
+                        <p>5 derniers blocages de fonds <span class="float-right"><a href="{% url 'cddaccount:ordrepayment_list' %}" target="_blank">Voir tous <i class="feather icon-arrow-right"></i></a></span></p>
+
+                        {% render_table blocagefondtable %}{% endif %}
+
+
+
+
+
+
+
+                    </div>
+                  </div>
+                </div>
+
+                             </div>
+                    </div>
+
+
+
+                </section>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+        <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+    <script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/forms/select/select2.min.js' %}"></script>
+  <script src="{% static 'stack/app-assets/vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js' %}"></script>
+
+
+
+{% endblock vendorjs %}
+
+    <!-- END: Page JS-->
+
+ {% block javascript %}
+<script src="{% static 'telinput/build/js/intlTelInput.js' %}"></script>
+<script src="{% static 'telinput/js/prism.js' %}"></script>
+
+
+
+
+
+<script type="text/javascript">
+      $(function () {
+
+
+
+
+      function createItemSyncModalForm(eltId,createUrl) {
+
+
+            eltId.modalForm({
+                formURL: createUrl,
+                modalID: "#create-modal"
+            });
+          }
+           createItemSyncModalForm($("#create-gerant"),"{{create_gerant_url}}");
+           createItemSyncModalForm($("#create-agent"),"{{create_agent_url}}");
+
+           createItemSyncModalForm($("#create-affectation-gerant"),"{{create_affectationgcd_url}}");
+
+           createItemSyncModalForm($("#create-avis-credit"),"{{create_avis_credit_url}}");
+           createItemSyncModalForm($("#create-avis-debit"),"{{create_avis_debit_url}}");
+
+           createItemSyncModalForm($("#create-op"),"{{create_op_url}}");
+           createItemSyncModalForm($("#seesolde-op"),"{{seesolde_op_url}}");
+
+
+
+
+
+
+
+
+
+
+
+
+
+            function deleteItemModalForm() {
+
+            $(".delete-item").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+            });
+          }
+          deleteItemModalForm();
+
+
+
+
+
+           // modal form
+          function updateItemModalForm() {
+            $(".update-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: false
+
+              });
+            });
+          }
+          updateItemModalForm();
+
+
+
+
+
+
+             // modal form
+          function priseEnChargeModalForm() {
+            $(".priseencharge-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+          function accepterOPModalForm() {
+            $(".accepter-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+
+
+
+               // modal form
+          function validateItemModalForm() {
+            $(".valider-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+
+           function deletePriseenchargeItemForm() {
+            $(".delete_priseencharge-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+
+           function changePriseenchargeItemForm() {
+            $(".change_priseencharge-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+          function retraiitCheckItemForm() {
+            $(".retrait-cheque-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+           function payerOrdreItemForm() {
+            $(".payer-ordre-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+            function mijPaymentOPItemForm() {
+            $(".mij-paymentmean-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+        function deleteOPPCItemForm() {
+          $(".op_pc_delete-item").each(function () {
+            $(this).modalForm({
+              formURL: $(this).data("form-url"),
+               asyncUpdate: false
+
+            });
+          });
+        }
+
+
+
+           payerOrdreItemForm();
+           deleteOPPCItemForm();
+          validateItemModalForm();
+          updateItemModalForm();
+          priseEnChargeModalForm();
+          accepterOPModalForm();
+          changePriseenchargeItemForm();
+          deletePriseenchargeItemForm();
+          retraiitCheckItemForm();
+          mijPaymentOPItemForm();
+
+
+            function reinstantiateModalForms() {
+
+            createItemSyncModalForm();
+            deleteItemModalForm();
+            updateItemModalForm();
+
+
+              payerOrdreItemForm();
+          validateItemModalForm();
+
+          priseEnChargeModalForm();
+          accepterOPModalForm();
+          changePriseenchargeItemForm();
+          retraiitCheckItemForm();
+          mijPaymentOPItemForm();
+          deleteOPPCItemForm();
+          }
+
+
+          $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+            $('.select2').select2();
+      });
+  </script>
+
+
+
+ {% endblock javascript %}

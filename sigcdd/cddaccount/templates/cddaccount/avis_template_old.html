@@ -1,0 +1,196 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n qr_code %}
+{% load render_table from django_tables2  %}
+
+
+
+
+
+
+ {% block css %}
+ <link rel="stylesheet" type="text/css" href="{% static 'stack_admin/app-assets/css/pages/app-invoice.css' %}">
+
+
+{% endblock  %}
+
+{% block content %}
+
+
+       <!-- App invoice wrapper -->
+                <section class="app-invoice-wrapper">
+                    <div class="row">
+                        <div class="col-xl-9 col-md-8 col-12 printable-content">
+                            <!-- using a bootstrap card -->
+                            <div class="card">
+                                <!-- card body -->
+                                <div class="card-body p-2">
+                                    <!-- card-header -->
+                                    <div class="card-header px-0">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center justify-content-center justify-content-xs-center">
+                                                    <span class="invoice-id font-weight-bold text-center">REPUBLIQUE DU SENEGAL<br>
+                                                        <small class="text-center">Un Peuple Un But Une Foi</small>
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                         MINISTERE DES FINANCES ET DU BUDGET
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                        DIRECTIONDE LA COMPTABILITE PUBLIIQUE ET DU TRESOR
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center justify-content-center justify-content-xs-center">
+                                                    <span class="invoice-id font-weight-bold text-center">REPUBLIQUE DU SENEGAL<br>
+                                                        <small class="text-center">Un Peuple Un But Une Foi</small>
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                         {{compte.ministere}}
+                                                        <br>
+                                                        <small class="text-center">**************</small>
+                                                        <br>
+                                                        {{compte.direction.name}}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
+                                                <span class="invoice-id font-weight-bold">Recu# </span>
+                                                <span>{{obj.reference}}</span>
+                                            </div>
+                                            <div class="col-md-12 col-lg-5 col-xl-8">
+                                                <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+
+                                                    <div class="due-date">
+                                                        <span class="font-weight-bold no-wrap">GESTION : </span>
+                                                        {% now "Y" as current_year %}
+                                                        <span>{{current_year}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                                            <h2 class="text-primary">{{title}}</h2>
+                                            <span>N° avis : {{ordre.reference}}</span>
+                                            <span>Date paiement : {{ordre.created|date:"d-m-Y"}}</span>
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-end invoice-logo">
+                                            <img src="{% static 'stack/app-assets/images/sigcdd_img.png' %}" alt="company-logo" height="100" width="100">
+                                        </div>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <span>Compte Dépôt</span>
+                                            </div>
+                                            <div class="company-name mb-1">
+                                                <span class="text-muted">Libellé : {{compte.libelle}}</span>
+                                            </div>
+                                            <div class="company-name mb-1">
+                                                <span class="text-muted">Compte :  {{compte.compte}}</span>
+                                            </div>
+                                           <div class="company-address mb-1">
+                                                <span class="text-muted">Direction : {{compte.direction}}</span>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">SKU</th>
+                                                    <th scope="col">DESCRIPTION</th>
+
+                                                    <th scope="col">QTY</th>
+                                                    <th scope="col">MONTANT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+
+
+													<tr>
+
+														<td>#</td>
+
+														<td>{{obj.libelle}}</td>
+                            <td >1</td>
+														<td class="font-weight-bold" >{{obj.amount}}</td>
+
+													</tr>
+
+
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                {% qr_from_text obj.reference size="S" %}
+
+
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2 font-weight-bold">Total </span>
+                                                        <span class="cost-value font-weight-bold">{{obj.amount}} </span>
+                                                    </li>
+
+
+
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- buttons section -->
+
+                    </div>
+</section>
+
+{% endblock %}
+
+
+ {% block javascript %}
+
+
+ <!-- BEGIN: Page Vendor JS-->
+
+
+ <script src="{% static 'stack_admin/app-assets/js/scripts/pages/app-invoice.js' %}"></script>
+
+
+    <!-- END: Page JS-->
+{% endblock javascript %}

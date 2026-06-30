@@ -1,0 +1,232 @@
+{% extends "invoice/stack_balance_pdf.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block vendorcss %}
+
+
+
+
+{% endblock vendorcss %}
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+                        <tr style="background-color:#babfc7">
+								   <td class="bg-light font-weight: 400" ><h4>DATE IMPRESSION</h4></td>
+
+                           <td class="bg-light font-weight: 400" ><h4> {{date}}</h4></td>
+
+							</tr>
+
+                     <tr style="background-color:#babfc7">
+								<td class="bg-light font-weight: 400"><h4>GESTION</h4></td>
+                        <td class="bg-light font-weight: 400"><h4>{{gestion}}</h4></td>
+							</tr>
+                     <tr style="background-color:#babfc7">
+                        <td class="bg-light font-weight: 400" colspan="2"><h4>{{poste}}</h4></td>
+							</tr>
+						</tbody>
+
+					</table>
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+<div class="row justify-content-center">
+
+
+
+   <div class="justify-content-center center" style="margin-top:30px"></div>
+      <h2 style="text-align: center;">BALANCE COMPTE DE DEPOT AU {{date}}</h2>
+   </div>
+</div>
+
+
+
+<br>
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col">
+
+                    <table class="table table-condensed table-hover table-sm table-bordered" id="idPage" >
+
+                         <tbody>
+
+                        <tr  class="bg-light">
+                             <th rowspan="3">COMPTE</th>
+                            <th rowspan="3">LIBELLE</th>
+                            <th rowspan="3">TSOLDE</th>
+                            <th colspan="2" text-align="center">BALANCE D'ENTREE</th>
+
+
+                            <th colspan="4" text-align="center">OPERATION DE L'ANNEE</th>
+
+
+                            <th colspan="4" text-align="center">TOTAL</th>
+
+
+                            <th colspan="4" text-align="center">BALANCE DE SORTIE</th>
+
+
+                        </tr>
+
+                           <tr class="bg-light" >
+                            <th colspan="2">CREDIT</th>
+
+                            <th colspan="2">DEBIT</th>
+
+                            <th colspan="2">CREDIT</th>
+
+
+                            <th colspan="2">DEBIT</th>
+                            <th colspan="2">CREDIT</th>
+
+                            <th colspan="2">DEBIT </th>
+                            <th colspan="2">CREDIT </th>
+
+                        </tr>
+
+                           <tr class="bg-light" >
+                            <th >FONC</th>
+                            <th >INV</th>
+
+                            <th > FONC</th>
+                            <th > INV</th>
+                            <th > FONC</th>
+                            <th > INV</th>
+
+                            <th >FONC</th>
+                            <th > INV</th>
+                            <th > FONC</th>
+                            <th > INV</th>
+
+                            <th > FONC</th>
+                            <th > INV</th>
+                            <th > FONC</th>
+                            <th > INV</th>
+
+                        </tr>
+                        {% for comptegenerique in balances %}
+
+                        {% for balance in comptegenerique.balances %}
+
+                           <tr >
+                             <td style="width: 4.75%">{{balance.compte}}</td>
+
+                               {% if balance.provenance == "" %}
+                               <td style="width: 7.75%; font-size:x-small" >{{balance.libelle}}</td>
+                               <td style="width: 7.75%; font-size:x-small" >&nbsp;</td>
+                               {%else%}
+                               <td style="width: 7.75%; font-size:x-small">{{balance.libelle}}</td>
+                                <td class="bg-light" align="center">{{balance.provenance}}</td>
+                               {%endif%}
+                            <td style="width: 6.25%; text-align: right; font-size:x-small;">{{balance.be_credit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.be_credit_inv|intcomma}}</td>
+                               <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.op_debit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.op_debit_inv|intcomma}}</td>
+
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.op_credit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.op_credit_inv|intcomma}}</td>
+                           <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.total_debit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.total_debit_inv|intcomma}}</td>
+
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.total_credit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.total_credit_inv|intcomma}}</td>
+                               <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.bs_debit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.bs_debit_inv|intcomma}}</td>
+
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.bs_credit_fonc|intcomma}}</td>
+                            <td style="width: 6.25%; text-align: right; font-size:x-small">{{balance.bs_credit_inv|intcomma}}</td>
+
+
+                        </tr>
+                         {% endfor %}
+
+                         <tr  class="bg-light">
+                             <td colspan="3" >TOTAL COMPTE GENERIQUE {{comptegenerique.code}} </td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.be_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.be_credit_inv|intcomma}}</td>
+                               <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.op_debit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.op_debit_inv|intcomma}}</td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.op_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.op_credit_inv|intcomma}}</td>
+                               <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.total_debit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.total_debit_innv|intcomma}}</td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.total_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.total_credit_inv|intcomma}}</td>
+                               <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.bs_debit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.bs_debit_inv|intcomma}}</td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.bs_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{comptegenerique.totaux.bs_credit_inv|intcomma}}</td>
+
+
+                        </tr>
+
+
+  {% endfor %}
+                           <tr  class="bg-light">
+                             <td  colspan="3">TOTAUX</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.be_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.be_credit_inv|intcomma}}</td>
+                               <td align="right" style="width: 6.25%; font-size:x-small" >{{totaux.op_debit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.op_debit_inv|intcomma}}</td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.op_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.op_credit_inv|intcomma}}</td>
+                               <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.total_debit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.total_debit_inv|intcomma}}</td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.total_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.total_credit_inv|intcomma}}</td>
+                               <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.bs_debit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.bs_debit_inv|intcomma}}</td>
+
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.bs_credit_fonc|intcomma}}</td>
+                            <td align="right" style="width: 6.25%; font-size:x-small">{{totaux.bs_credit_inv|intcomma}}</td>
+
+
+                        </tr>
+
+                        </tbody>
+
+					</table>
+
+
+                     </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+{% endblock  %}

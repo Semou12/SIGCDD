@@ -1,0 +1,191 @@
+{% extends "invoice/stack_invoice.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% if compte.structure %}
+
+  {% block headerinvoice %}
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         REPUBLIQUE DU SENEGAL
+                                                </span>
+                                                <small class="text-center">Un Peuple - Un But - Une Foi</small>
+                                                <small class="text-center">*********************</small>
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         {{ compte.structure.name}}
+
+                                                </span>
+                                                <div class="text-center">
+  <img src="{{compte.structure.get_thumbnail_url}}"  height="80" width="80">
+
+</div>
+
+
+
+
+
+{% endblock %}
+{% endif %}
+
+{% block contentinvoice %}
+
+
+       <!-- App invoice wrapper -->
+                <section class="app-invoice-wrapper">
+                    <div class="row">
+                        <div class="col-xl-12 printable-content">
+                            <!-- using a bootstrap card -->
+                            <div class="card">
+                                <!-- card body -->
+                                <div class="card-body p-2">
+                                    <!-- card-header -->
+                                    <div class="card-header px-0">
+                                        <div class="row">
+
+
+
+
+
+                                            <div class="col-md-12 col-lg-7 col-xl-4 mb-50">
+                                                <span class="invoice-id font-weight-bold">Recu# </span>
+                                                <span>{{obj.reference}}</span>
+                                            </div>
+                                            <div class="col-md-12 col-lg-5 col-xl-8">
+                                                <div class="d-flex align-items-center justify-content-end justify-content-xs-start">
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                                            <h2 class="text-primary">Ordre de Paiement {{obj.origin_reference}}</h2>
+
+                                            <span>Date paiement : {{obj.created|date:"d-m-Y"}}</span>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <span>Compte Dépôt</span>
+                                            </div>
+                                            <div class="company-name mb-1">
+                                                <span class="text-muted">Libellé : {{compte.libelle}}</span>
+                                            </div>
+                                            <div class="company-name mb-1">
+                                                <span class="text-muted">Compte :  {{compte.compte}}</span>
+                                            </div>
+                                           <div class="company-address mb-1">
+                                                <span class="text-muted">Direction : {{compte.direction}}</span>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-6 mt-1 to-info">
+                                            <div class="info-title mb-1">
+                                                <span>Bénéficiaire paiement</span>
+                                            </div>
+                                            <div class="company-name mb-1">
+                                                <span class="text-muted">{{ordre.beneficiaire}}</span>
+                                            </div>
+                                            {% if ordre.ninea %}
+                                            <div class="company-address mb-1">
+                                                <span class="text-muted">Ninéa : {{ordre.ninea}}</span>
+                                            </div>
+                                            {% endif %}
+                                            <div class="company-email mb-1">
+                                                <span class="text-muted">Compte bancaire : {{ordre.iban}}</span>
+                                            </div>
+                                            {% if ordre.cheque %}
+                                            <div class="company-email mb-1">
+                                                <span class="text-muted">Chèque associé : {{ordre.cheque}}</span>
+                                            </div>
+                                            {% endif %}
+
+                                        </div>
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">SKU</th>
+                                                    <th scope="col">DESCRIPTION</th>
+
+                                                    <th scope="col">QTY</th>
+                                                    <th scope="col">MONTANT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+
+
+													<tr>
+
+														<td>#</td>
+
+														<td>{{obj.libelle}}</td>
+                            <td >1</td>
+														<td class="font-weight-bold" >{{obj.amount}}</td>
+
+													</tr>
+
+
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                {% qr_from_text obj.reference size="S" %}
+
+
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2 font-weight-bold">Total </span>
+                                                        <span class="cost-value font-weight-bold">{{obj.amount}} </span>
+                                                    </li>
+
+
+
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- buttons section -->
+
+                    </div>
+</section>
+
+{% endblock %}
+
+
+ {% block javascript %}
+
+
+ <!-- BEGIN: Page Vendor JS-->
+
+
+ <script src="{% static 'stack_admin/app-assets/js/scripts/pages/app-invoice.js' %}"></script>
+
+
+    <!-- END: Page JS-->
+{% endblock javascript %}

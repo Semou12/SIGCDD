@@ -1,0 +1,101 @@
+{% load helpers_tags static i18n %}
+{% for field in form %}
+{% load widget_tweaks %}
+
+<div class="col-xl-3 col-lg-6 col-md-12 mb-1">
+  <fieldset class="form-group">
+
+<label for="id_{{ field.html_name }}"> {{ field.label }} {% if field.field.required %}<span class="danger">*</span>{% endif %} </label>
+    {% if field|widget_type == "select" %}
+
+      {% render_field field type="select" class="select2 form-control" %}
+
+
+      {% elif field|widget_type == "selectmultiple" %}
+
+      {% render_field field type="select" class="select2 form-control multiple" %}
+
+
+
+     {% elif  field|widget_type == "nullbooleanselect" or field|widget_type == "booleanselect" %}
+        {% render_field field class="form-control" placeholder=field.label %}
+
+
+    {% elif field|widget_type == "dateinput" %}
+
+
+      <div class="input-group">
+        {% render_field field type="date" class="form-control singledate" placeholder=field.label %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+
+
+
+     {% elif field|widget_type == "datetimeinput" %}
+
+
+
+       <div class="input-group">
+        {% render_field field type="text" class="form-control datetimepicker" placeholder=field.label %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+
+
+
+
+
+     {% elif field|widget_type == "stackdaterangewidget" %}
+
+
+
+      <div class="input-group">
+        {% render_field field type="date" class="form-control stackdaterangepicker" placeholder=field.label %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+     {% elif field|widget_type == "stackdatetimerangewidget" %}
+
+
+
+    <div class='input-group'>
+              <input type='text' class="form-control stackdatetimerangepicker" name="{{ field.html_name}}" id="id_{{ field.html_name }}"
+           placeholder="{{ field.label }}" value="{{field.value}}" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <span class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                </div>
+
+
+
+
+    {% else %}
+
+
+    {% render_field field type="text" class="form-control" placeholder=field.label %}
+    {% endif %}
+  </fieldset>
+</div>
+
+
+
+{% endfor %}
+
+
+ {% block javascript %}
+
+{% endblock javascript %}
+
+

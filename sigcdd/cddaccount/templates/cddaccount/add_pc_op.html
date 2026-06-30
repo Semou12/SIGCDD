@@ -1,0 +1,654 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+{{ form.media }}
+
+<form method="post" action=""  enctype="multipart/form-data" id="opForm">
+  {% csrf_token %}
+
+  <div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="{% if form.non_field_errors %}invalid danger{% endif %}  mb-2">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+        {% include "includes/tweaks_form_fields.html" %}
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </div>
+
+</form>
+{% block javascript %}
+<script type="text/javascript">
+      $(function () {
+
+       $(".select2").select2({
+             dropdownAutoWidth: true,
+             width: '100%'
+          });
+
+          // function onchange
+
+          let eMPamean =$("#id_payment_mean");
+          let pvalue=eMPamean.val();
+
+          showHideChequeField(eMPamean.val());
+          eMPamean.change(function (){showHideChequeField(eMPamean.val());});
+
+
+
+
+          if( $("#id_receptionnaire").length>0) {
+              let elshow =$("#id_receptionnaire");
+              elshow.change(function() {
+	                showHideReceptionnaireFields(elshow,pvalue);
+                });
+              showHideReceptionnaireFields(elshow,pvalue);
+          }
+
+
+
+          if( $("#id_type_virement").length>0) {
+               let elVirement =$("#id_type_virement");
+                elVirement.change(function() {
+	                showHideTypeVirementFields(elVirement);
+                });
+                showHideTypeVirementFields(elVirement);
+          }
+
+
+
+          if ( $( "#id_compte" ).length>0 ){
+                let eCompte =$("#id_compte");
+                let eNature =$("#id_type_nature");
+                eCompte.change(function (){loadAccountInfos(eCompte,eNature,eMPamean);});
+            }
+
+
+             if ( $( "#id_nature" ).length>0 ){
+                let eNat =$("#id_nature");
+                let eSoutNature = $("#id_sousnature");
+                eSoutNature.empty();
+                eNat.change(function (){loadsousnature(eNat,eSoutNature);});
+            }
+
+             if ( $( "#id_tva" ).length>0 ){
+                let eNat =$("#id_tva");
+                let eAmountTva =$("#id_amount_tva_0");
+
+                eNat.change(function(){
+                   if(this.checked)
+                   {
+                    eAmountTva.prop('required', true);
+                    eAmountTva.show();
+                    }
+                   else
+                      {
+                      eAmountTva.prop('required', false);
+                      eAmountTva.hide();
+                      }
+                });
+
+            }
+
+
+
+      });
+  </script>
+
+
+
+<script>
+if ($('.iban-inputmask').length > 0){
+$('.iban-inputmask').inputmask("AA999 99999 999999999999 99");
+
+}
+
+if ($('.amount-inputmask').length > 0){
+
+//$('.amount-inputmask').inputmask('999 999 999', { numericInput: true });
+$('.amount-inputmask').inputmask('decimal', { rightAlign: false,groupSeparator:" " });
+
+}
+
+
+
+  </script>
+
+<script>
+
+
+   function showHideChequeField(ePmeanVal) {
+        let odval = ePmeanVal;
+        if (!odval )
+        {return false;}
+        let label = $("label[for=id_cheque]");
+        let receplabel = $("label[for=id_receptionnaire]");
+
+        let ibanlabel = $("label[for=id_iban]");
+
+        let type_virementLabel=$("label[for=id_type_virement]");
+        let beneficiaireLabel=$("label[for=id_beneficiaire]");
+        let nineaLabel=$("label[for=id_ninea]");
+
+        let cinlabel = $("label[for=id_cin_receptionnaire]");
+        let phonelabel = $("label[for=id_phone_receptionnaire]");
+        let depositairelabel = $("label[for=id_depositaire]");
+        let details_filelabel = $("label[for=id_details_file]");
+
+
+        let id_transfer_out_umeoalabel = $("label[for=id_transfer_out_umeoa]");
+
+
+
+        if (odval=="CHEQUE"){
+        $('#id_cheque').show();
+        $('#id_receptionnaire').show();
+        $('#id_receptionnaire').select2().next().show();
+        $('#id_cheque').prop('required', true);
+
+        $('#id_transfer_out_umeoa').prop('required', false);
+        $('#id_transfer_out_umeoa').hide();
+        id_transfer_out_umeoalabel.hide();
+
+
+        label.show();
+        receplabel.show()
+
+          $('#id_phone_receptionnaire').show();
+          phonelabel.show();
+          $('#id_phone_receptionnaire').prop('required', false);
+
+        $('#id_iban').show();
+         $('#id_iban').val('');
+         $('#id_iban').prop('required', false);
+         ibanlabel.show();
+
+         $('#id_details_file').hide();
+         $('#id_details_file').val('');
+         $('#id_details_file').prop('required', false);
+         details_filelabel.hide();
+
+
+         $('#id_beneficiaire').show();
+
+         $('#id_beneficiaire').val('');
+         $('#id_beneficiaire').prop('required', true);
+         beneficiaireLabel.show();
+
+          $('#id_ninea').show();
+          nineaLabel.show();
+
+         //$('#id_type_virement').hide();
+        // $('#id_type_virement').val('');
+        // $('#id_type_virement').prop('required', false);
+        // $('#id_type_virement').prop('checked', true);
+        // type_virementLabel.hide();
+        // $('#id_type_virement').select2().next().hide();
+
+
+        }
+        else if (odval=="MOBILE"){
+
+        $('#id_transfer_out_umeoa').prop('required', false);
+        $('#id_transfer_out_umeoa').hide();
+        id_transfer_out_umeoalabel.hide();
+        $('#id_type_virement').hide();
+        $('#id_type_virement').val('');
+        $('#id_type_virement').prop('required', false);
+        $('#id_type_virement').prop('checked', true);
+        type_virementLabel.hide();
+        $('#id_type_virement').select2().next().hide();
+
+
+         $('#id_ninea').hide();
+          nineaLabel.hide();
+         $('#id_cheque').hide();
+         $('#id_cheque').val('');
+         $('#id_cheque').prop('required', false);
+
+         $('#id_receptionnaire').hide();
+         $('#id_receptionnaire').select2().next().hide();
+
+
+          $('#id_phone_receptionnaire').hide();
+          phonelabel.hide();
+          $('#id_phone_receptionnaire').prop('required', false);
+
+          cinlabel.hide();
+          $('#id_cin_receptionnaire').prop('required', false);
+          $('#id_cin_receptionnaire').hide();
+
+          depositairelabel.hide();
+          $('#id_depositaire').hide();
+
+
+         label.hide();
+         receplabel.hide()
+         $('#id_receptionnaire').prop('checked', true);
+
+
+
+         $('#id_iban').hide();
+                 $('#id_iban').val('');
+                 $('#id_iban').prop('required', false);
+                 ibanlabel.hide();
+
+                 $('#id_details_file').show();
+                 $('#id_details_file').val('');
+                 $('#id_details_file').prop('required', true);
+                 details_filelabel.show();
+
+
+                  $('#id_beneficiaire').hide();
+                  $('#id_beneficiaire').val('Divers bénéficiaires');
+                  $('#id_beneficiaire').prop('required', false);
+                   beneficiaireLabel.hide();
+
+
+                   $('#id_ninea').hide();
+                   nineaLabel.hide();
+
+                   $('#id_phone_receptionnaire').hide();
+                   phonelabel.hide();
+
+
+
+        }
+
+        else if (odval=="VIREMENT"){
+        $('#id_type_virement').select2().next().show();
+        type_virementLabel.show();
+         $('#id_iban').hide();
+         $('#id_iban').val('');
+         //$('#id_iban').prop('required', false);
+         ibanlabel.hide();
+
+
+         $('#id_beneficiaire').show();
+         $('#id_beneficiaire').val();
+         $('#id_beneficiaire').prop('required', true);
+         beneficiaireLabel.show();
+
+          $('#id_ninea').hide();
+          nineaLabel.hide();
+
+         $('#id_details_file').hide();
+         $('#id_details_file').val('');
+         $('#id_details_file').prop('required', false);
+         details_filelabel.hide();
+
+
+         $('#id_cheque').hide();
+         $('#id_cheque').val('');
+         $('#id_cheque').prop('required', false);
+
+         $('#id_receptionnaire').hide();
+         $('#id_receptionnaire').select2().next().hide();
+
+
+          $('#id_phone_receptionnaire').hide();
+          phonelabel.hide();
+          $('#id_phone_receptionnaire').prop('required', false);
+
+          cinlabel.hide();
+          $('#id_cin_receptionnaire').prop('required', false);
+          $('#id_cin_receptionnaire').hide();
+
+          depositairelabel.hide();
+          $('#id_depositaire').hide();
+
+
+         label.hide();
+         receplabel.hide()
+         $('#id_receptionnaire').prop('checked', true);
+
+
+        }
+
+
+
+
+         else if ( odval=="ODRE_DE_PAIEMENT"){
+
+         $('#id_transfer_out_umeoa').prop('required', false);
+        $('#id_transfer_out_umeoa').hide();
+        id_transfer_out_umeoalabel.hide();
+        $('#id_type_virement').hide();
+        $('#id_type_virement').val('');
+        $('#id_type_virement').prop('required', false);
+        $('#id_type_virement').prop('checked', true);
+        type_virementLabel.hide();
+        $('#id_type_virement').select2().next().hide();
+
+         $('#id_iban').hide();
+         $('#id_iban').val('');
+         $('#id_iban').prop('required', false);
+         ibanlabel.hide();
+
+
+         $('#id_beneficiaire').show();
+         $('#id_beneficiaire').val();
+         $('#id_beneficiaire').prop('required', true);
+         beneficiaireLabel.show();
+
+
+         let ctxGerantFullName="{{gerant_fullname}}";
+          if (ctxGerantFullName){
+          $('#id_beneficiaire').val(ctxGerantFullName);
+
+          }
+
+          $('#id_ninea').hide();
+          nineaLabel.hide();
+
+         $('#id_details_file').hide();
+         $('#id_details_file').val('');
+         $('#id_details_file').prop('required', false);
+         details_filelabel.hide();
+
+
+         $('#id_cheque').hide();
+         $('#id_cheque').val('');
+         $('#id_cheque').prop('required', false);
+
+         $('#id_receptionnaire').hide();
+         $('#id_receptionnaire').select2().next().hide();
+
+
+          $('#id_phone_receptionnaire').show();
+          phonelabel.show();
+          $('#id_phone_receptionnaire').prop('required', false);
+
+          cinlabel.hide();
+          $('#id_cin_receptionnaire').prop('required', false);
+          $('#id_cin_receptionnaire').hide();
+
+          depositairelabel.hide();
+          $('#id_depositaire').hide();
+
+
+         label.hide();
+         receplabel.hide()
+         $('#id_receptionnaire').prop('checked', true);
+
+
+        }
+
+
+
+        else{
+
+        $('#id_cheque').hide();
+         $('#id_cheque').val('');
+          $('#id_cheque').prop('required', false);
+        $('#id_receptionnaire').hide();
+        label.hide();
+        receplabel.hide()
+        $('#id_receptionnaire').prop('checked', true);
+        showHideReceptionnaireFields($('#id_receptionnaire'),ePmeanVal)
+
+         $('#id_iban').hide();
+         $('#id_iban').val('');
+         //$('#id_iban').prop('required', false);
+         ibanlabel.hide();
+        }
+         showHideTypeVirementFields($('#id_type_virement'));
+  }
+
+
+
+    function showHideReceptionnaireFields(elshow,ePmeanVal) {
+
+        let cinlabel = $("label[for=id_cin_receptionnaire]");
+        let phonelabel = $("label[for=id_phone_receptionnaire]");
+        let depositairelabel = $("label[for=id_depositaire]");
+
+        let odval = elshow.val();
+        console.log(odval);
+        if (odval=="GERANT" ){
+
+          $('#id_cin_receptionnaire').hide();
+          cinlabel.hide();
+          $('#id_cin_receptionnaire').prop('required', false);
+
+          depositairelabel.hide();
+          $('#id_depositaire').hide();
+
+        }
+        else if  (odval=="BENEFICIAIRE" ){
+         cinlabel.show();
+          $('#id_cin_receptionnaire').show();
+          $('#id_phone_receptionnaire').show();
+          $('#id_cin_receptionnaire').prop('required', true);
+           depositairelabel.hide();
+           $('#id_depositaire').hide();
+        }
+
+        else{
+
+        $('#id_cin_receptionnaire').hide();
+
+        cinlabel.hide();
+        $('#id_cin_receptionnaire').prop('required', false);
+         depositairelabel.show();
+          $('#id_depositaire').show();
+        }
+
+
+
+  }
+
+
+  function loadAccountInfos( eCompte,eTypeNature,ePmean) {
+        let odval = eCompte.val();
+        console.log(odval);
+        let pMean = ePmean.val();
+        if (!odval )
+        {return false;}
+
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'cddaccount:load_compte_infos' %}",
+            data: {"id":odval},
+            success: function (response) {
+                console.log(response);
+                type_natures = response['infos']['type_natures'];
+                 eTypeNature.empty();
+
+                for(let i = 0; i < type_natures.length; i++){
+                    let zone = type_natures[i];
+                   eTypeNature.append($('<option>').val(zone["name"]).text(zone["name"]));
+                }
+
+                mandataires = response['infos']['mandataires'];
+                eDepositaire= $('#id_depositaire');
+                let eAMount= $('#id_amount_0')
+                let balance=response['infos']['balance'];
+                eAMount.attr({"max" : balance ,"placeholder":'montant max :'+balance});
+
+                eDepositaire.empty();
+                for(let i = 0; i < mandataires.length; i++){
+                    let zone = mandataires[i];
+                   eDepositaire.append($('<option>').val(zone["id"]).text(zone["name"]));
+                }
+                if(pMean=="ODRE_DE_PAIEMENT" && "gerant" in response['infos']){
+                  let gerant=response['infos']['gerant']['name'];
+                  $('#id_beneficiaire').val(gerant);
+                }
+
+
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+
+  }
+
+
+
+
+
+      function showHideTypeVirementFields(ePmean) {
+
+          let odval = ePmean.val();
+          if (!odval )
+          {return false;}
+          let ibanlabel = $("label[for=id_iban]");
+          let details_filelabel = $("label[for=id_details_file]");
+          let beneficiaireLabel=$("label[for=id_beneficiaire]");
+          let nineaLabel=$("label[for=id_ninea]");
+          let phonelabel = $("label[for=id_phone_receptionnaire]");
+
+          let id_transfer_out_umeoalabel = $("label[for=id_transfer_out_umeoa]");
+          $('#id_transfer_out_umeoa').prop('required', false);
+          $('#id_transfer_out_umeoa').hide();
+          id_transfer_out_umeoalabel.hide();
+
+          let v_modpay =$("#id_payment_mean");
+
+          if (v_modpay.val()=="MOBILE" ){
+          return false;
+          }
+
+
+
+          if (odval=="UNITAIRE" ){
+                 //let v_modpay =$("#id_payment_mean");
+                 if (v_modpay.val()=="CHEQUE" ){
+                    $('#id_iban').show();
+                    $('#id_iban').val('');
+                    $('#id_iban').prop('required', false);
+                 }
+                 else{
+                    $('#id_iban').show();
+                    $('#id_iban').val('');
+                    $('#id_iban').prop('required', true);
+                    ibanlabel.show();
+
+
+                   $('#id_transfer_out_umeoa').prop('required', false);
+                   $('#id_transfer_out_umeoa').show();
+                   id_transfer_out_umeoalabel.show();
+
+
+                 }
+                 $('#id_details_file').hide();
+                 $('#id_details_file').val('');
+                 $('#id_details_file').prop('required', false);
+                 details_filelabel.hide();
+
+                    $('#id_beneficiaire').show();
+                    $('#id_beneficiaire').val();
+                    $('#id_beneficiaire').prop('required', true);
+                    beneficiaireLabel.show();
+                     $('#id_ninea').show();
+                   nineaLabel.show();
+
+                 $('#id_phone_receptionnaire').show();
+                 phonelabel.show();
+          }
+          else if  (odval=="MASSE" ){
+
+
+
+
+                 $('#id_iban').hide();
+                 $('#id_iban').val('');
+                 $('#id_iban').prop('required', false);
+                 ibanlabel.hide();
+
+                 $('#id_details_file').show();
+                 $('#id_details_file').val('');
+                 $('#id_details_file').prop('required', true);
+                 details_filelabel.show();
+
+
+                  $('#id_beneficiaire').hide();
+                  $('#id_beneficiaire').val('Divers bénéficiaires');
+                  $('#id_beneficiaire').prop('required', false);
+                   beneficiaireLabel.hide();
+
+
+                   $('#id_ninea').hide();
+                   nineaLabel.hide();
+
+                   $('#id_phone_receptionnaire').hide();
+                   phonelabel.hide();
+          }
+
+  }
+
+
+
+
+
+  function loadsousnature( elNature, elSousNat) {
+        let odval = elNature.val();
+        console.log(odval);
+        if (!odval )
+        {return false;}
+
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'cddaccount:load_sousnnature_by_nature' %}",
+            data: {"id":odval},
+            success: function (response) {
+
+                ascs= response['sousnatures'];
+                elSousNat.empty();
+                for(let i = 0; i < ascs.length; i++){
+                    let zone = ascs[i];
+                   elSousNat.append($('<option>').val(zone["id"]).text(zone["name"]));
+              }
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+
+  }
+
+  function loadGerantInfos( elTypeSolde, elCompte) {
+        let odval = elTypeSolde.val();
+        let compte= elCompte.val();
+        console.log(odval);
+        if (!compte || odval!="ODRE_DE_PAIEMENT")
+        {return false;}
+
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'cddaccount:ajax_getcdd_current_gerant' %}",
+            data: {"compte":compte},
+            success: function (response) {
+
+                ascs= response['name'];
+                 $('#id_beneficiaire').val(response['name']);
+
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+
+  }
+
+
+
+
+</script>
+
+
+
+{% endblock javascript %}

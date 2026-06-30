@@ -1,0 +1,359 @@
+{% extends "invoice/stack_releve_new.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+{% load widget_tweaks %}
+
+{% block vendorcss %}
+
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+<link rel="stylesheet" type="text/css"
+      href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+ <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/forms/extended/form-extended.css' %}">
+
+{% endblock vendorcss %}
+
+{% block headerinvoiceAction %}
+
+<div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+                         <button type="button" class="btn btn-secondary mb-1" id="generate_balance">
+                             Génerer Relevé
+                            </button>
+                            <button type="button" class="btn btn-secondary mb-1" id="generate_balance_pdf" onclick="pdfOnNewTab()">
+                                Imprimer PDF
+                            </button>
+                    </div>
+                </div>
+
+{%  endblock %}
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+
+       <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                        <tbody>
+                            <tr>
+                                <td class="bg-light font-weight-bold">DATE IMPRESSION</td>
+
+                                <td class="bg-light  font-weight-bold"> {{date}}</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="bg-light font-weight-bold">GESTION</td>
+                                <td class="bg-light font-weight-bold"> {{annee_comptable}}</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="bg-light font-weight-bold" colspan="2" align="center">  {{compte.poste}}</td>
+
+
+                            </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="bg-light font-weight-bold" colspan="2" align="center">RELEVÉ DES OPÉRATIONS DU COMPTE {{compte.short_compte}}: {{compte.libelle_court}}<br /> DU {{start_date}} AU {{end_date}}</td>
+
+
+                            </tr>
+                            <!--
+                           <tr>
+                                    <td class="bg-light font-weight-bold" colspan="2" align="center">SOLDE DU COMPTE AU 31 DÉCEMBRE {{last_year}} : {{last_balance|intcomma}}</td>
+
+
+                                </tr>-->
+
+                        </tbody>
+
+					</table>
+
+
+</div>
+
+</div>
+                                                         {% endblock %}
+
+{% block contentinvoice %}
+
+
+
+<div class="row justify-content-center">
+
+
+
+                     <div class="col-8 d-flex justify-content-center center">
+                        
+
+                         <b>RELEVÉ D'OPÉRATIONS {{inst}}  DU {{start_date}} AU {{end_date}}</b>
+                         
+                     </div>
+
+
+
+</div>
+
+
+
+<br>
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+                         <div class="table-responsive-sm">
+                    <table class="table table-condensed table-hover table-sm"   id="idreleve">
+						<thead>
+							<tr  align="center">
+                                <th >DATE VISA</th>
+
+
+                             <th >RÉFÉRENCE</th>
+                               <!-- <th >OB</th>-->
+                                <th >NATURE DE L'OPÉRATION</th>
+                                 <th >BÉNÉFICIAIRE</th>
+                                <th >MONTANT DÉBIT</th>
+                                <th >MONTANT CRÉDIT</th>
+
+
+                        </tr>
+						</thead>
+                        <tbody>
+
+                        <td align="center" colspan="4" class="bg-light font-weight-bold">SOLDE DU COMPTE AU  {{previous__date}} </td>
+
+
+                          <td class="font-weight-bold" align="right">0</td>
+                            <td class="font-weight-bold" align="right">{{account_balance.last_balance|intcomma}}</td>
+
+
+
+
+
+                        </tr>
+                        {% for trx in trxs %}
+                        <tr >
+
+
+ <td align="center">{{trx.date_rlv|date:"d/m/y"}}</td>
+
+                             <td align="center">{{trx.reference|slice:":20"}}</td>
+                            <!--<td align="center">{{trx.get_mean_code}}</td>-->
+                            <td align="left">{{trx.libelle|slice:":30"}}</td>
+                            <td align="left">{{trx.beneficiaire|slice:":30"}}</td>
+                            <td align="right"><b>{{trx.debit_amount|intcomma}}</b></td>
+                            <td class="font-weight-bold" align="right">{{trx.credit_amount|intcomma}}</td>
+
+
+
+
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+
+                            <td colspan="3">Nombre de lignes : {{lignes}} </td>
+                            <td colspan="1" class="font-weight-bold" align="right">  Total :  </td>
+
+                            <td class="font-weight-bold" align="right">{{account_balance.debit|intcomma}}</td>
+                            <td class="font-weight-bold" align="right">{{account_balance.credit|intcomma}}</td>
+
+
+                        </tr>
+                        </tbody>
+					</table>
+
+                         </div>
+                     </div>
+
+
+
+
+</div>
+
+
+<br>
+    <br>
+
+
+
+
+
+<div class="row justify-content-center">
+
+    <div class="col-8 d-flex justify-content-center">
+        <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tbody >
+                                <tr class="bg-light">
+                                    <td scope="row" class="font-weight-bold">TOTAL GÉNÉRAL</td>
+                                    <td align="center"><span><b>{{account_balance.debit|intcomma}}</b></span></td>
+                                    <td align="center"><span><b>{{account_balance.credit|intcomma}}</b></span></td>
+
+                                </tr>
+                                <tr class="bg-yellow bg-lighten-5">
+                                    <td scope="row" class="font-weight-bold">SOLDE CRÉDITEUR</td>
+                                    <td colspan="2" align="center"><span><b>{{account_balance.balance|intcomma}}</b></span></td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+
+{%  if eninstance %}
+
+<div class="row justify-content-center">
+
+
+    <div class="col-12">
+          <div class="table-responsive-sm">
+
+        		<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+                      <tbody>
+							<tr align="center">
+								<td class="bg-light font-weight-bold" text-align="center" > OPÉRATIONS EN INSTANCE DE PAIEMENT DU COMPTE {{compte.short_compte}} : {{compte.libelle}}</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+
+    </div>
+    <br>
+
+
+        <div class="col-12">
+                         <div class="table-responsive-sm">
+                    <table class="table table-condensed table-hover table-sm"   id="idreleve">
+						<thead>
+							<tr  align="center">
+                                <th>DATE PEC</th>
+                                <th>N° RÉFERENCE</th>
+                                <!--<th >OB</th>-->
+                                <th>LIBELLÉ DE L'OPÉRATION</th>
+                                <th>BÉNÉFICIAIRE</th> 
+                                <th>MONTANT DÉBIT</th>
+							</tr>
+                        </tr>
+						</thead>
+                        <tbody>
+                        {% for trx in pcharges %}
+                        <tr >
+<td align="center">{{trx.created|date:"d-m-Y"}}</td>
+                            <td align="center">{{trx.ordre.sig_reference|slice:":20"}}</td>
+
+                            <!--<td align="left">{{trx.get_mean_code}}</td>-->
+
+                            <td align="left">{{trx.ordre.object|slice:":30"}}</td>
+                            <td class="font-weight-bold" align="right">{{trx.ordre.beneficiaire}}</td>
+                            <td align="right"><b>{{trx.get_reliquat|intcomma}}</b></td>
+
+
+
+
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+
+                            <td colspan="3">Nombre de lignes : {{lignes_inst}} </td>
+                            <td colspan="1" class="font-weight-bold" align="right">  Total :  </td>
+
+                            <td class="font-weight-bold" align="right">{{account_balance.montant_inst|intcomma}}</td>
+
+                           
+
+
+
+                        </tr>
+                        </tbody>
+					</table>
+
+                         </div>
+                     </div>
+
+
+
+
+    <br>
+
+    <div class="col-6 d-flex justify-content-center">
+        <div class="table-responsive">
+                        <table class="table table-bordered">
+
+                            <tbody >
+                                <tr class="bg-yellow bg-lighten-5" >
+                                    <td scope="row" class="font-weight-bold">DISPONIBLE</td>
+                                    <td align="center"><span><b>{{account_balance.disponible|intcomma}}</b></span></td>
+
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+</div>
+
+</div>
+
+{% endif %}
+<div class="row justify-content-end">
+<div class="col-12 ml-auto d-flex justify-content-end"> <b> Imprimé  par {{request.user.username}} le {% now "d-m-Y" %} </b></div>
+</div>
+
+
+{% endblock  %}
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+
+ <!-- BEGIN: Page JS-->
+ <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+    <!-- END: Page JS-->
+
+{% endblock vendorjs %}
+
+ 

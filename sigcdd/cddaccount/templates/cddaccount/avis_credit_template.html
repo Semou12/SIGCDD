@@ -1,0 +1,80 @@
+{% extends "invoice/stack_invoice.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+{% block contentinvoice %}
+
+<!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                                            <h2 class="text-primary">{{title}}</h2>
+                                            <span><b>Date : {{ordre.date_avis|date:"d/m/Y"}}</b>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <span>Compte dépot : {{compte.short_compte}}</span>
+                                            </div>
+                                            <div class="info-title mb-1">
+                                                <span>Nom Etablissement : {{compte.libelle}}</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-6 d-flex mt-1 to-info justify-content-end">
+                                            <div class="info-title mb-1">
+                                                <span>Poste Comptable <br>{{compte.poste.name}}</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Nature</th>
+                                                    <th scope="col">Objet</th>
+                                                    <th scope="col">Provenance</th>
+                                                    <th scope="col">MONTANT</th>
+                                                    <th scope="col">OBSERVATIONS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ordre.nature}}</td>
+                                                    <td>{{ordre.libelle}}</td>
+                                                    <td>{{ordre.provenance|default_if_none:""}}</td>
+
+                                                    <td class="font-weight-bold">{{ordre.amount.amount|to_int}}</td>
+                                                    <td>{{ordre.libelle}}</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                <p></p>
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2">Signature </span>
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+{% endblock  %}

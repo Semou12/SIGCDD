@@ -1,0 +1,71 @@
+{% extends "account/form_base.html" %}
+{% load static i18n helpers_tags %}
+
+{% block head_title %} {%trans "Se connecter à " %}  {{ "APP_NAME" |application_local_tag }} {% endblock head_title %}
+ {% block content %}
+
+ <script type="text/javascript">
+    function password_show_hide()
+    {
+        var pwd = document.getElementById("id_password");
+        var show_eye = document.getElementById("show_eye");
+        var hide_eye = document.getElementById("hide_eye");
+        hide_eye.classList.remove("d-none");
+
+    if(document.getElementById("id_password").type == "password"){
+        document.getElementById("id_password").type = "text";
+        show_eye.style.display = "none";
+        hide_eye.style.display = "block";
+    }
+    else{
+        document.getElementById("id_password").type = "password";
+        show_eye.style.display = "block";
+        hide_eye.style.display = "none";
+    }
+    }
+
+</script> 
+ <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2 danger">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+
+     <form class="form-horizontal form-simple" method="post" action="{% url 'account_login' %}" novalidate>
+                                           {% csrf_token %}
+                                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                <input type="text" class="form-control form-control-lg" id="id_login" name="login" placeholder='{%trans "Votre identifiant" %}' required>
+                                                <div class="form-control-position">
+                                                    <i class="feather icon-user"></i>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="form-group position-relative has-icon-left" id="password_afficher_cacher">
+                                                <input type="password" class="form-control form-control-lg" id="id_password" name ="password" placeholder='{%trans "Votre mot de passe" %}' required>
+                                                <div class="form-control-position">
+                                                    <span class="input-group-text border-0 bg-transparent" onclick="password_show_hide()">
+                                                        <i class="fa fa-eye fa-border-none" id="show_eye"></i>
+                                                        <i class="fa fa-eye-slash fa-border-none d-none" id="hide_eye"></i>
+                                                    </span>
+                                            </fieldset>
+                                            <div class="form-group row">
+                                                <div class="col-sm-6 col-12 text-center text-sm-left">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="feather icon-unlock"></i> {%trans "Se connecter" %}</button>
+
+
+                                           <input type="hidden" name="this_is_the_login_form" value="1"/>
+                                          <input type="hidden" name="next" value="{{ next }}"/>
+
+                                          {% if redirect_field_value %}
+                                                  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                                                  {% endif %}
+                                        </form>
+
+{% endblock %}
+ {% block footer %}
+  <div class="">
+                                        <p class="float-sm-left text-center m-0"><a href="{% url 'account_reset_password' %}" class="card-link">{%trans "Mot de passe oublié ? " %} </a></p>
+                                        <!--<p class="float-sm-right text-center m-0"> {%trans "New in SIGCDD?" %} <a href="{% url 'account_signup' %}" class="card-link">{%trans "Sign Up" %}</a></p>-->
+                                    </div>
+{% endblock %}

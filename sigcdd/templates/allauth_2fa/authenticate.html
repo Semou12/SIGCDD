@@ -1,0 +1,30 @@
+{% extends "account/form_base.html" %}
+{% load static i18n helpers_tags %}
+{% load crispy_forms_tags %}
+{% block head_title %} {% trans 'Two-Factor Authentication' %}{% endblock head_title %}
+{% block content %}
+
+
+<form method="post" class="form-horizontal form-simple" novalidate>
+  {% csrf_token %}
+
+
+        {{ form|crispy }}
+
+
+
+  <button type="submit"  class="btn btn-primary btn-lg btn-block">
+    {% trans 'Authenticate' %}
+  </button>
+</form>
+
+
+
+{% endblock %}
+
+
+
+
+ {% block footer %}
+
+{% endblock %}

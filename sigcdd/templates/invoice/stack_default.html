@@ -1,0 +1,292 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+
+
+ {% block css %}
+<!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/core/menu/menu-types/vertical-overlay-menu.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/core/colors/palette-gradient.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/pages/app-invoice.css' %}">
+
+    <!-- END: Page CSS-->
+
+<style>
+
+
+.table thead tr th,.table tbody tr td{
+        border-width: 1.5px !important;
+        border-style: solid !important;
+        border-color: black !important;
+        font-size: 90% !important;
+        padding: 0.20rem !important;
+        margin: 0 !important;
+
+    }
+
+
+    .table  tr th,.table  tr td{
+        border-width: 1.5px !important;
+        border-style: solid !important;
+        border-color: black !important;
+        font-size: 100% !important;
+        font-weight: bold;
+        padding: 0.20rem !important;
+        margin: 0 !important;
+
+    }
+
+    td .balance_header{
+        font-size: 97% !important;
+
+    }
+    #balance_header  tr th,#balance_header  tr td{
+        border-width: 2px !important;
+        border-style: solid !important;
+        border-color: black !important;
+        font-size: 100% !important;
+        padding: 0.25rem !important;
+        margin: 0 !important;
+
+    }
+
+.table th {text-align: center; }
+</style>
+
+{% endblock  %}
+
+
+
+
+{% block contentheader %}
+
+
+{% include "modals/_modal.html" %}
+
+
+{% endblock %}
+
+{% block content %}
+    <div class="content-header row">
+                <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title mb-0">{{title}}</h3>
+
+                </div>
+         {% block headerbuttons %}
+                <div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+                         <button type="button" class="btn btn-secondary mb-1" id="generate_balance">
+                             Générer Rapport
+                            </button>
+                        <div class="btn-group">
+
+                            <a href="#" class="btn btn-info btn-block mb-1 print-invoice-1"> <i class="feather icon-printer mr-25 common-size"></i> Imprimer</a>
+
+</div>
+                    </div>
+                </div>
+         {% endblock %}
+            </div>
+ <div class="content-body">
+                <!-- App invoice wrapper -->
+                <section class="app-invoice-wrapper">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 col-12 printable-content">
+                            <!-- using a bootstrap card -->
+                            <div class="card">
+                                <!-- card body -->
+                                <div class="card-body p-2">
+                                    <!-- card-header -->
+                                    <div class="card-header px-0">
+                                        <div class="row">
+
+                                            <div class="col-3 d-flex flex-column justify-content-around">
+                                                {% block headerinvoice %}
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         REPUBLIQUE DU SENEGAL
+                                                </span>
+                                                <small class="text-center">Un Peuple - Un But - Une Foi</small>
+                                                <small class="text-center">*********************</small>
+                                                <span class="invoice-id font-weight-bold text-center">
+                                                         MINISTERE DES FINANCES ET DU BUDGET
+
+                                                </span>
+                                                <div class="text-center">
+  <img src="{% static 'stack/app-assets/images/sigcdd_img.png' %}" alt="company-logo" height="80" width="80">
+
+</div>
+
+
+
+
+                                                <small class="invoice-id font-weight-bold text-center">
+                                                         DIRECTION GENERALE DE LA COMPTABILITE PUBLIQUE ET DU TRESOR
+                                                </small>
+                                                {% endblock %}
+
+                                            </div>
+
+
+                                                    <div class="col-6  ml-auto d-flex justify-content-end invoice-logo">
+                                                        {% block headercompte %}
+                                            <span class="ml-auto"><b>GESTION : 2022</b><br>
+                                                <b>Journée Comptable: 20/12/2022</b>
+                                            </span>
+                                                         {% endblock %}
+                                        </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                    {% block contentinvoice %}
+
+                                    <!-- invoice logo and title -->
+                                    <div class="invoice-logo-title row py-2">
+                                        <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                                            <h2 class="text-primary">AVIS DE CREDIT N° 123AZZA</h2>
+                                            <span><b>Date : 20/12/2022</b>
+                                            </span>
+                                        </div>
+                                        <div class="col-6 ml-auto d-flex justify-content-end invoice-logo">
+                                            <!--<span class="ml-auto"><b>GESTION : 2022</b><br>
+                                                <b>Journée Comptable: 20/12/2022</b>
+                                            </span>
+                                            -->
+
+
+
+                                        </div>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-6 mt-1 from-info">
+                                            <div class="info-title mb-1">
+                                                <span>Compte dépot : 443443334</span>
+                                            </div>
+                                            <div class="info-title mb-1">
+                                                <span>Nom Etablissement : Direction de la recherche Scientifique</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-6 d-flex mt-1 to-info justify-content-end">
+                                            <div class="info-title mb-1">
+                                                <span>Poste Comptable <br>Tresorie de Diourbel Matam</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <!--product details table -->
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">LIOD N°</th>
+                                                    <th scope="col">PAGE</th>
+                                                    <th scope="col">LIGNE</th>
+                                                    <th scope="col">MONTANT</th>
+                                                    <th scope="col">OBSERVATIONS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>123</td>
+                                                    <td>2</td>
+                                                    <td>28</td>
+
+                                                    <td class="font-weight-bold">2 800 440</td>
+                                                    <td>SDFSDFSSD/SFSDFSDSSDFSDSFSSSDGFGS</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice total -->
+                                    <div class="invoice-total py-2">
+                                        <div class="row">
+                                            <div class="col-4 col-sm-6 mt-75">
+                                                <p></p>
+                                            </div>
+                                            <div class="col-8 col-sm-6 d-flex justify-content-end mt-75">
+                                                <ul class="list-group cost-list">
+                                                    <li class="list-group-item each-cost border-0 p-50 d-flex justify-content-between">
+                                                        <span class="cost-title mr-2">Signature </span>
+
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </section>
+ </div>
+
+
+{% endblock %}
+
+
+
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+
+ <!-- BEGIN: Page JS-->
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js' %}"></script>
+
+
+
+
+    <!-- END: Page JS-->
+
+{% endblock vendorjs %}
+
+    <!-- END: Page JS-->
+
+ {% block javascript %}
+
+
+
+<script type="text/javascript">
+      $(function () {
+          // Create item synchronous
+          function createItemSyncModalForm(eltId,createUrl) {
+            eltId.modalForm({
+                formURL: createUrl,
+                modalID: "#create-modal"
+            });
+          }
+
+           createItemSyncModalForm($("#generate_balance"),"{{url_rb}}");
+
+            $('.print-invoice-1').on('click', function () {
+        window.print();
+    })
+
+
+
+      });
+
+</script>
+
+
+
+ {% endblock javascript %}

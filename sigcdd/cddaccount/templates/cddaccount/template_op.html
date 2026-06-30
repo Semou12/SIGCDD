@@ -1,0 +1,147 @@
+{% extends "invoice/stack_invoice.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+
+
+
+  {% block headerinvoice %}
+   <span class="invoice-id font-weight-bold text-center">
+                                                         REPUBLIQUE DU SENEGAL
+                                                </span>
+                                                <small class="text-center">Un Peuple - Un But - Une Foi</small>
+                                                <small class="text-center">*********************</small>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+{% block contentinvoice %}
+                                    <div class="invoice-logo-title row py-2">
+
+                                        <div class="col-12 d-flex flex-column align-items-left" style=" text-align:center; font-weight: bold ;font-size: 22px;">
+                                                 <h6 class="invoice-id font-weight-bold text-left" style="margin-left:10px; font-size: 16px;">
+                                                         {{ compte.structure.ministere.name}}<br/>
+                                                         {{ compte.structure.name}}
+
+                                                </h6>
+
+                                        </div>
+
+                                        <div class="col-12 d-flex flex-column align-items-left" style="margin-top:10px; margin-bottom:20px; text-align:center; font-weight: bold ;font-size: 22px;">
+
+                                                  <img src="{{ base_url }}{{compte.structure.get_thumbnail_url}}"   height="80" width="80">
+
+                                        </div>
+
+
+                                        <div class="col-12 d-flex flex-column align-items-right" style="margin-top:20px; margin-bottom:20px; text-align:center; font-weight: bold ;font-size: 22px;">
+                                                 <p style="text-align:right;font-size: 16px;font-weight:bold;">Date: {{ordre.created|date:"d-m-Y"}}</p>
+
+                                        </div>
+                                        <div class="col-12 d-flex flex-column justify-content-center align-items-center" style="margin-top:5px; margin-bottom:10px; text-align:center; font-weight: bold ;font-size: 22px;">
+                                             {{title}}
+
+                                        </div>
+                                        <div class="col-8 d-flex flex-column justify-content-center align-items-start" style="margin-bottom:20px; text-align:left">
+
+                                            <h6 class="invoice-id font-weight-bold text-left" style="margin-left:30px; font-size: 16px;">
+                                                Objet : {{ordre.object}}<br/>
+                                                Montant : {{ordre.amount|intcomma}}
+                                       </h6>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+
+                                    <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+                                        <div class="col-12" style="text-align:left; font-size: 16px;">
+
+                                         <p>Je soussigné(e), <b> {{ordre.gerant.full_name}}</b> gestionnaire du compte <b>{{ordre.compte.libelle}}</b>, donne ordre à Mr (Mme)
+                                             {% if ordre.compte.poste.type == "ACGP" %} l' {% else%}le{%endif%}
+                                             {{ordre.compte.poste.get_type_name}} de procéder à un virement depuis le compte de dépôt <b>N° {{ordre.compte.format_iban}}</b> un montant de
+                                        <b>{{ordre.amount_in_words}} ({{ordre.amount.amount|to_int}}) F CFA </b> au profit du bénéficiaire suivant:
+                                     </p></div>
+                                    </div>
+
+                           <!-- invoice address and contacts -->
+                                    <div class="row invoice-adress-info py-2">
+
+
+                                                <div style="font-size: 16px; text-align:left; font-weight: bold; margin-left:150px;">{{label_benef}}
+                                                    {% if ordre.beneficiaire != "Divers bénéficiaires" %}
+                                                        : {{ordre.beneficiaire}}
+                                                    {% endif %}
+                                                </div>
+                                            {% if ordre.ninea %}
+
+                                                <div class="text-muted" style="font-size: 16px; text-align:left; font-weight: bold; margin-left:150px;">Ninéa : {{ordre.ninea}}</div>
+
+                                            {% endif %}
+
+                                            {% if ordre.cheque %}
+
+                                                <div class="text-muted" style="font-size: 16px; text-align:left; font-weight: bold; margin-left:150px;">Chèque associé : {{ordre.cheque}}</div>
+
+                                            {% endif %}
+
+
+                                    </div>
+
+
+{% if ordre.iban %}
+                                    <div class="product-details-table py-2 table-responsive">
+                                        <table class="table table-condensed table-hover table-sm table-bordered" >
+                                            <thead>
+                                                <tr style="font-size: 22px;">
+                                                    <th scope="col"  align="center">Code Banque</th>
+                                                    <th scope="col"  align="center">Code Guichet</th>
+                                                    <th scope="col"  align="center">Numéro Compte</th>
+                                                    <th scope="col"  align="center">Clé Rib</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+
+
+													<tr style="text-align:center;font-size: 16px">
+                                                        <td>{{iban_items.0}}</td>
+                                                         <td>{{iban_items.1}}</td>
+                                                         <td>{{iban_items.2}}</td>
+                                                         <td>{{iban_items.3}}</td>
+
+													</tr>
+
+
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+{% endif %}
+
+
+                                    <!-- invoice total -->
+                                    <div class=" d-flex justify-content-end">
+                                        <div class="row">
+
+                                            <div class="col-12 d-flex justify-content-end mt-75">
+
+                                                <ul class="list-group cost-list">
+                                                        <span class="cost-title mr-2" style="font-size: 16px;">Fait à  _________ le {{ordre.created|date:"d-m-Y "}} à {{ordre.created|date:"H:i"}}</span>
+                                                    <span class="cost-title mr-2" style="font-size: 16px;">Le gestionnaire du compte</span>
+                                                    <br> <br> <br> <br> <br>
+                                                </ul>
+
+                                            </div>
+                                        </div>
+                                    </div>
+{% endblock  %}
+

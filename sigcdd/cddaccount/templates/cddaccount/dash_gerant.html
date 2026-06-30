@@ -1,0 +1,556 @@
+{% extends "stack_base.html" %}
+{% load helpers_tags static i18n %}
+{% load render_table from django_tables2 %}
+{% load thumbnail humanize%}
+{% load widget_tweaks %}
+
+   {% block vendorcss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/responsive.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/colReorder.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/tables/extensions/fixedHeader.dataTables.min.css' %}">
+
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/daterange/daterangepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/datetime/bootstrap-datetimepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/css/plugins/pickers/daterange/daterange.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'stack/app-assets/vendors/css/pickers/pickadate/pickadate.css' %}">
+
+   {% endblock vendorcss %}
+
+
+ {% block css %}
+
+
+{% endblock  %}
+
+
+
+
+{% block contentheader %}
+
+{% include "modals/_modal.html" %}
+ <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title mb-0 active">{{title}} </h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+
+                                <li class="breadcrumb-item active">
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+
+    <div class="content-header-right text-md-right col-md-6 col-12">
+                    <div class="form-group">
+
+{% if can_create_dcp%}
+                        <button type="button" class="btn btn-primary mb-1" id="create-item" >
+        <i class="feather icon-plus-square mr-50"></i> Nouveau Compte
+      </button>
+                        {% endif %}
+<!--
+                          <div class="btn-group mr-1 mb-1">
+                                        <button type="button" class="btn btn-primary" id="_create-op"><i class="fa fa-plus"></i> Saisie Opération</button>
+
+
+                          </div>-->
+
+
+
+
+                    </div>
+                </div>
+
+
+{% endblock %}
+
+{% block content %}
+
+<!-- users view start -->
+                <section class="users-view">
+                    <!-- users view media object start -->
+                    <!--
+                    <div class="row">
+                        <div class="col-12 col-sm-7">
+
+                            <div class="media mb-2">
+                                <a class="mr-1" href="#">
+                                    <img src="{% static 'stack/app-assets/images/portrait/small/avatar-s-24.png' %}" alt="users view avatar" class="users-avatar-shadow rounded-circle" height="64" width="64">
+                                </a>
+                                <div class="media-body pt-25">
+                                    <h4 class="media-heading"><span class="users-view-name">{{agent.full_name}} </span></h4>
+                                    <span>Matricule:</span>
+                                    <span class="users-view-id">{{agent.matricule}}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-12 col-sm-5 px-0 d-flex justify-content-end align-items-center px-1 mb-2">
+                            <a href="{% url 'cddaccount:agentsaisiecd_list' %}" class="btn btn-sm btn-info"><strong> {{agents_saisie}} Agents Saisies</strong></a>
+
+
+                        </div>
+                    </div>
+                    -->
+                    <!-- users view media object ends -->
+
+
+
+
+
+
+                    <div class="row">
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body text-left w-100">
+                                            <h3 class="primary">{{details__solde.disponible|intcomma}}</h3>
+                                            <span>SOLDE ({{currency}})</span>
+                                        </div>
+
+                                    </div>
+                                    <div class="progress progress-sm mt-1 mb-0 " style="height: 3px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body text-left w-100">
+                                            <h5 class="warning text-bold-600">Invest : {{details__solde.invest_balance.disponible|intcomma}} </h5>
+
+
+                                            <h5 class="success  text-bold-600">Fonct : {{details__solde.fonct_balance.disponible|intcomma}}</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="progress progress-sm mt-1 mb-0 " style="height: 3px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body text-left w-100">
+                                            <h3 class="success">{{details__solde.credit|intcomma}}</h3>
+                                            <span>RECETTE TOTALE ({{currency}})</span>
+                                        </div>
+
+                                    </div>
+                                    <div class="progress progress-sm mt-1 mb-0 " style="height: 3px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body text-left w-100">
+                                            <h3 class="danger">{{details__solde.debit|intcomma}}</h3>
+                                            <span>DEPENSE TOTALE ({{currency}})</span>
+                                        </div>
+
+                                    </div>
+                                     <div class="progress progress-sm mt-1 mb-0 " style="height: 3px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="  width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="row minimal-modern-charts">
+
+                        <div class="col-md-8">
+                            <div class="card">
+
+                                <!-- project-info -->
+                                <div class="card-body">
+
+                                    <div class="row py-2">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+
+                                                <div><span class="text-success h5">DETAILS SOLDES</span></div>
+                                                <div class="stats-amount mr-3">
+                                                    {% for sd in details__solde.soldes %}
+
+                                                                    <small><a href="#" class="text-success"> {{sd.name}} :
+                                                                        {{sd.disponible|intcomma}}
+                                                                        {{currency}} 000 000</a></small><br>
+
+                                                                    {% endfor %}
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+                                                <div><span class="text-warning h5">REPORT GESTION </span>
+                                                </div>
+                                                <div class="stats-amount mr-3">
+                                                   {% if reportCredit %}
+                                                                    {% for sd in reportCredit %}
+
+                                                                    <small><a href="#" class="text-warning"> {{sd.name}} :
+                                                                        {{sd.amount|intcomma}}
+                                                                        {{currency}}</a></small><br>
+
+                                                                    {% endfor %}
+                                                                    {% else %}
+                                                                    <small class="warning">0</small>
+                                                                    {% endif %}
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row py-2">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+                                                <div class="progress progress-md mt-1 mb-0" style="height: 3px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+                                                <div class="progress progress-md mt-1 mb-0" style="height: 3px;">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- project-info -->
+                                <div class="card-body">
+                                    <div class="row py-2">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+
+                                                <div><span class="text-info h5">AVIS DE CREDIT</span></div>
+                                                <div class="stats-amount mr-3">
+                                                    <span class="inc-dec-percentage">
+                                                {% if ordres_creditFonct %}
+                                                {% for  sd in ordres_creditFonct %}
+
+                                                 <small><a
+                                                         href="#"> {{sd.name}}: {{sd.amount|intcomma}} {{currency}}</a></small><br>
+
+                                                {% endfor %}
+
+                                                    {% else %}
+                                                    <small class="success">0</small>
+                                                    {% endif %}
+                                                </span>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+                                                <div><span class="text-danger h5">AVIS DE DEBIT</span>
+                                                </div>
+                                                <div class="stats-amount mr-3">
+                                                    <span class="inc-dec-percentage">
+                                                 {% if ordres_debitFonct %}
+                                       {% for  sd in ordres_debitFonct %}
+
+                                                 <small><a href="#"> {{sd.name}} {{sd.nature}} : {{sd.amount|intcomma}} {{currency}}</a></small><br>
+
+                                                {% endfor %}
+                                    {% else %}
+                                        <small class="success">0</small>
+                                    {% endif %}
+                                                </span>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row py-2">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+                                                <div class="progress progress-md mt-1 mb-0" style="height: 3px;">
+                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="insights px-2">
+                                                <div class="progress progress-md mt-1 mb-0" style="height: 3px;">
+                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- latest update tracking chart-->
+                        <div class="col-4 latest-update-tracking">
+                            <div class="card">
+                                <div class="card-header latest-update-heading d-flex justify-content-between">
+
+
+                                    <p class="mb-25 latest-update-item-name text-bold-600"><a
+                                            href="{{compte.get_absolute_url}}">{{compte.libelle}} </a></p><br>
+                                    <small class="font-small-3">{{compte.format_aster}}</small>
+
+
+                                </div>
+                                <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative">
+                                    <div class="stats-amount mr-3">
+
+
+                                        {% if can_make_saisie %}
+
+
+                                        <button type="button" class="create-ordre-payment btn  btn btn-primary"
+                                                data-form-url="{{compte.saisie_url}}">
+                                            <i class="feather icon-plus-square mr-50"></i> Saisir une opération
+                                        </button>
+
+
+                                        {% endif %}
+                                    </div>
+                                    <br>
+
+
+                                    <div class="stats-amount mr-3">
+                                        <p>Chèquiers restants : {{chequiers}} <br><a href="#">Nouvaux OP :
+                                            {{ordres.amount|intcomma}} {{currency}}</a></p>
+
+
+                                    </div>
+
+
+                                    <div class="stats-amount mr-3">
+                                                                            {% if fonds_bloques.solde %}
+                                                                            <p class="primary text-bold-600 mb-0">
+                                                                              Fonds bloqués :  {{fonds_bloques.solde|intcomma}}</p>
+                                                                            {% endif %}
+
+                                                                        </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                    <h4 class="card-title">Listes Opérations</h4>
+                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                    <div class="heading-elements">
+                        <ul class="list-inline mb-0">
+                            <li><a data-action="collapse"><i class="feather icon-minus"></i></a></li>
+                            <li><a data-action="reload"><i class="feather icon-rotate-cw"></i></a></li>
+                            <li><a data-action="expand"><i class="feather icon-maximize"></i></a></li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                  <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                        <!-- datatable started -->
+
+                        <p>Dernières Opérations
+                           <!-- <span class="float-right"><a href="#" target="_blank">Voir tous <i class="feather icon-arrow-right"></i></a></span> -->
+                        </p>
+
+ {% render_table table %}
+
+
+                    </div>
+                  </div>
+                </div>
+
+                             </div>
+                    </div>
+
+                </section>
+                <!-- users view ends -->
+
+
+{% endblock %}
+
+
+
+
+
+ <!-- BEGIN: Page Vendor JS-->
+{% block vendorjs %}
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/datatables.min.js' %}"></script>
+        <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/jszip.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/pdfmake.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/vfs_fonts.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.print.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/buttons.colVis.min.js' %}"></script>
+
+
+
+
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.colReorder.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/tables/datatable/dataTables.fixedHeader.min.js' %}"></script>
+
+
+    <script src="{% static 'stack/app-assets/js/scripts/tables/datatables-extensions/datatable-responsive.js' %}"></script>
+
+
+
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/moment-with-locales.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.date.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/picker.time.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/pickadate/legacy.js' %}"></script>
+    <script src="{% static 'stack/app-assets/vendors/js/pickers/daterange/daterangepicker.js' %}"></script>
+<script src="{% static 'stack/app-assets/vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js' %}"></script>
+
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
+
+{% endblock vendorjs %}
+
+    <!-- END: Page JS-->
+
+ {% block javascript %}
+
+
+
+
+<script type="text/javascript">
+      $(function () {
+          // Create item synchronous
+          function createItemSyncModalForm(eltId,createUrl) {
+          console.log("testetd");
+
+            eltId.modalForm({
+                formURL: createUrl,
+                modalID: "#create-modal"
+            });
+          }
+           createItemSyncModalForm($("#create-item"),"{{create_url}}");
+           createItemSyncModalForm($("#create-op"),"{{create_op_url}}");
+
+
+
+
+
+            function deleteItemModalForm() {
+
+            $(".delete-item").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+
+            });
+          }
+          deleteItemModalForm();
+
+
+
+
+
+           // modal form
+          function updateItemModalForm() {
+            $(".update-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: false
+
+              });
+            });
+          }
+
+
+
+               // modal form
+          function validateItemModalForm() {
+            $(".valider-item").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                 asyncUpdate: false
+
+              });
+            });
+          }
+
+
+
+                function createOPModalForm() {
+
+            $(".create-ordre-payment").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+
+            });
+
+
+          }
+
+          validateItemModalForm();
+          updateItemModalForm();
+           createOPModalForm();
+
+
+            function reinstantiateModalForms() {
+
+            createItemSyncModalForm();
+            deleteItemModalForm();
+            updateItemModalForm();
+            validateItemModalForm();
+             createOPModalForm();
+          }
+
+
+           $('.datetimepicker').datetimepicker({format: 'MM/DD/YYYY HH:mm:ss'});
+      });
+  </script>
+
+
+
+ {% endblock javascript %}

@@ -1,0 +1,17 @@
+{% extends "account/form_base.html" %}
+{% load static i18n helpers_tags %}
+
+{% block head_title %} {% trans 'Are you sure you want to sign out?' %}{% endblock head_title %}
+ {% block content %}
+       <form class="form-horizontal form-simple" method="post" action="{% url 'account_logout' %}" novalidate>
+                                           {% csrf_token %}
+                                          {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+  {% endif %}
+
+                                            <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="feather icon-unlock"></i> {% trans 'Sign Out' %}</button>
+                                        </form>
+{% endblock %}
+ {% block footer %}
+
+{% endblock %}

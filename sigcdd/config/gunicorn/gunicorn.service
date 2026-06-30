@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=tresor
+Group=www-data
+WorkingDirectory=/home/tresor/.virtualenvs/sigcdd_project/sigcdd
+ExecStart=/home/tresor/.virtualenvs/sigcdd_project/.venv/bin/gunicorn \
+          --access-logfile /var/log/sigcdd/gunicorn-access.log \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          sigcdd.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

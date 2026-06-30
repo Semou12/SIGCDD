@@ -1,0 +1,46 @@
+ {% load helpers_tags static i18n %}
+  <div class="card-content latest-update-tracking-list pt-0 pb-1 px-2 position-relative" id="infosOwner">
+                 {% if send_otp %}
+
+                <form id="verifyOtpForm" class="form form-horizontal striped-rows" hx-post="{% url 'bankcheck:verify_otp_sms_for_agent_pc' %}" hx-target="#infosOwner"
+                    hx-swap="outerHTML">
+                                              {% csrf_token %}
+                                            <div class="form-body">
+                                                <input type='hidden'id="id_reference"  name='reference' value='{{reference}}'/>
+                                                <input type='hidden' name='bulkreference' id='id_bulkreference' value='{{bulkreference}}'/>
+                                                <input type='hidden'id="id_otpreference"  name='otpreference' value='{{otpreference}}'/>
+
+                                                <input type="text" maxlength="8" class="form-control form-control-lg" id="id_otp" name="otp" placeholder='{%trans "Saisir otp" %}' required>
+
+
+                                            </div>
+                                            <div class="form-actions center">
+
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check-square-o"></i> Verifier
+                                                </button>
+                                            </div>
+                </form>
+
+
+                {% else %}
+
+                       <form id="sendOtpForm" class="form form-horizontal striped-rows" hx-post="{% url 'bankcheck:send_otp_sms_for_agent_pc' %}" hx-target="#infosOwner"
+                    hx-swap="outerHTML">
+                           {% csrf_token %}
+                                            <div class="form-body">
+                                                 {% include "includes/tweaks_form_fields.html" %}
+                                                <input type='hidden' name='bulkreference' value='{{bulkreference}}'/>
+
+                                            </div>
+                                            <div class="form-actions center">
+
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-check-square-o"></i> Envoyer Otp
+                                                </button>
+                                            </div>
+                      </form>
+
+                {% endif %}
+
+            </div>

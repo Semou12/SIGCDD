@@ -1,0 +1,114 @@
+{% load helpers_tags static i18n %}
+
+
+{% if request.user.role == "AGENT_DAP" and request.user.agent_dap.fonction == "AGENT_DAP" %}
+
+
+
+ <li class=" navigation-header"><span>Menu</span><i class=" feather icon-minus" data-toggle="tooltip" data-placement="right" data-original-title="General"></i>
+                </li>
+                <li class=" nav-item "><a href="{% url 'users:home_view' %}"><i class="feather icon-home"></i><span class="menu-title" data-i18n="administration">{% trans 'Home' %}</span></a>
+
+                </li>
+
+<!--  CHEQUIERS -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-feather"></i><span class="menu-title" data-i18n="administration">{% trans 'GESTION CHEQUIERS' %}</span></a>
+   <ul class="menu-content">
+
+
+
+
+
+
+
+
+
+
+        <li class="{% if request.resolver_match.url_name == 'commandes_encours_list' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'bankcheck:commandes_encours_list' %}" data-i18n="Modern Menu">{% trans 'Commandes' %}</a>
+                </li>
+
+
+
+
+
+
+
+
+<!--
+                        <li class=" {% if request.resolver_match.url_name == 'chequiers_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:chequiers_list' %}" data-i18n="poste">{% trans 'Chéquiers' %}</a>
+                        </li>-->
+
+       <li class=" {% if request.resolver_match.url_name == 'recep_chequiers_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:recep_chequiers_list' %}" data-i18n="poste">{% trans 'Receptionner' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'dist_chequiers_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:dist_chequiers_list' %}" data-i18n="poste">{% trans 'Distribuer' %}</a>
+                        </li>
+
+       <li class="{% if request.resolver_match.url_name == 'commandes_traite_list' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'bankcheck:commandes_traite_list' %}" data-i18n="Modern Menu">{% trans 'Traiter' %}</a>
+                </li>
+
+
+
+
+       <li class="{% if request.resolver_match.url_name == 'bordereau_list_view' %}active{% endif %}"><a
+                        class="menu-item" href="{% url 'bankcheck:bordereau_list_view' %}" data-i18n="Modern Menu">{% trans 'Bordereaux' %}</a>
+                </li>
+
+        <li class=" {% if request.resolver_match.url_name == 'typechequier_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:typechequier_list' %}" data-i18n="poste">{% trans 'Type chequier' %}</a>
+                        </li>
+
+
+
+     <!--  <li class=" {% if request.resolver_match.url_name == 'annulationcheque_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:annulationcheque_list' %}" data-i18n="poste">{% trans 'Annulations Cheques' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'miseenopposition_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:miseenopposition_list' %}" data-i18n="poste">{% trans 'Mise en Opposition' %}</a>
+                        </li>
+
+       <li class=" {% if request.resolver_match.url_name == 'compensecheque_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:compensecheque_list' %}" data-i18n="poste">{% trans 'Compenses' %}</a>
+                        </li>-->
+
+
+    </ul>
+</li>
+
+
+
+<!--  -	UTILISATEURS-->
+<li class=" nav-item open"><a href="#"><i class="fa icon-user"></i><span class="menu-title" data-i18n="administration">{% trans 'UTILISATEURS' %}</span></a>
+   <ul class="menu-content">
+
+
+
+
+                      <li class=" {% if request.resolver_match.url_name == 'agentdap_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:agentdap_list' %}" data-i18n="DCP">{% trans 'Agents DAP' %}</a>
+                        </li>
+
+
+
+    </ul>
+</li>
+<!--  POSTES COMPTABLES -->
+<li class=" nav-item open"><a href="#"><i class="feather icon-package"></i><span class="menu-title" data-i18n="administration">{% trans 'POSTES COMPTABLES ' %}</span></a>
+   <ul class="menu-content">
+
+
+
+                       <li class=" {% if request.resolver_match.url_name == 'dap_list' %}active{% endif %}"><a class="menu-item" href="{% url 'bankcheck:dap_list' %}" data-i18n="DCP">{% trans 'DAP' %}</a>
+                        </li>
+
+
+
+
+    </ul>
+</li>
+
+
+
+
+
+
+{% endif %}
+

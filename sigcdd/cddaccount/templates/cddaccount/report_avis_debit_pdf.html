@@ -1,0 +1,163 @@
+{% extends "invoice/stack_repport_pdf.html" %}
+{% load helpers_tags static i18n qr_code humanize %}
+
+
+
+{% block headercompte %}
+<div class="row justify-content-center">
+
+<div class="col-12">
+  <div class="row">
+      <div class="col-12">
+
+					<table id="balance_header" class="table table-borderless mb-0 table-lg "   style=" border-collapse: separate; border-spacing: 10px 5px;">
+
+                      <tbody>
+							<tr style="background-color:#babfc7">
+                                <td class="bg-light font-weight-bold" ><h4>DATE IMPRESSION</h4></td>
+
+                                <td class="bg-light  font-weight-bold"><h4> {{date}}</h4></td>
+
+							</tr>
+
+                      <tr style="background-color:#babfc7">
+                          <td class="bg-light font-weight-bold"><h4>GESTION</h4></td>
+                          <td class="bg-light font-weight-bold"><h4> {{gestion}}</h4></td>
+
+							</tr>
+							<tr style="background-color:#babfc7">
+                               {% if compte %} 
+							   <td class="bg-light font-weight-bold"><h4>COMPTE</h4></td>
+							   <td class="bg-light font-weight-bold"><h4> {{compte}}</h4></td>
+
+							
+                               {% else %}
+                               
+                                
+                                <td class="bg-light font-weight-bold" colspan="2" align="center"><h4> TOUS LES COMPTES</h4></td>
+ 
+                            
+
+                              {% endif %}
+                            </tr>
+                      <tr style="background-color:#babfc7">
+                          <td class="bg-light font-weight-bold" colspan="2" align="center"><h4>{{poste}}</h4></td>
+
+
+							</tr>
+
+                      
+
+						</tbody>
+
+					</table>
+
+
+
+</div>
+
+</div></div>
+
+
+
+
+
+</div>
+{% endblock %}
+
+{% block contentinvoice %}
+
+<div class="row justify-content-center">
+
+    <div class="justify-content-center center" style="margin-top:30px">
+        <h2 style="text-align: center;">SITUATION DES AVIS DE DÉBIT PAR COMPTE DE DEPÔT </h2>
+    </div>
+    <div class="justify-content-center center">                      
+        <h2 style="text-align: center;">DU : {{start_date}} AU {{end_date}}</h2>
+    </div>
+</div>
+
+
+<div class="row justify-content-center">
+
+
+                     <div class="col-12">
+
+                    <table class="table table-condensed table-hover table-sm table-bordered"  >
+
+                         <tbody>
+             {% if listavis %}                
+
+        {% for avis in listavis %}
+                            
+        <tr >
+            <td class="bg-primary text-left"colspan="5" style="font-size: 90% !important;background-color:#00b5b8; text-align:left">Compte {{avis.short_compte}}: {{avis.libelle_court}}</td>
+           
+        </tr>
+
+     <tr  class="bg-light" style="background-color:#babfc7">
+        
+          <th rowspan="1">N° AVIS</th>
+         <th rowspan="1">LIBELLÉ AVIS</th>
+         <th colspan="1" text-align="center"> DATE AVIS</th>
+         <th colspan="1" text-align="center">NATURE</th>
+         <th colspan="1" text-align="center">MONTANT</th>
+         
+         
+     </tr>
+                      
+                        {% for item in avis.items %}
+
+                           <tr>
+                             <th >{{item.reference}}</th>
+                            <th style="text-align: left !important;">{{item.libelle}}</th>
+                            <th >{{item.date_avis}}</th>
+                            <th >{{item.disposition}}</th>
+                            <th align="right">{{item.amount|intcomma}}</th>
+                            
+
+                            </tr>
+
+                        {% endfor %}
+                        <tr>
+                            <th class="text-left" rowspan="1" colspan="4">Total compte</th>
+                            <th colspan="1" align="right">{{avis.total|intcomma}}</th>
+                        </tr>
+         {% endfor %}
+         <tr class="bg-light" style="background-color:#babfc7; text-align:left">
+            <th class="text-left" rowspan="1" colspan="4" align="left">Total général</th>
+             <th align="right">{{total_general|intcomma}}</th>
+          </tr>
+         {% else %}
+         <tr  class="bg-light">
+        
+            <th rowspan="1">N° AVIS</th>
+           <th rowspan="1">LIBELLÉ AVIS</th>
+           <th colspan="1" text-align="center"> DATE AVIS</th>
+           <th colspan="1" text-align="center">NATURE</th>
+           <th colspan="1" text-align="center">MONTANT</th>
+           
+           
+       </tr>
+         {% endif %}
+                      
+                        </tbody>
+
+					</table>
+
+
+                     </div>
+
+
+
+
+</div>
+
+
+
+
+
+
+{% endblock  %}
+
+<!-- BEGIN: Page Vendor JS-->

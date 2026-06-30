@@ -1,0 +1,47 @@
+{% extends "account/form_base.html" %}
+{% load static i18n helpers_tags %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+ {% block content %}
+      {% if user.is_authenticated %}
+    {% include "account/snippets/already_logged_in.html" %}
+    {% endif %}
+
+  <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+
+
+                                         <form class="form-horizontal"  method="post" action="{% url 'account_signup' %}" novalidate>
+
+
+                                            {% csrf_token %}
+<div class="form-body">
+                                           <div class="row">
+
+
+                                             {% for field  in form %}
+
+
+                                             <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            {{ field|as_crispy_field }}
+                                                        </div>
+                                             </div>
+
+
+                                           {% endfor %}
+
+                                           </div>
+                                           </div>
+
+
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+
+                                            <button type="submit" class="btn btn-outline-primary btn-lg btn-block"><i class="feather icon-unlock"></i> {% trans "Sign Up" %}</button>
+                                        </form>
+{% endblock %}
+ {% block footer %}
+
+{% endblock %}

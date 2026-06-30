@@ -1,0 +1,190 @@
+{% load widget_tweaks %}
+{% load static i18n %}
+{{ form.media }}
+{% for field in form %}
+
+<div class="form-group">
+
+    {% if field|widget_type != "hiddeninput" %}
+    <label for="{{ field.id_for_label }}">{{ field.label }} {% if field.field.required %}<span class="danger">*</span>{% endif %}</label>
+    {% endif %}
+
+    {% if field|widget_type == "select" %}
+    <div class="input-group">
+        {% render_field field type="select" class="select2 form-control" %}
+
+    </div>
+
+
+
+     {% elif field|widget_type == "radioselect" %}
+    <div class="input-group skin skin-square">
+
+
+
+        <div class="card-body">
+
+
+    {% for radio in field %}
+
+            <fieldset class="radio">
+
+                {{radio.tag}}
+                <label for="{{ radio.id_for_label }}">
+                    {{ radio.choice_label }}
+                </label>
+
+            </fieldset>
+
+
+    {% endfor %}
+     </div>
+
+
+    </div>
+
+
+    {% elif field|widget_type == "selectmultiple" %}
+    <div class="input-group">
+        {% render_field field type="select" class="select2 form-control multiple" %}
+
+    </div>
+
+
+    {% elif field|widget_type == "moneywidget" %}
+
+    <div class="input-group">
+        <input type="text"  name="{{ field.html_name }}_0" id="id_{{ field.html_name }}_0"
+               placeholder="{{ field.label}}" class="form-control amount-inputmask_" >
+
+        <div class="input-group-append">
+
+
+            <select name="{{ field.html_name }}_1" id="id_{{ field.html_name }}_1" class="select2 form-control">
+
+                <option value="XOF">FCFA</option>
+
+            </select>
+
+        </div>
+    </div>
+
+
+    {% elif field|widget_type == "dateinput" %}
+
+    <div class="input-group">
+        {% render_field field type="date" class="form-control singledate" placeholder=field.label %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+    {% elif field|widget_type == "datetimeinput" %}
+    <div class="input-group">
+        {% render_field field type="text" class="form-control datetimepicker" placeholder=field.label %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+    {% elif field|widget_type == "daterangewidget" %}
+
+
+    <div class="input-group">
+        {% render_field field type="date" class="form-control stackdaterangepicker" placeholder=field.label %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+    {% elif field|widget_type == "linkeddatewidget" %}
+
+
+    <div class="input-group">
+        {% render_field field type="date" class="form-control linkeddate" placeholder=field.label data-value="dd/mm/YYYY" %}
+        <div class="input-group-append"><span class="input-group-text"><i
+                class="feather icon-calendar"></i></span>
+        </div>
+    </div>
+
+
+    {% elif field|widget_type == "regionalphonenumberwidget" %}
+
+    {% render_field field type="tel" class="form-control" placeholder=field.label %}
+
+
+    <span id="valid-msg" class="hide">✓ Valid</span>
+    <span id="error-msg" class="hide"></span>
+
+    {% elif field|widget_type == "ibaninput" %}
+    {% render_field field class="form-control iban-inputmask" placeholder=field.label %}
+
+
+
+
+    {% elif field|widget_type == "stackmoneywidget" %}
+
+
+
+       <div class="input-group" id="id_{{ field.html_name }}_group">
+
+           {% render_field field class="form-control amount-inputmask" placeholder=field.label %}
+
+        <div class="input-group-append">
+
+
+            <select name="{{ field.html_name }}_1" id="id_{{ field.html_name }}_1" class="select2 form-control">
+
+                <option value="XOF">FCFA</option>
+
+            </select>
+
+        </div>
+    </div>
+
+
+
+    {% elif field|widget_type == "rangewidget" %}
+
+
+
+       <div class="input-group" id="id_{{ field.html_name }}_group">
+
+
+        <div class="input-group-append">
+            <div class="form-group">
+
+            <input type="text"  name="{{ field.html_name }}_0" id="id_{{ field.html_name }}_0"
+                   placeholder="{{ field.label}} debut" class="form-control " ></div> -
+            <div class="form-group"><input type="text"  name="{{ field.html_name }}_1" id="id_{{ field.html_name }}_1"
+               placeholder="{{ field.label}} fin" class="form-control " ></div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+    {% else %}
+
+    {% render_field field class="form-control" placeholder=field.label %}
+    {% endif %}
+
+
+    <div class="{% if field.errors %} invalid{% endif %}">
+        {% for error in field.errors %}
+        <p class="danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endfor %}
