@@ -47,3 +47,9 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 MEDIA_ROOT = os.path.normpath(os.path.join(SITE_ROOT, 'media'))
 STATIC_ROOT = os.path.normpath(os.path.join(SITE_ROOT, 'assets'))
+
+FORCE_2FA_ENABLED=True
+
+ACCOUNT_SIGNUP_ENABLED = False
+ACCOUNT_ALLOW_REGISTRATION = False
+SOCIALACCOUNT_AUTO_SIGNUP = False

@@ -1,0 +1,38 @@
+{% extends "account/form_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Générer des codes de récupération" %}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+
+
+    {% if unused_code_count %}
+    <div class="alert bg-warning text-dark">
+      <i class="feather icon-alert-triangle"></i>
+      {% trans "Cette action invalidera vos codes existants. Êtes-vous sûr ?" %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'mfa_generate_recovery_codes' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      {% if unused_code_count %}
+        <button type="submit" class="btn btn-danger btn-block">
+          <i class="feather icon-refresh-cw"></i> {% trans "Générer quand même" %}
+        </button>
+      {% else %}
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="feather icon-refresh-cw"></i> {% trans "Générer les codes" %}
+        </button>
+      {% endif %}
+
+      <a href="{% url 'mfa_view_recovery_codes' %}" class="btn btn-secondary btn-block mt-1">
+        {% trans "Annuler" %}
+      </a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "account/form_base.html" %}
+{% load static i18n widget_tweaks %}
+
+{% block head_title %}{% trans "Activer l'authentification à deux facteurs" %}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+
+    <!-- QR Code -->
+    <div class="mb-2">
+      <img src="{{ totp_svg_data_uri }}" alt="QR Code 2FA" width="180">
+    </div>
+
+    <!-- Secret -->
+    <div class="form-group mb-2">
+      <label>{% trans "Secret" %}</label>
+      <input type="text" class="form-control" value="{{ form.secret }}" readonly>
+      <small class="text-muted">{% trans "Conservez ce secret pour réinstaller votre app plus tard." %}</small>
+    </div>
+
+    <!-- Formulaire -->
+    <form method="post" action="{% url 'mfa_activate_totp' %}">
+      {% csrf_token %}
+      {% for field in form.visible_fields %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field|add_class:'form-control' }}
+          {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-block">
+        {% trans "Activer" %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

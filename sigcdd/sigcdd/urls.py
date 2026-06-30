@@ -23,12 +23,15 @@ from django.views.generic import TemplateView
 from users.views import home_view,SigcddPasswordChangeView
 
 import notifications.urls
+from allauth.account.decorators import secure_admin_login
+if getattr(settings, "FORCE_2FA_ENABLED", False):
+    admin.site.login = secure_admin_login(admin.site.login)
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("accounts/", include("allauth_2fa.urls")),
     path('accounts/password/change/',
          SigcddPasswordChangeView.as_view(),
          name='account_change_password'),
+                  path('accounts/signup/', lambda request: (_ for _ in ()).throw(Http404()), name='account_signup'),
     path("accounts/", include("allauth.urls")),
     path("users/", include('users.urls', namespace='users')),
     path("helpers/", include('helpers.urls', namespace='helpers')),

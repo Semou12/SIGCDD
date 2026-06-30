@@ -1,0 +1,44 @@
+{% extends "account/form_base.html" %}
+{% load static i18n widget_tweaks %}
+
+{% block head_title %}{% trans "Codes de récupération" %}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <h4 class="mb-2">{% trans "Codes de récupération" %}</h4>
+
+    <p>
+      {% blocktranslate count unused_count=unused_codes|length %}
+        Il reste {{ unused_count }} code sur {{ total_count }} disponible.
+      {% plural %}
+        Il reste {{ unused_count }} codes sur {{ total_count }} disponibles.
+      {% endblocktranslate %}
+    </p>
+
+    {% if unused_codes %}
+    <div class="form-group">
+      <label>{% trans "Codes non utilisés" %}</label>
+      <textarea class="form-control" rows="{{ unused_codes|length }}" readonly>{% for code in unused_codes %}{{ code }}{% if not forloop.last %}
+{% endif %}{% endfor %}</textarea>
+    </div>
+
+    <a href="{% url 'mfa_download_recovery_codes' %}" class="btn btn-secondary mb-1">
+      <i class="feather icon-download"></i> {% trans "Télécharger les codes" %}
+    </a>
+    {% endif %}
+      <a href="{% url 'users:home_view' %}" class="btn btn-warning mb-1">
+         {% trans "Connecter" %}
+      </a>
+  <!--
+      <a href="{% url 'mfa_generate_recovery_codes' %}" class="btn btn-warning mb-1">
+        <i class="feather icon-refresh-cw"></i> {% trans "Générer de nouveaux codes" %}
+      </a>
+
+      <a href="{% url 'mfa_deactivate_totp' %}" class="btn btn-danger mb-1">
+        <i class="feather icon-shield-off"></i> {% trans "Désactiver la 2FA" %}
+      </a>
+    -->
+  </div>
+</div>
+{% endblock %}

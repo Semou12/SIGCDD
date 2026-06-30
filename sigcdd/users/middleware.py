@@ -117,3 +117,95 @@ class SelectCddAccountWMiddleWare(MiddlewareMixin):
                 del request.session["select_cddacc_user_id"]
             except KeyError:
                 pass
+
+
+
+
+
+
+# ============================================================
+# Middleware 3 — Force 2FA setup for required roles
+# ============================================================
+#
+# Changes for django-allauth 0.58.0:
+#
+#   REMOVED: from allauth.account.internal.stagekit import clear_login
+#            → allauth.account.internal does not exist in 0.58.0.
+#
+#   REPLACED with: unstash_login(request) from allauth.account.utils
+#                  This pops "account_login" from the session, which is the
+#                  correct way to abort an in-progress login flow in 0.58.0.
+#
+#   NOTE: The primary fix for ROLES_WITHOUT_2FA being redirected to
+#   /accounts/2fa/authenticate/ lives in adapters.patch_is_mfa_enabled(),
+#   called from AppConfig.ready() in apps.py.
+#   _should_bypass_2fa() + unstash_login() here is a fallback safety net
+#   for any residual pending-login session that might already exist.
+#
+from django.urls import reverse
+from allauth.mfa.models import Authenticator
+from allauth.account.utils import unstash_login  # replaces clear_login
+from users.adapters import CustomMFAAdapter, ROLES_WITHOUT_2FA  # noqa: F401
+
+EXEMPT_URLS = [
+    "/accounts/",
+    "/static/",
+    "/media/",
+    "/api/",
+    "/admin/login/",
+    "/admin/logout/",
+    "/bamel/login/",
+    "/bamel/logout/",
+]
+
+
+class Force2FAMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if not getattr(settings, "FORCE_2FA_ENABLED", True):
+            return self.get_response(request)
+
+        # If the user must bypass 2FA but allauth has a pending MFA stage
+        # stored in session, remove it to prevent an infinite redirect loop.
+        # unstash_login() is the 0.58.0 equivalent of clear_login().
+        if self._should_bypass_2fa(request.user):
+            unstash_login(request)  # pops "account_login" from session
+            return self.get_response(request)
+
+        user = request.user
+        if (
+            user.is_authenticated
+            and not getattr(user, "mfa_exempt", False)
+            and hasattr(user, "role")
+            and user.role not in ROLES_WITHOUT_2FA
+            and not self._has_2fa(user)
+            and not self._is_exempt(request.path)
+        ):
+            return redirect(reverse("mfa_activate_totp"))
+
+        return self.get_response(request)
+
+    def _should_bypass_2fa(self, user) -> bool:
+        """
+        Returns True if this user should not go through the MFA stage,
+        even if an Authenticator exists in the database.
+        """
+        if not getattr(user, "is_authenticated", False):
+            return False
+        if not getattr(settings, "FORCE_2FA_ENABLED", True):
+            return True
+        if getattr(user, "mfa_exempt", False):
+            return True
+        if hasattr(user, "role") and user.role in ROLES_WITHOUT_2FA:
+            return True
+        return False
+
+    def _has_2fa(self, user) -> bool:
+        return Authenticator.objects.filter(
+            user=user, type=Authenticator.Type.TOTP
+        ).exists()
+
+    def _is_exempt(self, path) -> bool:
+        return any(path.startswith(url) for url in EXEMPT_URLS)

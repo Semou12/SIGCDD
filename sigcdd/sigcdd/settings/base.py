@@ -63,6 +63,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
 	'crispy_forms',  # Form layouts
 	'allauth',  # registration
+	"allauth.mfa"
 	'allauth.account',  # registration
 	'allauth.socialaccount',  # registration
 	'mptt',
@@ -123,7 +124,7 @@ MIDDLEWARE = [
     # Reset login flow middleware. If this middleware is included, the login
     # flow is reset if another page is loaded between login and successfully
     # entering two-factor credentials.
-    "allauth_2fa.middleware.AllauthTwoFactorMiddleware",
+    #"allauth_2fa.middleware.AllauthTwoFactorMiddleware",
     "axes.middleware.AxesMiddleware",
 	"users.middleware.EnableFirstLoginCPWMiddleWare",
 	"users.middleware.SelectCddAccountWMiddleWare",
@@ -132,6 +133,7 @@ MIDDLEWARE = [
 	#'corsheaders.middleware.CorsMiddleware',
 
 	'core.middleware.MaintenanceModeMiddleware',
+	"users.middleware.Force2FAMiddleware",
 
 ]
 
@@ -601,3 +603,19 @@ EPAIEMENT_APPCODE=env("EPAIEMENT_APPCODE")
 EPAIEMENT_X_USER_ID=env("EPAIEMENT_X_USER_ID")
 EPAIEMENT_CLIENT_ID=env("EPAIEMENT_CLIENT_ID")
 EPAIEMENT_CLIENT_SECRET=env("EPAIEMENT_CLIENT_SECRET")
+
+
+
+#ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
+ACCOUNT_ADAPTER = 'users.adapters.SMSOTPAdapter'
+ACTIVATE_TOPT_SMS=False
+
+FORCE_2FA_ENABLED = env.bool("FORCE_2FA_ENABLED", default=False)
+
+MFA_TOTP_ACTIVATE_REAUTH_REQUIRED = False
+MFA_ADAPTER = "users.adapters.CustomMFAAdapter"
+
+ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password1*', 'password2*']  # ← nouveau
+SOCIALACCOUNT_ONLY = False
+MFA_TOTP_ISSUER = "SIGCDD"
+MFA_ENFORCE_AUTHENTICATION = False

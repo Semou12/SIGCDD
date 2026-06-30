@@ -1,0 +1,49 @@
+{% extends "account/form_base.html" %}
+{% load static i18n helpers_tags %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block head_title %} {% trans 'Two-Factor Authentication' %}{% endblock head_title %}
+{% block content %}
+
+
+
+
+
+
+
+<form class="form form-simple" novalidate method="POST">
+                                            <div class="form-body">
+                                              {% csrf_token %}
+         {% for hidden in form.hidden_fields %}
+      {{ hidden }}
+    {% endfor %}
+
+    {% for field in form.visible_fields %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }} {% if field.field.required %}<span class="danger">*</span>{% endif %}</label>
+        {{ field|add_class:'form-control' }}
+        {% for error in field.errors %}
+          <span class="help-block">{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+
+                                            </div>
+
+                                            <div class="form-actions center">
+
+                                              <button class="btn btn-primary" type="submit" name="action"> {% trans 'Authenticate' %}</button>
+                                            </div>
+                                        </form>
+
+
+
+{% endblock %}
+
+
+
+
+ {% block footer %}
+
+{% endblock %}
