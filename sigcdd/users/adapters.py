@@ -49,7 +49,7 @@ from helpers.models import Role
 # Shared constant
 # ─────────────────────────────────────────────
 
-ROLES_WITHOUT_2FA = {Role.CONTRIBUABLE, Role.AGENT_TG}
+ROLES_WITHOUT_2FA = {"SUPER_ADMIN"}
 
 
 def _should_enforce_2fa(user) -> bool:

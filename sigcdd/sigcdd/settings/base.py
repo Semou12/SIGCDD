@@ -63,7 +63,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
 	'crispy_forms',  # Form layouts
 	'allauth',  # registration
-	"allauth.mfa"
+	"allauth.mfa",
 	'allauth.account',  # registration
 	'allauth.socialaccount',  # registration
 	'mptt',
@@ -125,6 +125,7 @@ MIDDLEWARE = [
     # flow is reset if another page is loaded between login and successfully
     # entering two-factor credentials.
     #"allauth_2fa.middleware.AllauthTwoFactorMiddleware",
+	"allauth.account.middleware.AccountMiddleware",
     "axes.middleware.AxesMiddleware",
 	"users.middleware.EnableFirstLoginCPWMiddleWare",
 	"users.middleware.SelectCddAccountWMiddleWare",
