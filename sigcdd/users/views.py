@@ -66,7 +66,7 @@ def home_view(request):
         return url
 
     if request.user.is_superuser:
-        raise Http404
+        return redirect(reverse("admin:index"))
 
     elif user.role == Role.ADMIN:
         url_path = reverse('core:dcp_list')
