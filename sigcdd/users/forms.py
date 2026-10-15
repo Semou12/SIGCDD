@@ -47,3 +47,89 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email"]
+
+
+# ---------------------------------------------------------------------------
+# Réinitialisation du mot de passe par SMS (OTP)
+# ---------------------------------------------------------------------------
+from django.contrib.auth.password_validation import validate_password
+
+
+class SmsResetRequestForm(forms.Form):
+    """Étape 1 : l'utilisateur saisit son identifiant."""
+
+    username = forms.CharField(
+        label=_("Identifiant"),
+        max_length=150,
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-lg",
+            "placeholder": _("Votre identifiant"),
+            "autofocus": True,
+            "autocomplete": "username",
+        }),
+    )
+
+    def clean_username(self):
+        return self.cleaned_data["username"].strip()
+
+
+class SmsResetOtpForm(forms.Form):
+    """Étape 2 : l'utilisateur saisit le code reçu par SMS."""
+
+    otp = forms.CharField(
+        label=_("Code reçu par SMS"),
+        max_length=10,
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-lg",
+            "placeholder": _("Code à 6 chiffres"),
+            "inputmode": "numeric",
+            "autocomplete": "one-time-code",
+            "autofocus": True,
+        }),
+    )
+
+    def clean_otp(self):
+        otp = self.cleaned_data["otp"].strip()
+        if not otp.isdigit():
+            raise forms.ValidationError(_("Le code doit être numérique."))
+        return otp
+
+
+class SmsResetPasswordForm(forms.Form):
+    """Étape 3 : l'utilisateur choisit son nouveau mot de passe."""
+
+    password1 = forms.CharField(
+        label=_("Nouveau mot de passe"),
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "placeholder": _("Nouveau mot de passe"),
+            "autocomplete": "new-password",
+        }),
+    )
+    password2 = forms.CharField(
+        label=_("Confirmer le mot de passe"),
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "placeholder": _("Confirmer le mot de passe"),
+            "autocomplete": "new-password",
+        }),
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_password2(self):
+        p1 = self.cleaned_data.get("password1")
+        p2 = self.cleaned_data.get("password2")
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError(_("Les deux mots de passe ne correspondent pas."))
+        return p2
+
+    def clean(self):
+        cleaned = super().clean()
+        p1 = cleaned.get("password1")
+        if p1:
+            # Applique les validateurs configurés dans AUTH_PASSWORD_VALIDATORS
+            validate_password(p1, self.user)
+        return cleaned

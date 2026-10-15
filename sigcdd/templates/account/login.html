@@ -66,6 +66,7 @@
  {% block footer %}
   <div class="">
                                         <p class="float-sm-left text-center m-0"><a href="{% url 'account_reset_password' %}" class="card-link">{%trans "Mot de passe oublié ? " %} </a></p>
+                                        <p class="float-sm-right text-center m-0"><a href="{% url 'account_reset_password_sms' %}" class="card-link">{%trans "Réinitialiser par SMS" %}</a></p>
                                         <!--<p class="float-sm-right text-center m-0"> {%trans "New in SIGCDD?" %} <a href="{% url 'account_signup' %}" class="card-link">{%trans "Sign Up" %}</a></p>-->
                                     </div>
 {% endblock %}

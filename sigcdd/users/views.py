@@ -171,3 +171,150 @@ def profile_view(request):
 def user_simple_view(request):
     template="users/simple.html"
     return render(request, template, {})
+
+
+# ===========================================================================
+# Réinitialisation du mot de passe par SMS (OTP) — canal alternatif à l'e-mail
+# Étapes : identifiant -> code OTP par SMS -> choix du nouveau mot de passe.
+# ===========================================================================
+import time
+
+from helpers.models import SimpleOtp
+from helpers.commons import OTP_STEP_IN_MIN
+from users.forms import SmsResetRequestForm, SmsResetOtpForm, SmsResetPasswordForm
+
+SMS_RESET_SESSION_KEY = "sms_pwd_reset"
+SMS_RESET_FLOW_TTL = 600        # durée de vie du flux complet (10 min)
+SMS_RESET_MAX_ATTEMPTS = 5      # tentatives de code avant invalidation
+
+
+def _user_phone_str(user):
+    """Retourne le téléphone du profil sous forme de chaîne (e164 si possible)."""
+    raw = getattr(user, "phone", "") or ""
+    try:
+        phone = raw.as_e164  # PhoneNumberField
+    except AttributeError:
+        phone = str(raw)
+    return (phone or "").strip()
+
+
+def _mask_phone(phone):
+    digits = "".join(ch for ch in phone if ch.isdigit())
+    if len(digits) <= 4:
+        return "•" * len(digits)
+    return digits[:2] + "•" * (len(digits) - 4) + digits[-2:]
+
+
+def _reset_state(request):
+    return request.session.get(SMS_RESET_SESSION_KEY)
+
+
+def _clear_reset_state(request):
+    request.session.pop(SMS_RESET_SESSION_KEY, None)
+
+
+def sms_reset_password_request(request):
+    """Étape 1 : saisie de l'identifiant, envoi de l'OTP par SMS."""
+    template = "account/password_reset_sms.html"
+    if request.method == "POST":
+        form = SmsResetRequestForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            user = User.objects.filter(username=username, is_active=True).first()
+            phone = _user_phone_str(user) if user else ""
+            if user and phone:
+                otp = SimpleOtp()
+                otp.phone = phone
+                otp.generate_otp()
+                otp.message = (
+                    "SIGCDD : votre code de reinitialisation de mot de passe est {}. "
+                    "Il expire dans {} min.".format(otp.otp, OTP_STEP_IN_MIN)
+                )
+                otp.save()
+                otp.send_otp()
+                request.session[SMS_RESET_SESSION_KEY] = {
+                    "uid": user.id,
+                    "otp_ref": otp.reference,
+                    "phone_mask": _mask_phone(phone),
+                    "started_at": time.time(),
+                    "verified": False,
+                    "attempts": 0,
+                }
+                request.session.modified = True
+                return redirect(reverse("account_reset_password_sms_verify"))
+            # Identifiant inconnu ou sans téléphone : message explicite (outil interne)
+            messages.error(
+                request,
+                _("Identifiant inconnu ou aucun numéro de téléphone associé à ce compte."),
+                extra_tags="danger",
+            )
+    else:
+        form = SmsResetRequestForm()
+    return render(request, template, {"form": form})
+
+
+def sms_reset_password_verify(request):
+    """Étape 2 : vérification du code OTP."""
+    template = "account/password_reset_sms_verify.html"
+    state = _reset_state(request)
+    if not state or (time.time() - state.get("started_at", 0)) > SMS_RESET_FLOW_TTL:
+        _clear_reset_state(request)
+        messages.error(request, _("Session expirée, merci de recommencer."), extra_tags="danger")
+        return redirect(reverse("account_reset_password_sms"))
+
+    if request.method == "POST":
+        if state.get("attempts", 0) >= SMS_RESET_MAX_ATTEMPTS:
+            _clear_reset_state(request)
+            messages.error(request, _("Trop de tentatives. Merci de recommencer."), extra_tags="danger")
+            return redirect(reverse("account_reset_password_sms"))
+
+        form = SmsResetOtpForm(request.POST)
+        if form.is_valid():
+            otp_obj = SimpleOtp.objects.filter(reference=state["otp_ref"]).first()
+            if otp_obj and otp_obj.verify(form.cleaned_data["otp"]):
+                state["verified"] = True
+                request.session[SMS_RESET_SESSION_KEY] = state
+                request.session.modified = True
+                return redirect(reverse("account_reset_password_sms_set"))
+            state["attempts"] = state.get("attempts", 0) + 1
+            request.session[SMS_RESET_SESSION_KEY] = state
+            request.session.modified = True
+            messages.error(request, _("Code invalide ou expiré."), extra_tags="danger")
+    else:
+        form = SmsResetOtpForm()
+    return render(request, template, {"form": form, "phone_mask": state.get("phone_mask")})
+
+
+def sms_reset_password_set(request):
+    """Étape 3 : choix du nouveau mot de passe (uniquement si OTP vérifié)."""
+    template = "account/password_reset_sms_set.html"
+    state = _reset_state(request)
+    if (not state or not state.get("verified")
+            or (time.time() - state.get("started_at", 0)) > SMS_RESET_FLOW_TTL):
+        _clear_reset_state(request)
+        messages.error(request, _("Session expirée ou non vérifiée, merci de recommencer."), extra_tags="danger")
+        return redirect(reverse("account_reset_password_sms"))
+
+    user = User.objects.filter(id=state["uid"], is_active=True).first()
+    if not user:
+        _clear_reset_state(request)
+        messages.error(request, _("Compte introuvable."), extra_tags="danger")
+        return redirect(reverse("account_reset_password_sms"))
+
+    if request.method == "POST":
+        form = SmsResetPasswordForm(request.POST, user=user)
+        if form.is_valid():
+            user.set_password(form.cleaned_data["password1"])
+            user.force_change_pwd = False
+            user.save()
+            # Invalide l'OTP et nettoie la session
+            SimpleOtp.objects.filter(reference=state["otp_ref"]).delete()
+            _clear_reset_state(request)
+            messages.success(request, _("Mot de passe réinitialisé. Vous pouvez vous connecter."))
+            return redirect(reverse("account_login"))
+        for field in form:
+            for error in field.errors:
+                messages.error(request, "{} ({})".format(error, field.label), extra_tags="danger")
+    else:
+        form = SmsResetPasswordForm(user=user)
+    return render(request, template, {"form": form})

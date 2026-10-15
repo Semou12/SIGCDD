@@ -21,6 +21,11 @@ from django.conf.urls.static import static
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from users.views import home_view,SigcddPasswordChangeView
+from users.views import (
+    sms_reset_password_request,
+    sms_reset_password_verify,
+    sms_reset_password_set,
+)
 
 import notifications.urls
 from allauth.account.decorators import secure_admin_login
@@ -31,6 +36,16 @@ urlpatterns = [
     path('accounts/password/change/',
          SigcddPasswordChangeView.as_view(),
          name='account_change_password'),
+    # Réinitialisation du mot de passe par SMS (canal alternatif à l'e-mail)
+    path('accounts/password/reset/sms/',
+         sms_reset_password_request,
+         name='account_reset_password_sms'),
+    path('accounts/password/reset/sms/verify/',
+         sms_reset_password_verify,
+         name='account_reset_password_sms_verify'),
+    path('accounts/password/reset/sms/set/',
+         sms_reset_password_set,
+         name='account_reset_password_sms_set'),
                   path('accounts/signup/', lambda request: (_ for _ in ()).throw(Http404()), name='account_signup'),
     path("accounts/", include("allauth.urls")),
     path("users/", include('users.urls', namespace='users')),
