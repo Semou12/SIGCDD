@@ -274,6 +274,7 @@
 
  {% block javascript %}
 
+{{ url_report_pdf|json_script:"pdf-url-data" }}
 <script type="text/javascript">
       $(function () {
           // Create item synchronous
@@ -288,8 +289,8 @@
       });
 
       function pdfOnNewTab(){
-        const url = "{{url_report_pdf | safe}}";				
-        window.open(url, "_blank");
+        const url = JSON.parse(document.getElementById("pdf-url-data").textContent);				
+        window.open(url, "_blank", "noopener,noreferrer");
     }
 </script>
 

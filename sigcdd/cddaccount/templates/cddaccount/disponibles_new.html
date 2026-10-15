@@ -211,12 +211,14 @@
 {% endblock vendorjs %}s
  {% block javascript %}
 
+{{ pdf_url|json_script:"pdf-url-data" }}
+
 
 
 <script type="text/javascript">
        function pdfOnNewTab(){
-        const url = "{{pdf_url | safe}}";
-        window.open(url, "_blank");
+        const url = JSON.parse(document.getElementById("pdf-url-data").textContent);
+        window.open(url, "_blank", "noopener,noreferrer");
     }
 
       $(function () {
