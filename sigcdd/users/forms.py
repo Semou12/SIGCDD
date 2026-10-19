@@ -133,3 +133,18 @@ class SmsResetPasswordForm(forms.Form):
             # Applique les validateurs configurés dans AUTH_PASSWORD_VALIDATORS
             validate_password(p1, self.user)
         return cleaned
+
+
+
+
+from allauth.mfa.forms import ActivateTOTPForm
+from allauth.mfa import totp
+from allauth.mfa.adapter import get_adapter
+
+class ActivateTOTPNoEmailForm(ActivateTOTPForm):
+    """Autorise l'activation TOTP sans e-mail vérifié."""
+    def clean_code(self):
+        code = self.cleaned_data["code"]
+        if not totp.validate_totp_code(self.secret, code):
+            raise get_adapter().validation_error("incorrect_code")
+        return code
