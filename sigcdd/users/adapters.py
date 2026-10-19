@@ -40,8 +40,11 @@ from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.mfa.adapter import DefaultMFAAdapter
 from allauth.mfa.models import Authenticator
+import datetime
+
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
 from helpers.models import Role
 
 
@@ -52,18 +55,48 @@ from helpers.models import Role
 ROLES_WITHOUT_2FA = {"SUPER_ADMIN"}
 
 
+def get_force_2fa_deadline():
+    """Retourne la date (incluse) d'obligation 2FA, ou None si non configuree/invalide."""
+    raw = getattr(settings, "FORCE_2FA_DEADLINE", None)
+    if not raw:
+        return None
+    if isinstance(raw, datetime.date):
+        return raw
+    try:
+        return datetime.date.fromisoformat(str(raw).strip())
+    except (ValueError, TypeError):
+        return None
+
+
+def force_2fa_active() -> bool:
+    """
+    True si la 2FA est actuellement obligatoire :
+      - override manuel FORCE_2FA_ENABLED=True, OU
+      - on a atteint la date limite FORCE_2FA_DEADLINE.
+    """
+    if getattr(settings, "FORCE_2FA_ENABLED", False):
+        return True
+    deadline = get_force_2fa_deadline()
+    return deadline is not None and timezone.localdate() >= deadline
+
+
+def is_2fa_exempt(user) -> bool:
+    """True si l'utilisateur est dispense de 2FA (mfa_exempt ou role exempte)."""
+    if getattr(user, "mfa_exempt", False):
+        return True
+    if hasattr(user, "role") and user.role in ROLES_WITHOUT_2FA:
+        return True
+    return False
+
+
 def _should_enforce_2fa(user) -> bool:
     """
     Centralised business logic: returns True if the user must go through 2FA.
     Used by SMSOTPAdapter, Force2FAMiddleware, and the patched is_mfa_enabled.
     """
-    if not getattr(settings, "FORCE_2FA_ENABLED", True):
+    if not force_2fa_active():
         return False
-    if getattr(user, "mfa_exempt", False):
-        return False
-    if hasattr(user, "role") and user.role in ROLES_WITHOUT_2FA:
-        return False
-    return True
+    return not is_2fa_exempt(user)
 
 
 # ─────────────────────────────────────────────

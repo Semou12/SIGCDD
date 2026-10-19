@@ -3,38 +3,66 @@
 
 {% block head_title %}{% trans "Activer l'authentification à deux facteurs" %}{% endblock %}
 
+{% block form_col %}col-lg-7 col-md-10 col-11{% endblock %}
+
 {% block content %}
+<style>
+  .mfa-steps { counter-reset: mfa; list-style: none; padding-left: 0; margin: 0; }
+  .mfa-steps li { position: relative; padding-left: 2.25rem; margin-bottom: .85rem; line-height: 1.45; }
+  .mfa-steps li::before {
+    counter-increment: mfa; content: counter(mfa);
+    position: absolute; left: 0; top: .05rem;
+    width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: #7367f0; color: #fff; font-weight: 600; font-size: .8rem;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .mfa-qr { border: 1px solid #ebe9f1; border-radius: .5rem; padding: .6rem; display: inline-block; background: #fff; }
+  .mfa-secret { font-family: monospace; letter-spacing: 1px; }
+</style>
+
+<p class="text-muted mb-2">{% trans "Renforcez la sécurité de votre compte en quelques étapes." %}</p>
+
 <div class="row">
-  <div class="col-md-6 offset-md-3">
+  <!-- Étapes -->
+  <div class="col-md-7 mb-2">
+    <h5 class="mb-1">{% trans "Comment faire" %}</h5>
+    <ol class="mfa-steps">
+      <li>{% trans "Installez une application d'authentification sur votre téléphone : Google Authenticator, Microsoft Authenticator ou FreeOTP." %}</li>
+      <li>{% trans "Dans l'application, choisissez « Scanner un QR code » et scannez le code à droite (ou saisissez le secret à la main)." %}</li>
+      <li>{% trans "L'application affiche un code à 6 chiffres qui change toutes les 30 secondes." %}</li>
+      <li>{% trans "Saisissez ce code ci-dessous puis cliquez sur « Activer »." %}</li>
+    </ol>
+  </div>
 
-    <!-- QR Code -->
-    <div class="mb-2">
-      <img src="{{ totp_svg_data_uri }}" alt="QR Code 2FA" width="180">
+  <!-- QR + secret -->
+  <div class="col-md-5 text-center mb-2">
+    <div class="mfa-qr mb-1">
+      <img src="{{ totp_svg_data_uri }}" alt="QR Code 2FA" width="160">
     </div>
-
-    <!-- Secret -->
-    <div class="form-group mb-2">
-      <label>{% trans "Secret" %}</label>
-      <input type="text" class="form-control" value="{{ form.secret }}" readonly>
-      <small class="text-muted">{% trans "Conservez ce secret pour réinstaller votre app plus tard." %}</small>
+    <div class="form-group text-left mb-0">
+      <label class="mb-0"><small class="text-muted">{% trans "Secret (saisie manuelle)" %}</small></label>
+      <input type="text" class="form-control form-control-sm mfa-secret" value="{{ form.secret }}" readonly onclick="this.select()">
     </div>
-
-    <!-- Formulaire -->
-    <form method="post" action="{% url 'mfa_activate_totp' %}">
-      {% csrf_token %}
-      {% for field in form.visible_fields %}
-        <div class="form-group">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field|add_class:'form-control' }}
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
-          {% endfor %}
-        </div>
-      {% endfor %}
-      <button type="submit" class="btn btn-primary btn-block">
-        {% trans "Activer" %}
-      </button>
-    </form>
   </div>
 </div>
+
+<!-- Saisie du code -->
+<form method="post" action="{% url 'mfa_activate_totp' %}" class="mt-1">
+  {% csrf_token %}
+  {% for error in form.non_field_errors %}
+    <p class="text-danger">{{ error }}</p>
+  {% endfor %}
+  {% for field in form.visible_fields %}
+    <div class="form-group">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {% for error in field.errors %}
+        <span class="d-block text-danger small">{{ error }}</span>
+      {% endfor %}
+      {{ field|add_class:'form-control form-control-lg' }}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-primary btn-block">
+    <i class="feather icon-shield"></i> {% trans "Activer" %}
+  </button>
+</form>
 {% endblock %}

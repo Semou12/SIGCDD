@@ -41,7 +41,7 @@ class SelectCddAccountWMiddleWare(MiddlewareMixin):
         # They should still be able to log out or change password.
         "account_change_password",
         "account_logout",
-        "account_reset_password",
+        "account_reset_password","account_reauthenticate",
         # URLs required to set up two-factor
         "two-factor-setup",
         "complete_gerant",
@@ -92,7 +92,8 @@ class SelectCddAccountWMiddleWare(MiddlewareMixin):
         else: return False
 
     def is_allowed_page(self, request):
-        return request.resolver_match.url_name in self.allowed_pages
+        name = request.resolver_match.url_name
+        return name in self.allowed_pages or (name or "").startswith("mfa_")
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         # The user is not logged in, do nothing.
@@ -145,7 +146,7 @@ class SelectCddAccountWMiddleWare(MiddlewareMixin):
 from django.urls import reverse
 from allauth.mfa.models import Authenticator
 from allauth.account.utils import unstash_login  # replaces clear_login
-from users.adapters import CustomMFAAdapter, ROLES_WITHOUT_2FA  # noqa: F401
+from users.adapters import CustomMFAAdapter, ROLES_WITHOUT_2FA, force_2fa_active  # noqa: F401
 
 EXEMPT_URLS = [
     "/accounts/",
@@ -164,7 +165,7 @@ class Force2FAMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if not getattr(settings, "FORCE_2FA_ENABLED", True):
+        if not force_2fa_active():
             return self.get_response(request)
 
         # If the user must bypass 2FA but allauth has a pending MFA stage
@@ -194,7 +195,7 @@ class Force2FAMiddleware:
         """
         if not getattr(user, "is_authenticated", False):
             return False
-        if not getattr(settings, "FORCE_2FA_ENABLED", True):
+        if not force_2fa_active():
             return True
         if getattr(user, "mfa_exempt", False):
             return True

@@ -1,0 +1,15 @@
+{% load i18n %}
+{% if mfa_reminder.show %}
+<div class="alert bg-warning alert-dismissible mb-2" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <i class="feather icon-shield"></i>
+    <strong>{% trans "Sécurité :" %}</strong>
+    {% blocktrans with date=mfa_reminder.deadline|date:"d/m/Y" %}la double authentification (2FA) deviendra obligatoire le {{ date }}.{% endblocktrans %}
+    {% trans "Activez-la dès maintenant pour être prêt le jour J." %}
+    <a href="{{ mfa_reminder.activate_url }}" class="btn btn-sm btn-primary ml-1">
+        <i class="feather icon-lock"></i> {% trans "Activer la 2FA" %}
+    </a>
+</div>
+{% endif %}

@@ -155,6 +155,7 @@ TEMPLATES = [
 				'django.template.context_processors.static',
 				'django.template.context_processors.tz',
 				'django.contrib.messages.context_processors.messages',
+				'users.context_processors.mfa_reminder',
 
 			],
 			'debug': DEBUG,
@@ -612,6 +613,12 @@ ACCOUNT_ADAPTER = 'users.adapters.SMSOTPAdapter'
 ACTIVATE_TOPT_SMS=False
 
 FORCE_2FA_ENABLED = env.bool("FORCE_2FA_ENABLED", default=False)
+
+# Date (incluse) a partir de laquelle la 2FA devient obligatoire pour tous
+# (format YYYY-MM-DD). Vide = pas d'obligation automatique par date.
+# FORCE_2FA_ENABLED=True reste un override manuel qui active la 2FA a tout moment.
+# Voir users.adapters.force_2fa_active().
+FORCE_2FA_DEADLINE = env("FORCE_2FA_DEADLINE", default="2026-11-01")
 
 MFA_TOTP_ACTIVATE_REAUTH_REQUIRED = False
 MFA_ADAPTER = "users.adapters.CustomMFAAdapter"

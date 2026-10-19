@@ -29,7 +29,9 @@ from users.views import (
 
 import notifications.urls
 from allauth.account.decorators import secure_admin_login
-if getattr(settings, "FORCE_2FA_ENABLED", False):
+from users.adapters import force_2fa_active
+# Note: evalue au demarrage ; la bascule a la date limite s'applique apres un redemarrage.
+if force_2fa_active():
     admin.site.login = secure_admin_login(admin.site.login)
 urlpatterns = [
     path('admin/', admin.site.urls),
