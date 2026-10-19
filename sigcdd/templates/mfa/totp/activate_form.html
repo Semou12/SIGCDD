@@ -1,68 +1,119 @@
 {% extends "account/form_base.html" %}
 {% load static i18n widget_tweaks %}
 
-{% block head_title %}{% trans "Activer l'authentification à deux facteurs" %}{% endblock %}
+{% block head_title %}{% trans "Activer la double authentification" %}{% endblock %}
 
-{% block form_col %}col-lg-7 col-md-10 col-11{% endblock %}
+{% block form_col %}col-lg-8 col-md-11 col-12{% endblock %}
 
 {% block content %}
 <style>
-  .mfa-steps { counter-reset: mfa; list-style: none; padding-left: 0; margin: 0; }
-  .mfa-steps li { position: relative; padding-left: 2.25rem; margin-bottom: .85rem; line-height: 1.45; }
-  .mfa-steps li::before {
-    counter-increment: mfa; content: counter(mfa);
-    position: absolute; left: 0; top: .05rem;
-    width: 1.6rem; height: 1.6rem; border-radius: 50%;
-    background: #7367f0; color: #fff; font-weight: 600; font-size: .8rem;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .mfa-qr { border: 1px solid #ebe9f1; border-radius: .5rem; padding: .6rem; display: inline-block; background: #fff; }
-  .mfa-secret { font-family: monospace; letter-spacing: 1px; }
+  /* La carte reste centrée par form_base mais plafonnée en largeur pour ne pas s'étaler */
+  .content-body .box-shadow-2 { max-width: 720px; }
+  .mfa-head h3 { color:#0b1f3a; font-weight:800; line-height:1.12; margin:0; }
+  .mfa-head .gold { color:#c79a3b; }
+  .mfa-sub { color:#6e6b7b; margin:.4rem 0 0; }
+  .mfa-step { display:flex; gap:.9rem; padding:1.1rem 0; border-top:1px solid #f0f0f3; }
+  .mfa-step:first-child { border-top:0; }
+  .mfa-badge { flex:0 0 auto; width:2rem; height:2rem; border-radius:50%; background:#0b1f3a; color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .mfa-ico { flex:0 0 auto; width:2.6rem; height:2.6rem; border-radius:.6rem; background:#eef0f6; color:#0b1f3a; display:flex; align-items:center; justify-content:center; font-size:1.15rem; }
+  .mfa-step h6 { color:#0b1f3a; font-weight:700; margin:0 0 .2rem; }
+  .mfa-step p { color:#6e6b7b; margin:0; font-size:.9rem; }
+  .mfa-stores { display:flex; gap:1.6rem; margin-top:.8rem; flex-wrap:wrap; }
+  .mfa-store { text-align:center; }
+  .mfa-store img { width:116px; height:116px; }
+  .mfa-store .n { font-weight:700; color:#0b1f3a; margin-top:.25rem; }
+  .mfa-store .s { font-size:.75rem; color:#9c99a8; }
+  .mfa-qr { border:1px solid #ebe9f1; border-radius:.5rem; padding:.6rem; display:inline-block; background:#fff; }
+  .mfa-secret { font-family:monospace; letter-spacing:1px; }
 </style>
 
-<p class="text-muted mb-2">{% trans "Renforcez la sécurité de votre compte en quelques étapes." %}</p>
+<div class="mfa-head mb-1">
+  <h3>{% trans "Activez la double authentification sur" %} <span class="gold">SIGCDD</span></h3>
+  <p class="mfa-sub">{% trans "La 2FA est obligatoire : sans elle, la navigation reste bloquée." %}</p>
+</div>
 
-<div class="row">
-  <!-- Étapes -->
-  <div class="col-md-7 mb-2">
-    <h5 class="mb-1">{% trans "Comment faire" %}</h5>
-    <ol class="mfa-steps">
-      <li>{% trans "Installez une application d'authentification sur votre téléphone : Google Authenticator, Microsoft Authenticator ou FreeOTP." %}</li>
-      <li>{% trans "Dans l'application, choisissez « Scanner un QR code » et scannez le code à droite (ou saisissez le secret à la main)." %}</li>
-      <li>{% trans "L'application affiche un code à 6 chiffres qui change toutes les 30 secondes." %}</li>
-      <li>{% trans "Saisissez ce code ci-dessous puis cliquez sur « Activer »." %}</li>
-    </ol>
-  </div>
-
-  <!-- QR + secret -->
-  <div class="col-md-5 text-center mb-2">
-    <div class="mfa-qr mb-1">
-      <img src="{{ totp_svg_data_uri }}" alt="QR Code 2FA" width="160">
-    </div>
-    <div class="form-group text-left mb-0">
-      <label class="mb-0"><small class="text-muted">{% trans "Secret (saisie manuelle)" %}</small></label>
-      <input type="text" class="form-control form-control-sm mfa-secret" value="{{ form.secret }}" readonly onclick="this.select()">
+<!-- Étape 1 -->
+<div class="mfa-step">
+  <div class="mfa-badge">1</div>
+  <div class="mfa-ico"><i class="feather icon-download"></i></div>
+  <div class="w-100">
+    <h6>{% trans "Téléchargez Google Authenticator" %}</h6>
+    <p>{% trans "Scannez avec l'appareil photo de votre téléphone le QR code qui correspond à votre appareil, puis installez l'application." %}</p>
+    <div class="mfa-stores">
+      <div class="mfa-store">
+        <img src="{% static 'img/qr_ga_android.svg' %}" alt="QR Android">
+        <div class="n">Android</div><div class="s">Google Play Store</div>
+      </div>
+      <div class="mfa-store">
+        <img src="{% static 'img/qr_ga_ios.svg' %}" alt="QR iPhone">
+        <div class="n">iPhone (iOS)</div><div class="s">App Store</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Saisie du code -->
-<form method="post" action="{% url 'mfa_activate_totp' %}" class="mt-1">
-  {% csrf_token %}
-  {% for error in form.non_field_errors %}
-    <p class="text-danger">{{ error }}</p>
-  {% endfor %}
-  {% for field in form.visible_fields %}
-    <div class="form-group">
-      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {% for error in field.errors %}
-        <span class="d-block text-danger small">{{ error }}</span>
-      {% endfor %}
-      {{ field|add_class:'form-control form-control-lg' }}
+<!-- Étape 2 -->
+<div class="mfa-step">
+  <div class="mfa-badge">2</div>
+  <div class="mfa-ico"><i class="feather icon-smartphone"></i></div>
+  <div>
+    <h6>{% trans "Ouvrez Google Authenticator" %}</h6>
+    <p>{% trans "Appuyez sur l'icône de l'application sur l'écran d'accueil de votre smartphone." %}</p>
+  </div>
+</div>
+
+<!-- Étape 3 -->
+<div class="mfa-step">
+  <div class="mfa-badge">3</div>
+  <div class="mfa-ico"><i class="feather icon-plus-circle"></i></div>
+  <div>
+    <h6>{% trans "Ajoutez un nouveau compte" %}</h6>
+    <p>{% trans "Dans l'application, appuyez sur le bouton « + », puis choisissez « Scanner un code QR »." %}</p>
+  </div>
+</div>
+
+<!-- Étape 4 : QR SIGCDD dynamique -->
+<div class="mfa-step">
+  <div class="mfa-badge">4</div>
+  <div class="mfa-ico"><i class="feather icon-maximize"></i></div>
+  <div class="w-100">
+    <h6>{% trans "Scannez le QR code affiché sur SIGCDD" %}</h6>
+    <p class="mb-1">{% trans "Placez le QR code ci-dessous dans le cadre de la caméra (ou saisissez le secret à la main)." %}</p>
+    <div class="d-flex flex-wrap align-items-center" style="gap:1rem">
+      <div class="mfa-qr"><img src="{{ totp_svg_data_uri }}" alt="QR Code SIGCDD" width="150"></div>
+      <div style="min-width:220px">
+        <label class="mb-0"><small class="text-muted">{% trans "Secret (saisie manuelle)" %}</small></label>
+        <input type="text" class="form-control form-control-sm mfa-secret" value="{{ form.secret }}" readonly onclick="this.select()">
+      </div>
     </div>
-  {% endfor %}
-  <button type="submit" class="btn btn-primary btn-block">
-    <i class="feather icon-shield"></i> {% trans "Activer" %}
-  </button>
-</form>
+  </div>
+</div>
+
+<!-- Étape 5 : saisie du code -->
+<div class="mfa-step">
+  <div class="mfa-badge">5</div>
+  <div class="mfa-ico"><i class="feather icon-shield"></i></div>
+  <div class="w-100">
+    <h6>{% trans "Saisissez le code à 6 chiffres" %}</h6>
+    <p class="mb-1">{% trans "Recopiez le code affiché dans l'application, puis confirmez l'activation." %}</p>
+    <form method="post" action="{% url 'mfa_activate_totp' %}">
+      {% csrf_token %}
+      {% for error in form.non_field_errors %}
+        <p class="text-danger">{{ error }}</p>
+      {% endfor %}
+      {% for field in form.visible_fields %}
+        {% for error in field.errors %}
+          <span class="d-block text-danger small">{{ error }}</span>
+        {% endfor %}
+        {{ field|add_class:'form-control form-control-lg' }}
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-block mt-1">
+        <i class="feather icon-check"></i> {% trans "Confirmer l'activation" %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
 {% endblock %}
